@@ -5,31 +5,31 @@
 /* Light Theme (Default) */
 :root[data-theme='light'], 
 :root:not([data-theme]) {
-  --bg: #ffffff; 
-  --panel: #f3f7fc; 
-  --line: #d6e2f1; 
-  --text: #0b1730; 
-  --muted: #51628a;
-  --accent: #2a9df4; 
-  --accent-hover: #5ab4f7; 
-  --on-accent: #0b1730; 
-  --accent-text: #0b6bcb; 
-  --gold: #0b1730;
+  --bg: #F8FAFC;
+  --panel: #FFFFFF;
+  --line: #E2E8F0;
+  --text: #172033;
+  --muted: #64748B;
+  --accent: #3B82F6;
+  --accent-hover: #6366F1;
+  --on-accent: #FFFFFF;
+  --accent-text: #2563EB;
+  --gold: #6366F1;
   color-scheme: light;
 }
 
 /* Dark Theme */
 :root[data-theme='dark'] {
-  --bg: #0b1730; 
-  --panel: #12254d; 
-  --line: #243d70; 
-  --text: #eaf0fb; 
-  --muted: #9fb2d3;
-  --accent: #6cb4ff; 
-  --accent-hover: #93c8ff; 
-  --on-accent: #0b1730; 
-  --accent-text: #6cb4ff; 
-  --gold: #f2c14e;
+  --bg: #0F172A;
+  --panel: #172238;
+  --line: #293750;
+  --text: #F1F5F9;
+  --muted: #A7B4CA;
+  --accent: #60A5FA;
+  --accent-hover: #818CF8;
+  --on-accent: #0F172A;
+  --accent-text: #93C5FD;
+  --gold: #A5B4FC;
   color-scheme: dark;
 }
 
@@ -182,13 +182,16 @@ nav ul a:hover {
   color: var(--text); 
 }
 
-.switch { 
-  display: flex; 
-  border: 1px solid var(--line); 
-  border-radius: 999px; 
-  padding: 3px; 
-  background: var(--panel); 
+
+.switch {
+  display: flex;
+  align-items: center;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  padding: 5px;
+  background: var(--panel);
 }
+
 
 .switch button { 
   font: 500 .85rem var(--body); 
@@ -842,6 +845,7 @@ body::after {
 }
 
 
+
 /* Full-page Aurora Background */
 .nuda-gradient-aurora {
   position: fixed;
@@ -851,36 +855,42 @@ body::after {
   overflow: hidden;
   pointer-events: none;
   z-index: -1;
-  background: #ffffff;
+  background: #F8FAFC;
 }
 
 .nuda-gradient-aurora::before {
   content: "";
   position: absolute;
-  inset: -40%;
-  background: conic-gradient(
-    from 0deg at 30% 40%,
-    #2A9DF4,
-    transparent 25%,
-    #6CB4FF 45%,
-    transparent 65%,
-    #F2C14E 85%,
-    #2A9DF4
-  );
-  filter: blur(10px);
-  opacity: 100;
   inset: -20%;
+  background:
+    radial-gradient(
+      ellipse at 25% 35%,
+      rgba(59, 130, 246, 0.22) 0%,
+      transparent 55%
+    ),
+    radial-gradient(
+      ellipse at 75% 60%,
+      rgba(99, 102, 241, 0.15) 0%,
+      transparent 55%
+    ),
+    radial-gradient(
+      ellipse at 50% 85%,
+      rgba(165, 180, 252, 0.18) 0%,
+      transparent 50%
+    );
+  filter: blur(45px);
+  opacity: 0.9;
   animation: nuda-gradient-aurora-drift
-    10s ease-in-out infinite alternate;
-
+    14s ease-in-out infinite alternate;
 }
 
 @keyframes nuda-gradient-aurora-drift {
   0% {
-    transform: translate3d(-20%, 10%, 0) rotate(0deg) scale(1.2);
+    transform: translate3d(-4%, 1%, 0) scale(1);
   }
+
   100% {
-    transform: translate3d(12%, 8%, 0) rotate(40deg) scale(1.4);
+    transform: translate3d(4%, -2%, 0) scale(1.12);
   }
 }
 
@@ -888,4 +898,77 @@ body::after {
   .nuda-gradient-aurora::before {
     animation: none;
   }
+}
+
+
+/* Mobile Navigation */
+@media (max-width: 600px) {
+  nav .navin {
+    flex-wrap: wrap;
+    gap: 12px;
+    padding-top: 12px;
+    padding-bottom: 12px;
+  }
+
+  nav .navin > b {
+    font-size: 1rem;
+  }
+
+  nav .navin ul {
+    order: 3;
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    gap: 10px;
+    padding: 0;
+    margin: 0;
+    font-size: 0.85rem;
+  }
+
+  nav .switch {
+    margin-left: auto;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 4px;
+  }
+
+  nav .switch button {
+    padding: 9px 12px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    font-size: 0.75rem;
+  }
+  
+  nav .switch button span {
+    display: none;
+  }
+
+  nav .navin ul {
+    order: 3;
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 0 2px;
+    margin: 0;
+    list-style: none;
+    font-size: 0.85rem;
+  }
+
+  nav .navin ul li a {
+    white-space: nowrap;
+    text-decoration: none;
+  }
+
+}
+
+
+nav .navin .switch button {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
 }

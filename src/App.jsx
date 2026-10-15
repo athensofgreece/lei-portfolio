@@ -99,9 +99,15 @@ function getToolIcon(tool) {
             <li><a href="#contact">Contact</a></li>
           </ul>
           <div className="switch" role="group" aria-label="Choose portfolio focus">
-            <button aria-pressed={isSocial} onClick={(e) => switchMode('light', e)}>Social media</button>
-            <button aria-pressed={!isSocial} onClick={(e) => switchMode('dark', e)}>Automation</button>
+            <button className="social-switch" aria-label="Social Media mode" aria-pressed={isSocial} onClick={(e) => switchMode('light', e)}>
+              <Palette size={16}/><span>Social Media</span>
+            </button>
+            <button className="automation-switch" aria-label="Automation mode" aria-pressed={!isSocial} onClick={(e) => switchMode('dark', e)}>
+              <Code2 size={16} />
+              <span>Automation</span>
+            </button>
           </div>
+
         </div>
       </nav>
 
