@@ -972,3 +972,87 @@ nav .navin .switch button {
   align-items: center;
   gap: 3px;
 }
+
+
+/* Mobile hamburger menu */
+.menu-toggle {
+  display: none;
+}
+
+@media (max-width: 600px) {
+  nav {
+    background: color-mix(in srgb, var(--bg) 85%, transparent);
+    -webkit-backdrop-filter: blur(8px);
+    backdrop-filter: blur(8px);
+    border-bottom: 1px solid var(--line);
+  }
+
+  nav .navin {
+    position: relative;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    padding-top: 10px;
+    padding-bottom: 10px;
+  }
+
+  .menu-toggle {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    background: var(--panel);
+    color: var(--text);
+    font-size: 22px;
+    cursor: pointer;
+  }
+
+  nav .navin ul.mobile-menu {
+    display: none;
+    order: 3;
+    flex: 0 0 100%;
+    width: 100%;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0;
+    padding: 6px;
+    margin: 0;
+    list-style: none;
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    background: var(--panel);
+  }
+
+  nav .navin ul.mobile-menu.open {
+    display: flex;
+  }
+
+  nav .navin ul.mobile-menu li a {
+    display: block;
+    padding: 12px;
+    color: var(--text);
+    text-decoration: none;
+  }
+
+  nav .navin ul.mobile-menu li + li {
+    border-top: 1px solid var(--line);
+  }
+
+  nav .navin ul.mobile-menu li a:hover {
+    background: color-mix(in srgb, var(--accent) 10%, transparent);
+  }
+
+  nav .navin .switch {
+    order: 2;
+    margin-left: auto;
+  }
+
+  nav .switch button span {
+    display: none;
+  }
+}
