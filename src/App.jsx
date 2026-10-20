@@ -4,7 +4,7 @@ import { profile as pf, social as sc, auto as au } from './data.js'
 import { SHEET_ID } from './sheet.config.js'
 import { loadSheetContent, cachedContent } from './sheet.js'
 import { Timeline, Flow } from './components/Visuals.jsx'
-import { Code2, Palette, Scissors, BriefcaseBusiness } from 'lucide-react'
+import { Code2, Palette, Scissors, BriefcaseBusiness, Clapperboard, CalendarDays, Globe, Workflow, Database, FileSpreadsheet, ChartNoAxesCombined } from 'lucide-react'
 import {
   SiFigma,
   SiTiktok,
@@ -18,7 +18,21 @@ import {
   SiReact,
   SiHtml5,
   SiJavascript,
+  SiGmail
 } from 'react-icons/si'
+import {FaFacebookF, FaInstagram, FaLinkedinIn, FaGithub, FaEnvelope} from "react-icons/fa"
+
+
+const serviceIcons = {
+  'short-form video editing': Clapperboard,
+  'social media management': CalendarDays,
+  'graphic design': Palette,
+  'social media reporting': ChartNoAxesCombined,
+  'website building and upkeep': Globe,
+  'workflow automation': Workflow,
+  'airtable and notion systems': Database,
+  'sheets and apps script': FileSpreadsheet,
+};
 
 const BASE = import.meta.env.BASE_URL
 const KEY = 'portfolio-mode'
@@ -172,9 +186,6 @@ function getToolIcon(tool) {
             <span className="badge"><i /> {d.badge}</span>
             <h1>{d.headline}</h1>
             <p className="lede">{d.lede}</p>
-            
-
-            
             <div className="btns">
               <a className="btn primary" href="#contact">Work with me</a>
               <a className="btn" href="#work">{isSocial ? 'See my work' : 'See my projects'}</a>
@@ -189,13 +200,28 @@ function getToolIcon(tool) {
 
       <section id="services"><div className="wrap">
         <h2>{isSocial ? 'What I do for you' : 'What I can build for you'}</h2>
-        <div className={`cards c${d.services.length}`}>
-          {d.services.map((s) => (
-            <div className="card" key={s.title}>
-              {s.status && <span className={`chip ${s.status === 'Available' ? 'ok' : ''}`}>{s.status}</span>}
-              <h3>{s.title}</h3><p>{s.text}</p>
-            </div>
-          ))}
+        <div className="cards">
+          {d.services.map((s) => {
+  const Icon =
+    serviceIcons[s.title.trim().toLowerCase()] || Workflow;
+
+  return (
+    <div className="card service-card" key={s.title}>
+      <div className="service-icon">
+        <Icon className="service-icon-svg" size={24} strokeWidth={1.8} />
+      </div>
+
+      <h3>{s.title}</h3>
+      <p>{s.text}</p>
+
+      {s.status && (
+        <span className={`chip ${s.status === 'Available' ? 'ok' : ''}`}>
+          {s.status}
+        </span>
+      )}
+    </div>
+  );
+})}
         </div>
       </div></section>
 
@@ -222,7 +248,7 @@ function getToolIcon(tool) {
           ))}
         </> : <>
           <h2>Websites I've built</h2>
-          <div className="cards c2">
+          <div className="cards">
             {auto.webProjects.map((p) => (
               <div className="card" key={p.title}>
                 <span className="chip ok">{p.status}</span>
@@ -235,7 +261,7 @@ function getToolIcon(tool) {
           </div>
           <h2 className="sub">Automation demos</h2>
           <p className="note">These proof-of-concept workflows demonstrate how I approach automation, streamline repetitive tasks, and connect everyday tools. Created as portfolio projects, they showcase my workflow design and problem-solving skills.</p>
-          <div className="cards c3f">
+          <div className="cards">
             {auto.demos.map((p) => (
               <div className="card" key={p.title}>
                 <span className={`chip ${p.status === 'Live' ? 'ok' : ''}`}>{p.status}</span>
@@ -295,7 +321,36 @@ function getToolIcon(tool) {
         <p style={{ marginTop: '1.5rem' }}><a href={profile.github} target="_blank" rel="noopener noreferrer">github.com/athensofgreece</a></p>
       </div></section>
 
-      <footer><div className="wrap">{profile.name} | {profile.location}</div></footer>
+      <footer>
+        <div className="wrap footer-content">
+          <div className="footer-social-card">
+            <h3>Let's Connect</h3>
+            <p>Have a project in mind? Let's create something useful together!</p>
+              <div className="footer-social-links">  
+              <a href="mailto:athenapicones04@gmail.com" aria-label="Email">
+                <FaEnvelope size={20} />
+              </a>
+              <a href="https://www.facebook.com/atheeeens" aria-label="Facebook" target="_blank" rel="noreferrer">
+                <FaFacebookF size={20} />
+              </a>
+              <a href="https://www.instagram.com/athenelytical/" aria-label="Instagram" target="_blank" rel="noreferrer">
+                <FaInstagram  size={20} />
+              </a>
+              <a href="https://www.linkedin.com/" aria-label="LinkedIn" target="_blank" rel="noreferrer">
+                <FaLinkedinIn size={20} />
+              </a>
+              <a href="https://github.com/athensofgreece" aria-label="GitHub" target="_blank" rel="noreferrer">
+                <FaGithub size={20} />
+              </a>
+            </div>
+          </div>
+
+          <div className="footer-bottom">
+            <span>© 2026 Athena Madaleine Picones</span>
+            <span>Built with React &amp; Google Sheets</span>
+          </div>
+        </div>
+      </footer>
     </>
   )
 }
