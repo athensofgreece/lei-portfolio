@@ -1056,3 +1056,59 @@ nav .navin .switch button {
     display: none;
   }
 }
+
+
+/* Tiny theme-switch tooltips */
+.theme-switch-area {
+  position: relative;
+}
+
+.theme-switch-area .switch button {
+  position: relative;
+}
+
+.theme-switch-area .switch button::after {
+  content: attr(data-tooltip);
+  position: absolute;
+  top: calc(100% + 10px);
+  left: 50%;
+  z-index: 1000;
+  width: max-content;
+  max-width: 220px;
+  padding: 7px 10px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--panel);
+  color: var(--text);
+  box-shadow: 0 5px 16px rgb(15 23 42 / 12%);
+  font-size: 0.75rem;
+  font-weight: 500;
+  line-height: 1.4;
+  white-space: normal;
+  text-align: center;
+  pointer-events: none;
+  opacity: 0;
+  visibility: hidden;
+  transform: translate(-50%, -4px);
+  transition: opacity 160ms ease, transform 160ms ease, visibility 160ms;
+}
+
+.theme-switch-area .switch button:hover::after,
+.theme-switch-area .switch button:focus-visible::after {
+  opacity: 1;
+  visibility: visible;
+  transform: translate(-50%, 0);
+}
+
+@media (hover: none) {
+  .theme-switch-area .switch button::after {
+    display: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .theme-switch-area .switch button::after {
+    transition: none;
+  }
+}
+

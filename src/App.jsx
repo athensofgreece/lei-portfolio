@@ -34,6 +34,17 @@ function Portfolio({ content }) {
   const isSocial = mode === 'light'
   const d = isSocial ? social : auto
   const [menuOpen, setMenuOpen] = useState(false);
+  const [showThemeTip, setShowThemeTip] = useState(false);
+
+  useEffect(() => {
+    const dismissed = localStorage.getItem('themeTipDismissed');
+    if (dismissed) return;
+    const timer = setTimeout(() => {
+      setShowThemeTip(true);
+    }, 2000);
+
+    return () => clearTimeout(timer);
+  }, []);
 
   useLayoutEffect(() => {
     document.documentElement.dataset.theme = mode
@@ -90,29 +101,70 @@ function getToolIcon(tool) {
       )}
       
 
-      <nav>
-        <div className="wrap navin">
-          <b>{profile.name}</b>
-          <button className = "menu-toggle" type="button" aria-label={menuOpen ? 'Close navigation menu' : 'Open navigation menu'}
-           aria-expanded={menuOpen} onClick={() => setMenuOpen(!menuOpen)}> {menuOpen ? '✕' : '☰'}
-          </button>
-          <ul className={menuOpen ? 'mobile-menu open' : 'mobile-menu'}>
-            <li><a href="#services" onClick={() => setMenuOpen(false)}>Services</a></li>
-            <li><a href="#work" onClick={() => setMenuOpen(false)}>{isSocial ? 'Work' : 'Projects'}</a></li>
-            <li><a href="#about" onClick={() => setMenuOpen(false)}>About</a></li>
-            <li><a href="#contact" onClick={() => setMenuOpen(false)}>Contact</a></li>
-          </ul>
-          <div className="switch" role="group" aria-label="Choose portfolio focus">
-            <button className="social-switch" aria-label="Social Media mode" aria-pressed={isSocial} onClick={(e) => switchMode('light', e)}>
-              <Palette size={16}/><span>Social Media</span>
-            </button>
-            <button className="automation-switch" aria-label="Automation mode" aria-pressed={!isSocial} onClick={(e) => switchMode('dark', e)}>
-              <Code2 size={16} />
-              <span>Automation</span>
-            </button>
-          </div>
-        </div>
-      </nav>
+
+<nav>
+  <div className="wrap navin">
+    <b>{profile.name}</b>
+
+    <button
+      className="menu-toggle"
+      type="button"
+      aria-label={menuOpen ? 'Close navigation menu' : 'Open navigation menu'}
+      aria-expanded={menuOpen}
+      onClick={() => setMenuOpen(!menuOpen)}
+    >
+      {menuOpen ? '✕' : '☰'}
+    </button>
+
+    <ul className={menuOpen ? 'mobile-menu open' : 'mobile-menu'}>
+      <li>
+        <a href="#services" onClick={() => setMenuOpen(false)}>
+          Services
+        </a>
+      </li>
+      <li>
+        <a href="#work" onClick={() => setMenuOpen(false)}>
+          {isSocial ? 'Work' : 'Projects'}
+        </a>
+      </li>
+      <li>
+        <a href="#about" onClick={() => setMenuOpen(false)}>
+          About
+        </a>
+      </li>
+      <li>
+        <a href="#contact" onClick={() => setMenuOpen(false)}>
+          Contact
+        </a>
+      </li>
+    </ul>
+
+    <div className="theme-switch-area">
+      <div className="switch" role="group" aria-label="Choose portfolio focus">
+        <button
+          className="social-switch"
+          aria-label="Social Media mode"
+          aria-pressed={isSocial}
+          data-tooltip="Switch to Creative & Marketing"
+          onClick={(e) => switchMode('light', e)}
+        >
+          <Palette size={16} />
+        </button>
+
+        <button
+          className="automation-switch"
+          aria-label="Automation mode"
+          aria-pressed={!isSocial}
+          data-tooltip="Switch to Tech & Automation"
+          onClick={(e) => switchMode('dark', e)}
+        >
+          <Code2 size={16} />
+        </button>
+      </div>
+    </div>
+  </div>
+</nav>
+
 
       <header className="hero"><div className="wrap">
         <div className="grid">
@@ -120,12 +172,15 @@ function getToolIcon(tool) {
             <span className="badge"><i /> {d.badge}</span>
             <h1>{d.headline}</h1>
             <p className="lede">{d.lede}</p>
+            
+
+            
             <div className="btns">
               <a className="btn primary" href="#contact">Work with me</a>
               <a className="btn" href="#work">{isSocial ? 'See my work' : 'See my projects'}</a>
             </div>
           </div>
-          {isSocial ? <Timeline /> : <Flow />}
+            {isSocial ? <Timeline /> : <Flow />}
         </div>
         <div className="stats">
           {d.stats.map((s) => <div key={s.l}><b>{s.n}</b><span>{s.l}</span></div>)}
@@ -179,8 +234,8 @@ function getToolIcon(tool) {
             ))}
           </div>
           <h2 className="sub">Automation demos</h2>
-          <p className="note">These are demo workflows I'm building while I train. They are not client projects.</p>
-          <div className="cards c3">
+          <p className="note">These proof-of-concept workflows demonstrate how I approach automation, streamline repetitive tasks, and connect everyday tools. Created as portfolio projects, they showcase my workflow design and problem-solving skills.</p>
+          <div className="cards c3f">
             {auto.demos.map((p) => (
               <div className="card" key={p.title}>
                 <span className={`chip ${p.status === 'Live' ? 'ok' : ''}`}>{p.status}</span>
