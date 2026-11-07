@@ -1,10 +1,11 @@
-import { useState, useLayoutEffect, useEffect, useCallback } from 'react'
+import { useState, useLayoutEffect, useEffect, useCallback, useRef } from 'react'
 import { flushSync } from 'react-dom'
 import { profile as pf, social as sc, auto as au } from './data.js'
 import { SHEET_ID } from './sheet.config.js'
 import { loadSheetContent, cachedContent } from './sheet.js'
 import { Timeline, Flow } from './components/Visuals.jsx'
 import {
+  ArrowRight,
   Code2,
   Palette,
   Scissors,
@@ -70,6 +71,10 @@ const TOOL_ICONS_MAP = [
 ]
 
 const BASE = import.meta.env.BASE_URL
+
+// Hero copy shared by both modes. Per-mode badge, headline, lede and stats still come from the sheet / data.js.
+const HERO_TEXT =
+  'I explore ideas, create digital experiences, and build practical solutions through design and technology.'
 const KEY = 'portfolio-mode'
 
 function initialMode() {
@@ -80,13 +85,156 @@ function initialMode() {
   return 'light'
 }
 
+// "image" cells may hold several files separated by |, each a picture or a video (.mp4 / .webm)
+const mediaItems = (value) =>
+  String(value || '')
+    .split('|')
+    .map((x) => x.trim())
+    .filter(Boolean)
+    .map((src) => ({
+      src: /^https?:/.test(src) ? src : BASE + src,
+      video: /\.(mp4|webm|mov)(\?.*)?$/i.test(src),
+    }))
+
+const splitList = (value) =>
+  String(value || '')
+    .split(',')
+    .map((t) => t.trim())
+    .filter(Boolean)
+
+function CaseTile({ p, onOpen }) {
+  const cover = mediaItems(p.image)[0]
+  const tools = splitList(p.tools)
+  const play = (e) => {
+    const v = e.currentTarget.querySelector('video')
+    if (v) v.play().catch(() => {})
+  }
+  const stop = (e) => {
+    const v = e.currentTarget.querySelector('video')
+    if (v) {
+      v.pause()
+      v.currentTime = 0
+    }
+  }
+  return (
+    <article className={`tile${cover ? ' has-media' : ''}`} onMouseEnter={play} onMouseLeave={stop}>
+      {cover &&
+        (cover.video ? (
+          <video className="tile-media" src={cover.src} muted loop playsInline preload="metadata" aria-hidden="true" />
+        ) : (
+          <img className="tile-media" src={cover.src} alt="" loading="lazy" />
+        ))}
+      <span className="tile-go" aria-hidden="true">
+        →
+      </span>
+      <p className="t-client">{p.client}</p>
+      <h3>
+        <button type="button" className="tile-open" aria-haspopup="dialog" onClick={() => onOpen(p)}>
+          {p.title}
+        </button>
+      </h3>
+      <p className="t-result">{p.result}</p>
+      {tools.length > 0 && (
+        <ul className="t-tools">
+          {tools.map((t) => (
+            <li key={t}>{t}</li>
+          ))}
+        </ul>
+      )}
+    </article>
+  )
+}
+
+function CaseDialog({ p, onClose }) {
+  const ref = useRef(null)
+  useEffect(() => {
+    const d = ref.current
+    if (p && d && !d.open) d.showModal()
+    document.body.style.overflow = p ? 'hidden' : ''
+    return () => {
+      document.body.style.overflow = ''
+    }
+  }, [p])
+  if (!p) return null
+  // Close the dialog and tell the page right away (the native "close" event only covers Esc)
+  const requestClose = () => {
+    if (ref.current?.open) ref.current.close()
+    onClose()
+  }
+  const items = mediaItems(p.image)
+  const tools = splitList(p.tools)
+  return (
+    <dialog
+      ref={ref}
+      className="case-dialog"
+      aria-labelledby="case-dialog-title"
+      onClose={onClose}
+      onClick={(e) => {
+        if (e.target === e.currentTarget) requestClose()
+      }}
+    >
+      <div className="dlg-inner">
+        <button type="button" className="dlg-close" aria-label="Close" onClick={requestClose}>
+          ✕
+        </button>
+        <p className="case-client">{p.client}</p>
+        <h3 id="case-dialog-title">{p.title}</h3>
+        {items.length > 0 && (
+          <div className={`dlg-media${items.length > 1 ? ' multi' : ''}`}>
+            {items.map((m, i) =>
+              m.video ? (
+                <video key={m.src} src={m.src} controls playsInline preload="metadata" />
+              ) : (
+                <img key={m.src} src={m.src} alt={`${p.title} (${i + 1} of ${items.length})`} loading="lazy" />
+              ),
+            )}
+          </div>
+        )}
+        <div className="dlg-cols">
+          <div>
+            <h4>The need</h4>
+            <p>{p.need}</p>
+          </div>
+          <div>
+            <h4>What I did</h4>
+            <p>{p.did}</p>
+          </div>
+        </div>
+        <p className="dlg-result">{p.result}</p>
+        <div className="dlg-foot">
+          {tools.length > 0 && (
+            <ul className="dlg-tools">
+              {tools.map((t) => (
+                <li key={t}>{t}</li>
+              ))}
+            </ul>
+          )}
+          {p.link && (
+            <a className="btn primary" href={p.link} target="_blank" rel="noopener noreferrer">
+              View the work
+            </a>
+          )}
+        </div>
+      </div>
+    </dialog>
+  )
+}
+
 function Portfolio({ content }) {
   const { profile, social, auto } = content
   const [mode, setMode] = useState(initialMode)
   const [menuOpen, setMenuOpen] = useState(false)
+  const [openCase, setOpenCase] = useState(null)
 
   const isSocial = mode === 'light'
   const d = isSocial ? social : auto
+  const initials = profile.name
+    .split(/\s+/)
+    .filter(Boolean)
+    .slice(0, 2)
+    .map((w) => w[0])
+    .join('')
+    .toUpperCase()
 
   useLayoutEffect(() => {
     document.documentElement.dataset.theme = mode
@@ -129,19 +277,56 @@ function Portfolio({ content }) {
     <>
       {isSocial && <div className="nuda-gradient-aurora" aria-hidden="true" />}
 
-      <nav>
+      <nav aria-label="Primary">
         <div className="wrap navin">
-          <b>{profile.name}</b>
+          <a className="brand" href="#" aria-label={`${profile.name} - back to top`}>
+            <span className="brand-mark" aria-hidden="true">{initials}</span>
+            <span className="brand-text">
+              <b>{profile.name}</b>
+              <small>Creative Technologist</small>
+            </span>
+          </a>
 
-          <button
-            className="menu-toggle"
-            type="button"
-            aria-label={menuOpen ? 'Close navigation menu' : 'Open navigation menu'}
-            aria-expanded={menuOpen}
-            onClick={() => setMenuOpen((prev) => !prev)}
-          >
-            {menuOpen ? '✕' : '☰'}
-          </button>
+          <div className="nav-actions">
+            <div
+              className="mode-switch"
+              role="group"
+              aria-label="Choose portfolio focus"
+              data-mode={mode}
+            >
+              <span className="mode-thumb" aria-hidden="true" />
+              <button
+                className="mode-btn"
+                type="button"
+                aria-pressed={isSocial}
+                onClick={(e) => switchMode('light', e)}
+              >
+                <Palette size={15} aria-hidden="true" />
+                <span className="mode-full">Creative Studio</span>
+                <span className="mode-short">Studio</span>
+              </button>
+              <button
+                className="mode-btn"
+                type="button"
+                aria-pressed={!isSocial}
+                onClick={(e) => switchMode('dark', e)}
+              >
+                <Code2 size={15} aria-hidden="true" />
+                <span className="mode-full">Technology Lab</span>
+                <span className="mode-short">Lab</span>
+              </button>
+            </div>
+
+            <button
+              className="menu-toggle"
+              type="button"
+              aria-label={menuOpen ? 'Close navigation menu' : 'Open navigation menu'}
+              aria-expanded={menuOpen}
+              onClick={() => setMenuOpen((prev) => !prev)}
+            >
+              {menuOpen ? '✕' : '☰'}
+            </button>
+          </div>
 
           <ul className={menuOpen ? 'mobile-menu open' : 'mobile-menu'}>
             <li>
@@ -165,53 +350,42 @@ function Portfolio({ content }) {
               </a>
             </li>
           </ul>
-
-          <div className="theme-switch-area">
-            <div className="switch" role="group" aria-label="Choose portfolio focus">
-              <button
-                className="social-switch"
-                aria-label="Social Media mode"
-                aria-pressed={isSocial}
-                data-tooltip="Switch to Creative & Marketing"
-                onClick={(e) => switchMode('light', e)}
-              >
-                <Palette size={16} />
-              </button>
-
-              <button
-                className="automation-switch"
-                aria-label="Automation mode"
-                aria-pressed={!isSocial}
-                data-tooltip="Switch to Tech & Automation"
-                onClick={(e) => switchMode('dark', e)}
-              >
-                <Code2 size={16} />
-              </button>
-            </div>
-          </div>
         </div>
       </nav>
 
       <header className="hero">
         <div className="wrap">
-          <div className="grid">
-            <div>
+          <div className="hero-grid">
+            <div className="hero-copy">
               <span className="badge">
                 <i /> {d.badge}
               </span>
-              <h1>{d.headline}</h1>
-              <p className="lede">{d.lede}</p>
+              <h1>
+                I bring <span className="hl-creative">creativity</span> and{' '}
+                <span className="hl-tech">technology</span> together.
+              </h1>
+              <p className="lede">{HERO_TEXT}</p>
               <div className="btns">
                 <a className="btn primary" href="#contact">
-                  Work with me
+                  Work with me <ArrowRight size={16} aria-hidden="true" />
                 </a>
                 <a className="btn" href="#work">
                   {isSocial ? 'See my work' : 'See my projects'}
                 </a>
               </div>
             </div>
-            {isSocial ? <Timeline /> : <Flow />}
+
+            <div className="hero-stage">
+              <div className="stage-frame" aria-hidden="true" />
+              <div className="stage-visual">{isSocial ? <Timeline /> : <Flow />}</div>
+              <p className="stage-caption">{d.headline}</p>
+            </div>
           </div>
+        </div>
+      </header>
+
+      <div className="stats-strip">
+        <div className="wrap">
           <div className="stats">
             {d.stats.map((s) => (
               <div key={s.l}>
@@ -221,11 +395,15 @@ function Portfolio({ content }) {
             ))}
           </div>
         </div>
-      </header>
+      </div>
 
       <section id="services">
         <div className="wrap">
-          <h2>{isSocial ? 'What I do for you' : 'What I can build for you'}</h2>
+          <div className="sec-head">
+            <p className="eyebrow">Services</p>
+            <h2>{isSocial ? 'What I do for you' : 'What I can build for you'}</h2>
+            <p className="sec-intro">{d.lede}</p>
+          </div>
           <div className="cards">
             {d.services.map((s) => {
               const Icon = SERVICE_ICONS[s.title.trim().toLowerCase()] || Workflow
@@ -255,50 +433,23 @@ function Portfolio({ content }) {
         <div className="wrap">
           {isSocial ? (
             <>
-              <h2>Selected work</h2>
-              {social.projects.map((p) => (
-                <article className="case" key={p.title}>
-                  {p.image ? (
-                    <div className="media has">
-                      <img
-                        src={/^https?:/.test(p.image) ? p.image : BASE + p.image}
-                        alt={p.title}
-                      />
-                    </div>
-                  ) : (
-                    <div className="media">{p.placeholder}</div>
-                  )}
-                  <div>
-                    <h3>{p.title}</h3>
-                    <dl>
-                      <dt>Client</dt>
-                      <dd>{p.client}</dd>
-                      <dt>The need</dt>
-                      <dd>{p.need}</dd>
-                      <dt>What I did</dt>
-                      <dd>{p.did}</dd>
-                      <dt>Tools</dt>
-                      <dd>{p.tools}</dd>
-                      <dt>Result</dt>
-                      <dd className="result">{p.result}</dd>
-                    </dl>
-                    {p.link && (
-                      <a
-                        className="btn"
-                        href={p.link}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                      >
-                        View the work
-                      </a>
-                    )}
-                  </div>
-                </article>
-              ))}
+              <div className="sec-head">
+                <p className="eyebrow">Work</p>
+                <h2>Selected work</h2>
+              </div>
+              <div className="tiles">
+                {social.projects.map((p) => (
+                  <CaseTile key={p.title} p={p} onOpen={setOpenCase} />
+                ))}
+              </div>
+              <CaseDialog p={openCase} onClose={() => setOpenCase(null)} />
             </>
           ) : (
             <>
-              <h2>Websites I've built</h2>
+              <div className="sec-head">
+                <p className="eyebrow">Projects</p>
+                <h2>Websites I've built</h2>
+              </div>
               <div className="cards">
                 {auto.webProjects.map((p) => (
                   <div className="card" key={p.title}>
@@ -319,37 +470,100 @@ function Portfolio({ content }) {
                   </div>
                 ))}
               </div>
-              <h2 className="sub">Automation demos</h2>
-              <p className="note">
-                These proof-of-concept workflows demonstrate how I approach automation, streamline
+              <div className="sec-head sub-head">
+                <p className="eyebrow">Automation</p>
+                <h2>Automation projects</h2>
+                <p className="sec-intro">
+                  These proof-of-concept workflows demonstrate how I approach automation, streamline
                 repetitive tasks, and connect everyday tools. Created as portfolio projects,
                 they showcase my workflow design and problem-solving skills.
-              </p>
-              <div className="cards">
-                {auto.demos.map((p) => (
-                  <div className="card" key={p.title}>
-                    <span className={`chip ${p.status === 'Live' ? 'ok' : ''}`}>{p.status}</span>
-                    <h3>{p.title}</h3>
-                    <div className="steps">
-                      {p.steps.map((s, i) => (
-                        <span key={s}>
-                          {s}
-                          {i < p.steps.length - 1 && <em>→</em>}
-                        </span>
-                      ))}
-                    </div>
-                    <p>{p.text}</p>
-                  </div>
-                ))}
+                </p>
               </div>
+              {auto.demos.slice(0, 1).map((p) => (
+                <article className="lab-feature" key={p.title}>
+                  <div>
+                    <div className="lab-top lab-top-start">
+                      <span className={`chip ${p.status === 'Live' ? 'ok' : ''}`}>{p.status}</span>
+                      <span className="lab-idx">01 / featured</span>
+                    </div>
+                    <h3>{p.title}</h3>
+                    <p>{p.text}</p>
+                    {splitList(p.tools).length > 0 && (
+                      <ul className="dtools">
+                        {splitList(p.tools).map((t) => (
+                          <li key={t}>{t}</li>
+                        ))}
+                      </ul>
+                    )}
+                    {p.link && (
+                      <div className="lab-actions">
+                        <a className="btn primary" href={p.link} target="_blank" rel="noopener noreferrer">
+                          View demo
+                        </a>
+                      </div>
+                    )}
+                  </div>
+                  <div className="ld" role="img" aria-label={`Workflow: ${p.steps.join(', then ')}`}>
+                    {p.steps.map((s, i) => (
+                      <div key={s} style={{ display: 'contents' }}>
+                        {i > 0 && <div className="ld-link" style={{ '--i': i - 1 }} />}
+                        <div className="ld-node" style={{ '--i': i }}>
+                          {s}
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </article>
+              ))}
+              {auto.demos.length > 1 && (
+                <div className="lab-cards">
+                  {auto.demos.slice(1).map((p, n) => (
+                    <article className="lab-card" key={p.title}>
+                      <div className="lab-top">
+                        <span className={`chip ${p.status === 'Live' ? 'ok' : ''}`}>{p.status}</span>
+                        <span className="lab-idx">{String(n + 2).padStart(2, '0')}</span>
+                      </div>
+                      <h3>{p.title}</h3>
+                      <div className="lab-strip">
+                        {p.steps.map((s, i) => (
+                          <span className="ls-step" key={s}>
+                            <span className="ls-node">{s}</span>
+                            {i < p.steps.length - 1 && <span className="ls-arrow" aria-hidden="true" />}
+                          </span>
+                        ))}
+                      </div>
+                      <p>{p.text}</p>
+                      {(splitList(p.tools).length > 0 || p.link) && (
+                        <div className="lab-foot">
+                          {splitList(p.tools).length > 0 && (
+                            <ul className="dtools">
+                              {splitList(p.tools).map((t) => (
+                                <li key={t}>{t}</li>
+                              ))}
+                            </ul>
+                          )}
+                          {p.link && (
+                            <a className="lab-link" href={p.link} target="_blank" rel="noopener noreferrer">
+                              View demo →
+                            </a>
+                          )}
+                        </div>
+                      )}
+                    </article>
+                  ))}
+                </div>
+              )}
             </>
           )}
         </div>
       </section>
 
-      <section>
+      <section id="tools">
         <div className="wrap">
-          <h2>{isSocial ? 'Tools I use' : 'My skills roadmap'}</h2>
+          <div className="sec-head">
+            <p className="eyebrow">{isSocial ? 'Tools' : 'Skills'}</p>
+            <h2>{isSocial ? 'Tools I use' : 'My skills roadmap'}</h2>
+          </div>
           <div className="tools">
             {isSocial
               ? social.tools.map((t) => {
@@ -377,27 +591,37 @@ function Portfolio({ content }) {
 
       <section id="about">
         <div className="wrap">
-          <h2>About me</h2>
-          {d.about.map((p) => (
-            <p key={p}>{p}</p>
-          ))}
+          <div className="about-grid">
+            <div className="sec-head">
+              <p className="eyebrow">About</p>
+              <h2>About me</h2>
+            </div>
+            <div className="about-body">
+              {d.about.map((p) => (
+                <p key={p}>{p}</p>
+              ))}
+            </div>
+          </div>
         </div>
       </section>
 
       <section id="contact">
         <div className="wrap">
-          <h2>Let's work together</h2>
-          <p className="muted">
-            Tell me about your brand and what you need. I'll reply with how I can help.
-          </p>
-          <a className="mail" href={`mailto:${profile.email}`}>
-            {profile.email}
-          </a>
-          <p style={{ marginTop: '1.5rem' }}>
-            <a href={profile.github} target="_blank" rel="noopener noreferrer">
-              github.com/athensofgreece
+          <div className="contact-card">
+            <p className="eyebrow">Contact</p>
+            <h2>Let's work together</h2>
+            <p className="muted">
+              Tell me about your brand and what you need. I'll reply with how I can help.
+            </p>
+            <a className="mail" href={`mailto:${profile.email}`}>
+              {profile.email}
             </a>
-          </p>
+            <p className="contact-links">
+              <a href={profile.github} target="_blank" rel="noopener noreferrer">
+                github.com/athensofgreece
+              </a>
+            </p>
+          </div>
         </div>
       </section>
 

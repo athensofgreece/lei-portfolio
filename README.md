@@ -16,6 +16,14 @@ Your content can live in a Google Sheet, so you update the site by editing rows.
 - Add a project: add a row. Remove one: delete the row, or type `no` in its `show` column.
 - Lists in a single cell use a pipe: `Form response | Airtable row | Email alert`
 - Images: put the file in `public/images/` and write `images/name.jpg` in the sheet, or use a full https link.
+- Showing your work (Creative Studio, `social_projects` tab):
+  - `image` can hold one or several files separated by `|`, e.g. `images/cover.jpg | images/post-1.jpg | videos/reel.mp4`. Pictures and videos (`.mp4` or `.webm`) can be mixed.
+    The first file is the tile cover. All of them appear in the panel that opens when a tile is clicked.
+  - `link` adds a "View the work" button, for a TikTok, Facebook, YouTube or Canva link.
+  - Keep pictures under about 300 KB (around 1200 px wide) and videos under about 15 MB (15 to 30 seconds, 720p, H.264 MP4).
+    For longer videos, upload them to YouTube (unlisted) or Facebook and paste the link in `link`.
+- Showing your work (Technology Lab, `auto_demos` tab): optional `tools` (comma separated, e.g. `Zapier, Airtable`) and `link` (demo video or write-up) columns.
+  Add the column header in the first row and fill it in. Rows without them still display normally.
 - Editing `src/data.js` still works. It is the fallback if the sheet can't be reached.
 
 ## 3. Run it on your computer
