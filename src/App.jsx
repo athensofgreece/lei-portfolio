@@ -72,6 +72,27 @@ const TOOL_ICONS_MAP = [
 
 const BASE = import.meta.env.BASE_URL
 
+// Roadmap steps: "Using" comes first, then "Learning"; any other level from the sheet follows in sheet order
+const ROAD_LABEL = { using: 'Using now', learning: 'Learning next' }
+const ROAD_ORDER = ['using', 'learning']
+const groupRoadmap = (items) => {
+  const groups = []
+  items.forEach((t) => {
+    const key = String(t.level || '').trim()
+    let g = groups.find((x) => x.key.toLowerCase() === key.toLowerCase())
+    if (!g) {
+      g = { key, items: [] }
+      groups.push(g)
+    }
+    g.items.push(t)
+  })
+  const rank = (k) => {
+    const i = ROAD_ORDER.indexOf(k.toLowerCase())
+    return i === -1 ? ROAD_ORDER.length : i
+  }
+  return groups.sort((a, b) => rank(a.key) - rank(b.key))
+}
+
 // Hero copy shared by both modes. Per-mode badge, headline, lede and stats still come from the sheet / data.js.
 const HERO_TEXT =
   'I explore ideas, create digital experiences, and build practical solutions through design and technology.'
@@ -564,28 +585,48 @@ function Portfolio({ content }) {
             <p className="eyebrow">{isSocial ? 'Tools' : 'Skills'}</p>
             <h2>{isSocial ? 'Tools I use' : 'My skills roadmap'}</h2>
           </div>
-          <div className="tools">
-            {isSocial
-              ? social.tools.map((t) => {
-                  const Icon = getToolIcon(t)
-                  return (
-                    <span key={t}>
-                      {Icon && <Icon className="tool-icon" aria-hidden="true" />}
-                      <span className="tool-label">{t}</span>
+          {isSocial ? (
+            <ul className="tool-grid">
+              {social.tools.map((t) => {
+                const Icon = getToolIcon(t)
+                return (
+                  <li className="tool-tile" key={t}>
+                    <span className="tool-badge" aria-hidden="true">
+                      {Icon ? <Icon /> : t.charAt(0)}
                     </span>
-                  )
-                })
-              : auto.roadmap.map((t) => {
-                  const Icon = getToolIcon(t.tool)
-                  return (
-                    <span key={t.tool} className={t.level === 'Using' ? 'using' : ''}>
-                      {Icon && <Icon className="tool-icon" aria-hidden="true" />}
-                      <span className="tool-label">{t.tool}</span>
-                      <em>{t.level}</em>
+                    <span className="tool-name">{t}</span>
+                  </li>
+                )
+              })}
+            </ul>
+          ) : (
+            <div className="road">
+              {groupRoadmap(auto.roadmap).map((g, i) => (
+                <div className={`road-col${g.key.toLowerCase() === 'using' ? '' : ' is-next'}`} key={g.key || 'skills'}>
+                  <div className="road-head">
+                    <span className="road-step">{String(i + 1).padStart(2, '0')}</span>
+                    <h3>{ROAD_LABEL[g.key.toLowerCase()] || g.key || 'Skills'}</h3>
+                    <span className="road-count" aria-label={`${g.items.length} skills`}>
+                      {g.items.length}
                     </span>
-                  )
-                })}
-          </div>
+                  </div>
+                  <ul className="road-list">
+                    {g.items.map((t) => {
+                      const Icon = getToolIcon(t.tool)
+                      return (
+                        <li className="road-item" key={t.tool}>
+                          <span className="road-icon" aria-hidden="true">
+                            {Icon ? <Icon /> : t.tool.charAt(0)}
+                          </span>
+                          <span>{t.tool}</span>
+                        </li>
+                      )
+                    })}
+                  </ul>
+                </div>
+              ))}
+            </div>
+          )}
         </div>
       </section>
 

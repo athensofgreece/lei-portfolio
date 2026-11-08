@@ -1108,54 +1108,146 @@ nav ul a:hover { color: var(--text); background-size: 100% 1.5px; }
    9. TOOLS CHIPS & INTERACTIONS & SERVICES
    ========================================================================= */
 
-.tools { display: flex; flex-wrap: wrap; gap: .6rem; }
+/* Studio: tool tiles */
+.tool-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+  gap: .9rem;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
 
-.tools span {
-  display: inline-flex;
+.tool-tile {
+  display: flex;
+  flex-direction: column;
   align-items: center;
-  gap: 8px;
+  gap: .85rem;
+  padding: 1.3rem .7rem 1.15rem;
   border: 1px solid var(--line);
-  border-radius: 999px;
-  padding: .45rem 1.05rem;
-  font-size: .95rem;
+  border-radius: 22px;
   background: var(--panel);
-  transition: transform .25s ease, border-color .25s ease, background-color .25s ease;
+  text-align: center;
   cursor: default;
+  transition: transform .25s ease, border-color .25s ease, box-shadow .25s ease;
 }
 
-:root[data-theme='dark'] .tools span { border-radius: 10px; font-size: .9rem; }
-
-.tools span:hover {
-  transform: translateY(-2px);
+.tool-tile:hover {
+  transform: translateY(-3px);
   border-color: var(--accent);
-  background: color-mix(in srgb, var(--accent) 7%, var(--panel));
+  box-shadow: 0 14px 28px color-mix(in srgb, var(--accent) 12%, transparent);
 }
 
-.tools span:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
-
-.tools .tool-icon {
-  width: 18px;
-  height: 18px;
-  flex-shrink: 0;
-  vertical-align: middle;
-  transition: transform .25s ease;
+.tool-badge {
+  display: grid;
+  place-items: center;
+  width: 54px;
+  height: 54px;
+  border-radius: 50%;
+  background: color-mix(in srgb, var(--accent) 10%, var(--panel));
+  color: var(--accent-text);
+  font: italic 400 1.5rem/1 var(--serif);
+  transition: background .25s ease, color .25s ease;
 }
 
-.tools span:hover .tool-icon { transform: scale(1.1); }
+.tool-badge svg { width: 24px; height: 24px; }
+.tool-tile:hover .tool-badge { background: var(--accent); color: var(--on-accent); }
+.tool-name { font-size: .92rem; font-weight: 500; line-height: 1.3; }
 
-.tools .tool-label { display: inline; padding: 0; border: none; border-radius: 0; background: transparent; }
-
-.tools em {
-  font-style: normal;
-  font-size: .72rem;
-  margin-left: .6rem;
-  color: var(--muted);
+/* Lab: skills roadmap, grouped by level */
+.road {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
 }
 
-:root[data-theme='dark'] .tools em { font-family: var(--mono); }
+.road-col { position: relative; min-width: 0; padding: 0 clamp(1.2rem, 3vw, 2rem); border-left: 1px dashed var(--line); }
+.road-col:first-child { padding-left: 0; border-left: 0; }
+.road-col:last-child { padding-right: 0; }
 
-.tools .using { border-color: color-mix(in srgb, var(--accent) 55%, var(--line)); background: color-mix(in srgb, var(--accent) 8%, var(--panel)); }
-.tools .using em { color: var(--accent-text); font-weight: 700; }
+/* an arrow sitting on the divider: first step leads to the next */
+.road-col + .road-col::before {
+  content: "\2192";
+  position: absolute;
+  top: .1rem;
+  left: -.85rem;
+  display: grid;
+  place-items: center;
+  width: 1.7rem;
+  height: 1.7rem;
+  border: 1px solid var(--line);
+  border-radius: 50%;
+  background: var(--bg);
+  color: var(--accent-text);
+  font-size: .85rem;
+}
+
+.road-head {
+  display: flex;
+  align-items: center;
+  gap: .8rem;
+  margin-bottom: 1rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid var(--line);
+}
+
+.road-col + .road-col .road-head { padding-left: .9rem; }
+.road-step { font: 500 .78rem var(--mono); color: var(--accent-text); }
+.road-head h3 { flex: 1; margin: 0; font-size: 1.25rem; letter-spacing: -.02em; }
+.road-count { padding: .1rem .6rem; border: 1px solid var(--line); border-radius: 999px; font: 500 .78rem var(--mono); color: var(--muted); }
+
+.road-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(190px, 1fr));
+  gap: .7rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.road-item {
+  display: flex;
+  align-items: center;
+  gap: .75rem;
+  min-width: 0;
+  padding: .65rem .85rem;
+  border: 1px solid color-mix(in srgb, var(--accent) 55%, var(--line));
+  border-radius: 12px;
+  background: color-mix(in srgb, var(--accent) 8%, var(--panel));
+  font-size: .92rem;
+  line-height: 1.3;
+  cursor: default;
+  transition: transform .2s ease, border-color .2s ease;
+}
+
+.road-item:hover { transform: translateY(-2px); border-color: var(--accent-2); }
+
+/* what is still in progress is drawn with a dashed outline and no fill */
+.road-col.is-next .road-item { border: 1px dashed color-mix(in srgb, var(--accent) 35%, var(--line)); background: var(--panel); }
+
+.road-icon {
+  display: grid;
+  place-items: center;
+  flex: none;
+  width: 32px;
+  height: 32px;
+  border: 1px solid var(--line);
+  border-radius: 9px;
+  background: var(--bg);
+  color: var(--accent-text);
+  font: 500 .85rem var(--mono);
+}
+
+.road-icon svg { width: 18px; height: 18px; }
+
+@media (max-width: 700px) {
+  .road { grid-template-columns: 1fr; }
+  .road-col,
+  .road-col:first-child,
+  .road-col:last-child { padding: 1.6rem 0 0; border-left: 0; border-top: 1px dashed var(--line); margin-top: 1.4rem; }
+  .road-col:first-child { padding-top: 0; border-top: 0; margin-top: 0; }
+  .road-col + .road-col::before { content: "\2193"; top: -.85rem; left: 0; }
+  .road-col + .road-col .road-head { padding-left: 0; }
+}
 
 /* About: heading left, story right */
 .about-grid {
@@ -1511,18 +1603,19 @@ footer {
   .playhead { 
     left: 45%; 
   } 
-  .tools > span, 
-  .tools > span .tool-icon,
-  .case,
+  .tool-tile,
+  .tool-badge,
+  .road-item,
+  .tile,
   .footer-social-links a,
   .nuda-gradient-aurora::before,
   body::before,
   body::after { 
     transition: none !important; 
   } 
-  .tools > span:hover, 
-  .tools > span:hover .tool-icon,
-  .case:hover { 
+  .tool-tile:hover,
+  .road-item:hover,
+  .tile:hover { 
     transform: none !important; 
   } 
 }
