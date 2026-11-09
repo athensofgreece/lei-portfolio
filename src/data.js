@@ -2,7 +2,7 @@
 // Images: put files in /public/images and write e.g. image: 'images/my-reel.jpg'
 
 export const profile = {
-  name: 'Athena Picones',
+  name: 'Lei Picones',
   email: 'athenapicones04@gmail.com',
   github: 'https://github.com/athensofgreece',
   location: 'Philippines',
@@ -12,7 +12,7 @@ export const profile = {
 export const social = {
   badge: 'Open for social media VA work',
   headline: 'Short-form video and social media, handled.',
-  lede: "I'm Athena, a social media and creative VA for travel, events, and tech brands. I edit your videos, run your posting, and design your graphics.",
+  lede: 'I help travel, event, and tech brands scale their presence with high-converting short-form video editing, content strategy, and creative social media management.',
   stats: [
     { n: '22,000+', l: 'views on one video edit' },
     { n: '10+', l: 'travel promo videos edited' },
@@ -20,8 +20,9 @@ export const social = {
   ],
   services: [
     { title: 'Short-form video editing', text: 'Reels, TikToks, and Facebook videos cut in CapCut Pro, with hooks, captions, music, and pacing built for the scroll.' },
-    { title: 'Social media management', text: 'Content planning, posting, and TikTok Live setup, so your accounts stay active and on brand.' },
-    { title: 'Graphic design', text: 'Covers, logos, posters, and post templates made in Canva and Figma, following your brand guidelines.' },
+    { title: 'Social Media Management', text: 'Content planning, posting, and TikTok Live setup, so your accounts stay active and on brand.' },
+    { title: 'Graphic Design', text: 'Covers, logos, posters, and post templates made in Canva and Figma, following your brand guidelines.' },
+    { title: 'Social Media Reporting', text: 'Track content performance, review engagement, and identify opportunities to improve future posts.' },
   ],
   projects: [
     {
@@ -63,7 +64,7 @@ export const social = {
   ],
   tools: ['CapCut Pro', 'Canva', 'Figma', 'TikTok Live', 'Facebook', 'Google Workspace', 'Microsoft Office'],
   about: [
-    "I'm Athena, a Computer Science graduate (cum laude) from the Polytechnic University of the Philippines, based in Rizal.",
+    "I'm Lei, a Computer Science graduate (Cum Laude) from the Polytechnic University of the Philippines, based in Rizal.",
     'Alongside content work, I led logistics for a 500+ attendee AWS conference with a team of 8, so I stay calm under deadlines and keep details organized.',
   ],
 }
@@ -80,9 +81,9 @@ export const auto = {
   ],
   services: [
     { title: 'Website building and upkeep', status: 'Available', text: 'Responsive sites in HTML, CSS, JavaScript, and React, from Figma wireframes to live deployment, plus ongoing updates.' },
-    { title: 'Workflow automation', status: 'In training', text: 'Zapier and Make scenarios that connect forms, email, and spreadsheets so repetitive tasks stop eating your day.' },
-    { title: 'Airtable and Notion systems', status: 'In training', text: 'Trackers, client dashboards, and content calendars set up so your info lives in one tidy place.' },
-    { title: 'Sheets and Apps Script', status: 'In training', text: 'Spreadsheet automations and small scripts that clean, sort, and move data for you.' },
+    { title: 'Workflow automation', status: 'Demo in Progress', text: 'Zapier and Make scenarios that connect forms, email, and spreadsheets so repetitive tasks stop eating your day.' },
+    { title: 'Airtable and Notion systems', status: 'Demo in Progress', text: 'Trackers, client dashboards, and content calendars set up so your info lives in one tidy place.' },
+    { title: 'Sheets and Apps Script', status: 'Demo in Progress', text: 'Spreadsheet automations and small scripts that clean, sort, and move data for you.' },
   ],
   webProjects: [
     { title: 'NHFC company website', status: 'Live', stack: 'Figma, React', text: 'Led UI/UX design and front-end development from wireframes to deployment, presenting to IT, HR, and Sales stakeholders for feedback.', link: '' },
@@ -93,16 +94,16 @@ export const auto = {
   // These are DEMO builds I'm working on. They are not client work.
   demos: [
     { title: 'This portfolio runs on Google Sheets', status: 'Live', steps: ['Edit a Google Sheet', 'Site fetches it', 'Page updates'], text: 'Every project and line of text on this site comes from a spreadsheet, so updates need no code. A working automation, built by me.' },
-    { title: 'Lead capture to tracker', status: 'Demo in progress', steps: ['Form response', 'Airtable row', 'Email alert'], text: 'A new form submission lands in a tracker and pings you automatically.' },
-    { title: 'Content calendar reminders', status: 'Demo in progress', steps: ['Google Sheet', 'Due date check', 'Notion task'], text: 'Posts due today become tasks, tying my social media work to automation.' },
+    { title: 'Lead capture to tracker', status: 'Proof of Concept', steps: ['Form response', 'Airtable row', 'Email alert'], text: 'A new form submission lands in a tracker and pings you automatically.' },
+    { title: 'Content calendar reminders', status: 'Proof of Concept', steps: ['Google Sheet', 'Due date check', 'Notion task'], text: 'Posts due today become tasks, tying my social media work to automation.' },
     { title: 'Client onboarding flow', status: 'Planned', steps: ['New client form', 'Notion workspace', 'Welcome email'], text: 'One form sets up a client folder and sends a welcome message.' },
   ],
   roadmap: [
     { tool: 'Zapier', level: 'Learning' },
     { tool: 'Make', level: 'Learning' },
     { tool: 'Airtable', level: 'Learning' },
-    { tool: 'Notion', level: 'Learning' },
-    { tool: 'Google Sheets and Apps Script', level: 'Learning' },
+    { tool: 'Notion', level: 'Using' },
+    { tool: 'Google Sheets and Apps Script', level: 'Using' },
     { tool: 'React and JavaScript', level: 'Using' },
     { tool: 'HTML and CSS', level: 'Using' },
     { tool: 'Figma', level: 'Using' },

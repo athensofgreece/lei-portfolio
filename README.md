@@ -1,4 +1,4 @@
-# Athena Picones Portfolio (React + Vite + Google Sheets)
+# Lei Picones Portfolio (React + Vite + Google Sheets)
 
 Light mode = social media management. Dark mode = automation and web development.
 Your content can live in a Google Sheet, so you update the site by editing rows.

@@ -711,7 +711,7 @@ function Portfolio({ content }) {
           </div>
 
           <div className="footer-bottom">
-            <span>© 2026 Athena Madaleine Picones</span>
+            <span>© {new Date().getFullYear()} {profile.name}</span>
             <span>Built with React &amp; Google Sheets</span>
           </div>
         </div>
