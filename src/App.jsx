@@ -241,6 +241,95 @@ function CaseDialog({ p, onClose }) {
   )
 }
 
+// Portrait photos: drop public/images/about-studio.jpg (Studio) and about-lab.jpg (Lab).
+// .png and .webp also work. The first file found is used; until then a monogram placeholder shows.
+const portraitProbe = {}
+const probePortrait = (mode) => {
+  if (!portraitProbe[mode]) {
+    const base = `${BASE}images/about-${mode === 'light' ? 'studio' : 'lab'}`
+    portraitProbe[mode] = (async () => {
+      for (const ext of ['jpg', 'png', 'webp']) {
+        const src = `${base}.${ext}`
+        const ok = await new Promise((resolve) => {
+          const im = new Image()
+          im.onload = () => resolve(true)
+          im.onerror = () => resolve(false)
+          im.src = src
+        })
+        if (ok) return src
+      }
+      return null
+    })()
+  }
+  return portraitProbe[mode]
+}
+
+function usePortrait(mode) {
+  const [src, setSrc] = useState(null)
+  useEffect(() => {
+    let live = true
+    setSrc(null)
+    probePortrait(mode).then((s) => {
+      if (live) setSrc(s)
+    })
+    return () => {
+      live = false
+    }
+  }, [mode])
+  return src
+}
+
+function Portrait({ mode, name, initials, small }) {
+  const src = usePortrait(mode)
+  return (
+    <div className={`portrait${small ? ' is-small' : ''}`}>
+      <span className="portrait-mark" aria-hidden="true">
+        {initials}
+      </span>
+      {src && <img className="portrait-img" src={src} alt={small ? '' : `Portrait of ${name}`} />}
+    </div>
+  )
+}
+
+function CopyButton({ text }) {
+  const [state, setState] = useState('idle') // idle | done | failed
+  const flash = (next) => {
+    setState(next)
+    setTimeout(() => setState('idle'), 1800)
+  }
+  // Modern clipboard API first; an old-style fallback if the browser blocks it
+  const legacyCopy = () => {
+    const ta = document.createElement('textarea')
+    ta.value = text
+    ta.setAttribute('readonly', '')
+    ta.style.position = 'fixed'
+    ta.style.opacity = '0'
+    document.body.appendChild(ta)
+    ta.select()
+    let ok = false
+    try {
+      ok = document.execCommand('copy')
+    } catch {
+      ok = false
+    }
+    document.body.removeChild(ta)
+    return ok
+  }
+  const copy = async () => {
+    try {
+      await navigator.clipboard.writeText(text)
+      flash('done')
+    } catch {
+      flash(legacyCopy() ? 'done' : 'failed')
+    }
+  }
+  return (
+    <button type="button" className={`copy-btn${state === 'done' ? ' is-done' : ''}`} onClick={copy} aria-live="polite">
+      {state === 'done' ? 'Copied' : state === 'failed' ? 'Copy failed' : 'Copy'}
+    </button>
+  )
+}
+
 function Portfolio({ content }) {
   const { profile, social, auto } = content
   const [mode, setMode] = useState(initialMode)
@@ -633,14 +722,25 @@ function Portfolio({ content }) {
       <section id="about">
         <div className="wrap">
           <div className="about-grid">
-            <div className="sec-head">
-              <p className="eyebrow">About</p>
-              <h2>About me</h2>
-            </div>
-            <div className="about-body">
-              {d.about.map((p) => (
-                <p key={p}>{p}</p>
-              ))}
+            <figure className="about-figure">
+              <div className="portrait-wrap">
+                <Portrait mode={mode} name={profile.name} initials={initials} />
+              </div>
+              {profile.location && <figcaption>{profile.location}</figcaption>}
+            </figure>
+            <div className="about-copy">
+              <div className="sec-head">
+                <p className="eyebrow">About</p>
+                <h2>About me</h2>
+              </div>
+              <div className="about-body">
+                {d.about.map((p) => (
+                  <p key={p}>{p}</p>
+                ))}
+              </div>
+              <a className="about-link" href="#contact">
+                Let's talk <span aria-hidden="true">→</span>
+              </a>
             </div>
           </div>
         </div>
@@ -649,19 +749,42 @@ function Portfolio({ content }) {
       <section id="contact">
         <div className="wrap">
           <div className="contact-card">
-            <p className="eyebrow">Contact</p>
-            <h2>Let's work together</h2>
+            <div className="contact-top">
+              <p className="eyebrow">Contact</p>
+              <div className="contact-who">
+                <Portrait mode={mode} name={profile.name} initials={initials} small />
+                <div className="contact-id">
+                  <b>{profile.name}</b>
+                  <span>{d.badge}</span>
+                </div>
+              </div>
+            </div>
+            <h2>
+              Let's work <span className="accent-word">together</span>
+            </h2>
             <p className="muted">
               Tell me about your brand and what you need. I'll reply with how I can help.
             </p>
-            <a className="mail" href={`mailto:${profile.email}`}>
-              {profile.email}
-            </a>
-            <p className="contact-links">
-              <a href={profile.github} target="_blank" rel="noopener noreferrer">
-                github.com/athensofgreece
-              </a>
-            </p>
+            <ul className="contact-list">
+              <li>
+                <span className="cl-label">Email</span>
+                <a className="mail" href={`mailto:${profile.email}`}>
+                  {profile.email}
+                </a>
+                <CopyButton text={profile.email} />
+              </li>
+              {profile.github && (
+                <li>
+                  <span className="cl-label">GitHub</span>
+                  <a className="cl-link" href={profile.github} target="_blank" rel="noopener noreferrer">
+                    {profile.github.replace(/^https?:\/\//, '')}
+                  </a>
+                  <span className="cl-go" aria-hidden="true">
+                    ↗
+                  </span>
+                </li>
+              )}
+            </ul>
           </div>
         </div>
       </section>
