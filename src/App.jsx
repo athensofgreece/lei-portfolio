@@ -815,7 +815,7 @@ function Portfolio({ content }) {
                 <FaInstagram size={20} />
               </a>
               <a
-                href="https://www.linkedin.com/"
+                href="https://www.linkedin.com/in/athena-picones-7554aa286/"
                 aria-label="LinkedIn"
                 target="_blank"
                 rel="noreferrer"
