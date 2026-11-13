@@ -1,0 +1,375 @@
+diff --git a/.github/dependabot.yml b/.github/dependabot.yml
+new file mode 100644
+index 0000000..47a36a9
+--- /dev/null
++++ b/.github/dependabot.yml
+@@ -0,0 +1,13 @@
++# Weekly checks for outdated packages and GitHub Actions. Dependabot only opens pull requests;
++# nothing changes on your site until you review and merge one.
++version: 2
++updates:
++  - package-ecosystem: "npm"
++    directory: "/"
++    schedule:
++      interval: "weekly"
++    open-pull-requests-limit: 5
++  - package-ecosystem: "github-actions"
++    directory: "/"
++    schedule:
++      interval: "weekly"
+diff --git a/README.md b/README.md
+index 683fcab..24fde20 100644
+--- a/README.md
++++ b/README.md
+@@ -44,3 +44,30 @@ Install Node.js (LTS), then: `npm install` and `npm run dev`
+ - Replace the bracketed note in the first social project with real numbers.
+ - Keep automation demos labeled as demos until you have client results.
+ - Check images for client names or logos.
++
++## Analytics (GoatCounter, optional)
++
++Visitor stats are switched off until you add a site code.
++
++1. Create a free account at https://www.goatcounter.com and choose a site code (for example `lei`). Your dashboard will then be `https://lei.goatcounter.com`.
++2. Open `src/analytics.config.js` and put the code between the quotes: `export const GOATCOUNTER_CODE = 'lei'`.
++3. Commit and push. A small "Privacy-friendly stats, no cookies" note then appears in the footer.
++
++You will see visits, where visitors came from, countries and devices. The site also reports a few named clicks as events: the hero buttons
++("cta: work with me", "cta: see work"), the Studio / Lab switch ("mode: creative studio", "mode: technology lab"), opening a project
++("project: ..."), project, demo and website links, and the email, copy-email and GitHub links.
++No cookies are used. Visitors who send Do Not Track or Global Privacy Control are not counted, and ad blockers hide some visits, so treat the numbers as a minimum.
++To turn it off, empty the code again.
++
++## Security notes
++
++- **Content-security policy.** `index.html` tells browsers which sites this page may load from: itself, Google Sheets (your content), Google Fonts and GoatCounter.
++  If you ever add a new outside service (an embed, another analytics tool, a font host), add its address to that policy or the browser will block it.
++  If something stops loading, open the browser console (F12) and look for a message starting "Refused to ...". If your sheet ever stops updating after a change,
++  the `connect-src` part of that line is the place to check. Removing the whole `Content-Security-Policy` line switches the policy off.
++- **Links from the sheet.** Links typed into the sheet are only used if they are normal web addresses (`https://...` or `http://...`).
++  Anything else, such as `javascript:...`, is ignored, and the matching button or icon is simply not shown.
++- **Updates.** `.github/dependabot.yml` makes GitHub open a pull request each week when a package or workflow action is out of date.
++  Nothing changes on your site until you review and merge one.
++- **Accounts and the sheet.** Turn on two-factor authentication for GitHub and for the Google account that owns the sheet. Share the sheet as
++  "Anyone with the link: Viewer", never Editor, and keep private details out of every tab. Remove location data from photos before adding them to `public/images`.
+diff --git a/index.html b/index.html
+index 6917e13..ac5a66d 100644
+--- a/index.html
++++ b/index.html
+@@ -3,6 +3,9 @@
+   <head>
+     <meta charset="UTF-8" />
+     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
++    <!-- Security: only load what this site needs. Google Sheets (content), Google Fonts and GoatCounter (optional stats) are allowed. -->
++    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' https://gc.zgo.at; style-src 'self' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data: https:; media-src 'self' https:; connect-src 'self' https://docs.google.com https://*.googleusercontent.com https://*.goatcounter.com; object-src 'none'; base-uri 'self'; form-action 'self'" />
++    <meta name="referrer" content="strict-origin-when-cross-origin" />
+     <title>Lei Picones | Creative Technologist</title>
+     <meta name="description" content="Lei Picones is a Creative Technologist who brings together social media, design, web development, and workflow automation." />
+     <meta name="theme-color" content="#FFF6F7" />
+diff --git a/src/App.jsx b/src/App.jsx
+index 2759096..dcf9cd3 100644
+--- a/src/App.jsx
++++ b/src/App.jsx
+@@ -1,4 +1,6 @@
+ import { useState, useLayoutEffect, useEffect, useCallback, useRef } from 'react'
++import { safeHref, safeMailto } from './safe.js'
++import { analyticsOn } from './analytics.js'
+ import { flushSync } from 'react-dom'
+ import { profile as pf, social as sc, auto as au } from './data.js'
+ import { SHEET_ID } from './sheet.config.js'
+@@ -150,7 +152,13 @@ function CaseTile({ p, onOpen }) {
+       </span>
+       <p className="t-client">{p.client}</p>
+       <h3>
+-        <button type="button" className="tile-open" aria-haspopup="dialog" onClick={() => onOpen(p)}>
++        <button
++          type="button"
++          className="tile-open"
++          aria-haspopup="dialog"
++          data-track={`project: ${p.title}`}
++          onClick={() => onOpen(p)}
++        >
+           {p.title}
+         </button>
+       </h3>
+@@ -230,8 +238,8 @@ function CaseDialog({ p, onClose }) {
+               ))}
+             </ul>
+           )}
+-          {p.link && (
+-            <a className="btn primary" href={p.link} target="_blank" rel="noopener noreferrer">
++          {safeHref(p.link) && (
++            <a data-track={`project link: ${p.title}`} className="btn primary" href={safeHref(p.link)} target="_blank" rel="noopener noreferrer">
+               View the work
+             </a>
+           )}
+@@ -291,7 +299,7 @@ function Portrait({ mode, name, initials, small }) {
+   )
+ }
+ 
+-function CopyButton({ text }) {
++function CopyButton({ text, track }) {
+   const [state, setState] = useState('idle') // idle | done | failed
+   const flash = (next) => {
+     setState(next)
+@@ -324,7 +332,7 @@ function CopyButton({ text }) {
+     }
+   }
+   return (
+-    <button type="button" className={`copy-btn${state === 'done' ? ' is-done' : ''}`} onClick={copy} aria-live="polite">
++    <button type="button" className={`copy-btn${state === 'done' ? ' is-done' : ''}`} data-track={track} onClick={copy} aria-live="polite">
+       {state === 'done' ? 'Copied' : state === 'failed' ? 'Copy failed' : 'Copy'}
+     </button>
+   )
+@@ -409,6 +417,7 @@ function Portfolio({ content }) {
+                 className="mode-btn"
+                 type="button"
+                 aria-pressed={isSocial}
++                data-track="mode: creative studio"
+                 onClick={(e) => switchMode('light', e)}
+               >
+                 <Palette size={15} aria-hidden="true" />
+@@ -419,6 +428,7 @@ function Portfolio({ content }) {
+                 className="mode-btn"
+                 type="button"
+                 aria-pressed={!isSocial}
++                data-track="mode: technology lab"
+                 onClick={(e) => switchMode('dark', e)}
+               >
+                 <Code2 size={15} aria-hidden="true" />
+@@ -476,10 +486,10 @@ function Portfolio({ content }) {
+               </h1>
+               <p className="lede">{HERO_TEXT}</p>
+               <div className="btns">
+-                <a className="btn primary" href="#contact">
++                <a className="btn primary" href="#contact" data-track="cta: work with me">
+                   Work with me <ArrowRight size={16} aria-hidden="true" />
+                 </a>
+-                <a className="btn" href="#work">
++                <a className="btn" href="#work" data-track="cta: see work">
+                   {isSocial ? 'See my work' : 'See my projects'}
+                 </a>
+               </div>
+@@ -567,10 +577,10 @@ function Portfolio({ content }) {
+                     <h3>{p.title}</h3>
+                     <p>{p.text}</p>
+                     <p className="stack">{p.stack}</p>
+-                    {p.link && (
+-                      <a
++                    {safeHref(p.link) && (
++                      <a data-track={`site: ${p.title}`}
+                         className="btn"
+-                        href={p.link}
++                        href={safeHref(p.link)}
+                         target="_blank"
+                         rel="noopener noreferrer"
+                       >
+@@ -605,9 +615,9 @@ function Portfolio({ content }) {
+                         ))}
+                       </ul>
+                     )}
+-                    {p.link && (
++                    {safeHref(p.link) && (
+                       <div className="lab-actions">
+-                        <a className="btn primary" href={p.link} target="_blank" rel="noopener noreferrer">
++                        <a data-track={`demo: ${p.title}`} className="btn primary" href={safeHref(p.link)} target="_blank" rel="noopener noreferrer">
+                           View demo
+                         </a>
+                       </div>
+@@ -643,7 +653,7 @@ function Portfolio({ content }) {
+                         ))}
+                       </div>
+                       <p>{p.text}</p>
+-                      {(splitList(p.tools).length > 0 || p.link) && (
++                      {(splitList(p.tools).length > 0 || safeHref(p.link)) && (
+                         <div className="lab-foot">
+                           {splitList(p.tools).length > 0 && (
+                             <ul className="dtools">
+@@ -652,8 +662,8 @@ function Portfolio({ content }) {
+                               ))}
+                             </ul>
+                           )}
+-                          {p.link && (
+-                            <a className="lab-link" href={p.link} target="_blank" rel="noopener noreferrer">
++                          {safeHref(p.link) && (
++                            <a data-track={`demo: ${p.title}`} className="lab-link" href={safeHref(p.link)} target="_blank" rel="noopener noreferrer">
+                               View demo →
+                             </a>
+                           )}
+@@ -768,16 +778,16 @@ function Portfolio({ content }) {
+             <ul className="contact-list">
+               <li>
+                 <span className="cl-label">Email</span>
+-                <a className="mail" href={`mailto:${profile.email}`}>
++                <a className="mail" href={safeMailto(profile.email)} data-track="contact: email">
+                   {profile.email}
+                 </a>
+-                <CopyButton text={profile.email} />
++                <CopyButton text={profile.email} track="contact: copy email" />
+               </li>
+-              {profile.github && (
++              {safeHref(profile.github) && (
+                 <li>
+                   <span className="cl-label">GitHub</span>
+-                  <a className="cl-link" href={profile.github} target="_blank" rel="noopener noreferrer">
+-                    {profile.github.replace(/^https?:\/\//, '')}
++                  <a className="cl-link" data-track="contact: github" href={safeHref(profile.github)} target="_blank" rel="noopener noreferrer">
++                    {safeHref(profile.github).replace(/^https?:\/\//, '')}
+                   </a>
+                   <span className="cl-go" aria-hidden="true">
+                     ↗
+@@ -795,46 +805,55 @@ function Portfolio({ content }) {
+             <h3>Let's Connect</h3>
+             <p>Have a project in mind? Let's create something useful together!</p>
+             <div className="footer-social-links">
+-              <a href={`mailto:${profile.email}`} aria-label="Email">
+-                <FaEnvelope size={20} />
+-              </a>
++              {safeMailto(profile.email) && (
++                <a href={safeMailto(profile.email)} aria-label="Email" data-track="footer: email">
++                  <FaEnvelope size={20} />
++                </a>
++              )}
+               <a
+                 href="https://www.facebook.com/atheeeens"
+                 aria-label="Facebook"
++                data-track="footer: facebook"
+                 target="_blank"
+-                rel="noreferrer"
++                rel="noopener noreferrer"
+               >
+                 <FaFacebookF size={20} />
+               </a>
+               <a
+                 href="https://www.instagram.com/athenelytical/"
+                 aria-label="Instagram"
++                data-track="footer: instagram"
+                 target="_blank"
+-                rel="noreferrer"
++                rel="noopener noreferrer"
+               >
+                 <FaInstagram size={20} />
+               </a>
+               <a
+                 href="https://www.linkedin.com/"
+                 aria-label="LinkedIn"
++                data-track="footer: linkedin"
+                 target="_blank"
+-                rel="noreferrer"
++                rel="noopener noreferrer"
+               >
+                 <FaLinkedinIn size={20} />
+               </a>
+-              <a
+-                href={profile.github}
+-                aria-label="GitHub"
+-                target="_blank"
+-                rel="noreferrer"
+-              >
+-                <FaGithub size={20} />
+-              </a>
++              {safeHref(profile.github) && (
++                <a
++                  href={safeHref(profile.github)}
++                  aria-label="GitHub"
++                  data-track="footer: github"
++                  target="_blank"
++                  rel="noopener noreferrer"
++                >
++                  <FaGithub size={20} />
++                </a>
++              )}
+             </div>
+           </div>
+ 
+           <div className="footer-bottom">
+             <span>© {new Date().getFullYear()} {profile.name}</span>
++            {analyticsOn && <span>Privacy-friendly stats, no cookies</span>}
+             <span>Built with React &amp; Google Sheets</span>
+           </div>
+         </div>
+diff --git a/src/analytics.config.js b/src/analytics.config.js
+new file mode 100644
+index 0000000..fe07b3d
+--- /dev/null
++++ b/src/analytics.config.js
+@@ -0,0 +1,5 @@
++// Privacy-friendly visitor stats with GoatCounter (no cookies, no personal data).
++// 1. Create a free account at https://www.goatcounter.com
++// 2. Put your site code between the quotes. If your dashboard is https://lei.goatcounter.com, the code is lei
++// Leave it empty to keep analytics switched off.
++export const GOATCOUNTER_CODE = ''
+diff --git a/src/analytics.js b/src/analytics.js
+new file mode 100644
+index 0000000..8922c23
+--- /dev/null
++++ b/src/analytics.js
+@@ -0,0 +1,31 @@
++import { GOATCOUNTER_CODE } from './analytics.config.js'
++
++const code = String(GOATCOUNTER_CODE || '').trim()
++export const analyticsOn = /^[a-z0-9-]{2,}$/i.test(code)
++
++// Send one named event (for example "cta: work with me"). Never throws, and does nothing if analytics is off.
++export function track(name) {
++  try {
++    const gc = window.goatcounter
++    if (gc && typeof gc.count === 'function') gc.count({ path: name, title: name, event: true })
++  } catch {
++    /* analytics must never break the page */
++  }
++}
++
++export function initAnalytics() {
++  if (!analyticsOn) return
++  // Respect visitors who ask not to be tracked (Do Not Track or Global Privacy Control)
++  if (navigator.doNotTrack === '1' || window.doNotTrack === '1' || navigator.globalPrivacyControl) return
++  if (document.querySelector('script[data-goatcounter]')) return
++  const s = document.createElement('script')
++  s.async = true
++  s.src = 'https://gc.zgo.at/count.js'
++  s.dataset.goatcounter = `https://${code}.goatcounter.com/count`
++  document.head.appendChild(s)
++  // Any element with a data-track="name" attribute reports a click as an event
++  document.addEventListener('click', (e) => {
++    const el = e.target instanceof Element ? e.target.closest('[data-track]') : null
++    if (el) track(el.dataset.track)
++  })
++}
+diff --git a/src/main.jsx b/src/main.jsx
+index 37206ef..33187dc 100644
+--- a/src/main.jsx
++++ b/src/main.jsx
+@@ -1,5 +1,7 @@
+ import { createRoot } from 'react-dom/client'
+ import App from './App.jsx'
++import { initAnalytics } from './analytics.js'
+ import './styles.css'
+ 
++initAnalytics()
+ createRoot(document.getElementById('root')).render(<App />)
+diff --git a/src/safe.js b/src/safe.js
+new file mode 100644
+index 0000000..301ffc4
+--- /dev/null
++++ b/src/safe.js
+@@ -0,0 +1,19 @@
++// Anything typed into the Google Sheet is untrusted text. Links from it may only be web addresses
++// (http or https), and email addresses must look like real emails. Anything else, such as
++// "javascript:..." or "data:...", is dropped so it can never run when someone clicks it.
++
++export const safeHref = (value) => {
++  const v = String(value ?? '').trim()
++  if (!v) return ''
++  try {
++    const u = new URL(v, window.location.href)
++    return u.protocol === 'http:' || u.protocol === 'https:' ? v : ''
++  } catch {
++    return ''
++  }
++}
++
++export const safeMailto = (email) => {
++  const e = String(email ?? '').trim()
++  return /^[^\s@<>"'`]+@[^\s@<>"'`]+\.[^\s@<>"'`]+$/.test(e) ? `mailto:${e}` : undefined
++}
