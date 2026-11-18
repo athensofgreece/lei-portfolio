@@ -1,4 +1,6 @@
 import { useState, useLayoutEffect, useEffect, useCallback, useRef } from 'react'
+import { safeHref, safeMailto } from './safe.js'
+import { analyticsOn } from './analytics.js'
 import { flushSync } from 'react-dom'
 import { profile as pf, social as sc, auto as au } from './data.js'
 import { SHEET_ID } from './sheet.config.js'
@@ -112,10 +114,14 @@ const mediaItems = (value) =>
     .split('|')
     .map((x) => x.trim())
     .filter(Boolean)
-    .map((src) => ({
-      src: /^https?:/.test(src) ? src : BASE + src,
-      video: /\.(mp4|webm|mov)(\?.*)?$/i.test(src),
-    }))
+    .map((raw) => {
+      // the site serves the public/ folder from its root, so a leading "public/" is dropped
+      const src = /^https?:/.test(raw) ? raw : raw.replace(/^\.?\/?public\//i, '')
+      return {
+        src: /^https?:/.test(src) ? src : BASE + src,
+        video: /\.(mp4|webm|mov)(\?.*)?$/i.test(src),
+      }
+    })
 
 const splitList = (value) =>
   String(value || '')
@@ -124,7 +130,11 @@ const splitList = (value) =>
     .filter(Boolean)
 
 function CaseTile({ p, onOpen }) {
-  const cover = mediaItems(p.image)[0]
+  // "cover" is an optional sheet column. If the column exists it alone decides what shows behind the tile
+  // (leave a cell empty for a plain colour tile). Without the column, the first "image" is used.
+  const cover = mediaItems(p.cover !== undefined ? p.cover : p.image)[0]
+  const [badSrc, setBadSrc] = useState(null)
+  const showCover = cover && cover.src !== badSrc
   const tools = splitList(p.tools)
   const play = (e) => {
     const v = e.currentTarget.querySelector('video')
@@ -138,19 +148,34 @@ function CaseTile({ p, onOpen }) {
     }
   }
   return (
-    <article className={`tile${cover ? ' has-media' : ''}`} onMouseEnter={play} onMouseLeave={stop}>
-      {cover &&
+    <article className={`tile${showCover ? ' has-media' : ''}`} onMouseEnter={play} onMouseLeave={stop}>
+      {showCover &&
         (cover.video ? (
-          <video className="tile-media" src={cover.src} muted loop playsInline preload="metadata" aria-hidden="true" />
+          <video
+            className="tile-media"
+            src={cover.src}
+            muted
+            loop
+            playsInline
+            preload="metadata"
+            aria-hidden="true"
+            onError={() => setBadSrc(cover.src)}
+          />
         ) : (
-          <img className="tile-media" src={cover.src} alt="" loading="lazy" />
+          <img className="tile-media" src={cover.src} alt="" loading="lazy" onError={() => setBadSrc(cover.src)} />
         ))}
       <span className="tile-go" aria-hidden="true">
         →
       </span>
       <p className="t-client">{p.client}</p>
       <h3>
-        <button type="button" className="tile-open" aria-haspopup="dialog" onClick={() => onOpen(p)}>
+        <button
+          type="button"
+          className="tile-open"
+          aria-haspopup="dialog"
+          data-track={`project: ${p.title}`}
+          onClick={() => onOpen(p)}
+        >
           {p.title}
         </button>
       </h3>
@@ -168,6 +193,8 @@ function CaseTile({ p, onOpen }) {
 
 function CaseDialog({ p, onClose }) {
   const ref = useRef(null)
+  const [badSrcs, setBadSrcs] = useState([])
+  const markBad = (src) => setBadSrcs((b) => (b.includes(src) ? b : [...b, src]))
   useEffect(() => {
     const d = ref.current
     if (p && d && !d.open) d.showModal()
@@ -182,7 +209,7 @@ function CaseDialog({ p, onClose }) {
     if (ref.current?.open) ref.current.close()
     onClose()
   }
-  const items = mediaItems(p.image)
+  const items = mediaItems(p.image).filter((m) => !badSrcs.includes(m.src))
   const tools = splitList(p.tools)
   return (
     <dialog
@@ -204,9 +231,15 @@ function CaseDialog({ p, onClose }) {
           <div className={`dlg-media${items.length > 1 ? ' multi' : ''}`}>
             {items.map((m, i) =>
               m.video ? (
-                <video key={m.src} src={m.src} controls playsInline preload="metadata" />
+                <video key={m.src} src={m.src} controls playsInline preload="metadata" onError={() => markBad(m.src)} />
               ) : (
-                <img key={m.src} src={m.src} alt={`${p.title} (${i + 1} of ${items.length})`} loading="lazy" />
+                <img
+                  key={m.src}
+                  src={m.src}
+                  alt={`${p.title} (${i + 1} of ${items.length})`}
+                  loading="lazy"
+                  onError={() => markBad(m.src)}
+                />
               ),
             )}
           </div>
@@ -230,8 +263,8 @@ function CaseDialog({ p, onClose }) {
               ))}
             </ul>
           )}
-          {p.link && (
-            <a className="btn primary" href={p.link} target="_blank" rel="noopener noreferrer">
+          {safeHref(p.link) && (
+            <a data-track={`project link: ${p.title}`} className="btn primary" href={safeHref(p.link)} target="_blank" rel="noopener noreferrer">
               View the work
             </a>
           )}
@@ -291,7 +324,7 @@ function Portrait({ mode, name, initials, small }) {
   )
 }
 
-function CopyButton({ text }) {
+function CopyButton({ text, track }) {
   const [state, setState] = useState('idle') // idle | done | failed
   const flash = (next) => {
     setState(next)
@@ -324,7 +357,7 @@ function CopyButton({ text }) {
     }
   }
   return (
-    <button type="button" className={`copy-btn${state === 'done' ? ' is-done' : ''}`} onClick={copy} aria-live="polite">
+    <button type="button" className={`copy-btn${state === 'done' ? ' is-done' : ''}`} data-track={track} onClick={copy} aria-live="polite">
       {state === 'done' ? 'Copied' : state === 'failed' ? 'Copy failed' : 'Copy'}
     </button>
   )
@@ -409,6 +442,7 @@ function Portfolio({ content }) {
                 className="mode-btn"
                 type="button"
                 aria-pressed={isSocial}
+                data-track="mode: creative studio"
                 onClick={(e) => switchMode('light', e)}
               >
                 <Palette size={15} aria-hidden="true" />
@@ -419,6 +453,7 @@ function Portfolio({ content }) {
                 className="mode-btn"
                 type="button"
                 aria-pressed={!isSocial}
+                data-track="mode: technology lab"
                 onClick={(e) => switchMode('dark', e)}
               >
                 <Code2 size={15} aria-hidden="true" />
@@ -476,10 +511,10 @@ function Portfolio({ content }) {
               </h1>
               <p className="lede">{HERO_TEXT}</p>
               <div className="btns">
-                <a className="btn primary" href="#contact">
+                <a className="btn primary" href="#contact" data-track="cta: work with me">
                   Work with me <ArrowRight size={16} aria-hidden="true" />
                 </a>
-                <a className="btn" href="#work">
+                <a className="btn" href="#work" data-track="cta: see work">
                   {isSocial ? 'See my work' : 'See my projects'}
                 </a>
               </div>
@@ -567,10 +602,10 @@ function Portfolio({ content }) {
                     <h3>{p.title}</h3>
                     <p>{p.text}</p>
                     <p className="stack">{p.stack}</p>
-                    {p.link && (
-                      <a
+                    {safeHref(p.link) && (
+                      <a data-track={`site: ${p.title}`}
                         className="btn"
-                        href={p.link}
+                        href={safeHref(p.link)}
                         target="_blank"
                         rel="noopener noreferrer"
                       >
@@ -605,9 +640,9 @@ function Portfolio({ content }) {
                         ))}
                       </ul>
                     )}
-                    {p.link && (
+                    {safeHref(p.link) && (
                       <div className="lab-actions">
-                        <a className="btn primary" href={p.link} target="_blank" rel="noopener noreferrer">
+                        <a data-track={`demo: ${p.title}`} className="btn primary" href={safeHref(p.link)} target="_blank" rel="noopener noreferrer">
                           View demo
                         </a>
                       </div>
@@ -643,7 +678,7 @@ function Portfolio({ content }) {
                         ))}
                       </div>
                       <p>{p.text}</p>
-                      {(splitList(p.tools).length > 0 || p.link) && (
+                      {(splitList(p.tools).length > 0 || safeHref(p.link)) && (
                         <div className="lab-foot">
                           {splitList(p.tools).length > 0 && (
                             <ul className="dtools">
@@ -652,8 +687,8 @@ function Portfolio({ content }) {
                               ))}
                             </ul>
                           )}
-                          {p.link && (
-                            <a className="lab-link" href={p.link} target="_blank" rel="noopener noreferrer">
+                          {safeHref(p.link) && (
+                            <a data-track={`demo: ${p.title}`} className="lab-link" href={safeHref(p.link)} target="_blank" rel="noopener noreferrer">
                               View demo →
                             </a>
                           )}
@@ -768,16 +803,16 @@ function Portfolio({ content }) {
             <ul className="contact-list">
               <li>
                 <span className="cl-label">Email</span>
-                <a className="mail" href={`mailto:${profile.email}`}>
+                <a className="mail" href={safeMailto(profile.email)} data-track="contact: email">
                   {profile.email}
                 </a>
-                <CopyButton text={profile.email} />
+                <CopyButton text={profile.email} track="contact: copy email" />
               </li>
-              {profile.github && (
+              {safeHref(profile.github) && (
                 <li>
                   <span className="cl-label">GitHub</span>
-                  <a className="cl-link" href={profile.github} target="_blank" rel="noopener noreferrer">
-                    {profile.github.replace(/^https?:\/\//, '')}
+                  <a className="cl-link" data-track="contact: github" href={safeHref(profile.github)} target="_blank" rel="noopener noreferrer">
+                    {safeHref(profile.github).replace(/^https?:\/\//, '')}
                   </a>
                   <span className="cl-go" aria-hidden="true">
                     ↗
@@ -795,46 +830,55 @@ function Portfolio({ content }) {
             <h3>Let's Connect</h3>
             <p>Have a project in mind? Let's create something useful together!</p>
             <div className="footer-social-links">
-              <a href={`mailto:${profile.email}`} aria-label="Email">
-                <FaEnvelope size={20} />
-              </a>
+              {safeMailto(profile.email) && (
+                <a href={safeMailto(profile.email)} aria-label="Email" data-track="footer: email">
+                  <FaEnvelope size={20} />
+                </a>
+              )}
               <a
                 href="https://www.facebook.com/atheeeens"
                 aria-label="Facebook"
+                data-track="footer: facebook"
                 target="_blank"
-                rel="noreferrer"
+                rel="noopener noreferrer"
               >
                 <FaFacebookF size={20} />
               </a>
               <a
                 href="https://www.instagram.com/athenelytical/"
                 aria-label="Instagram"
+                data-track="footer: instagram"
                 target="_blank"
-                rel="noreferrer"
+                rel="noopener noreferrer"
               >
                 <FaInstagram size={20} />
               </a>
               <a
                 href="https://www.linkedin.com/in/athena-picones-7554aa286/"
                 aria-label="LinkedIn"
+                data-track="footer: linkedin"
                 target="_blank"
-                rel="noreferrer"
+                rel="noopener noreferrer"
               >
                 <FaLinkedinIn size={20} />
               </a>
-              <a
-                href={profile.github}
-                aria-label="GitHub"
-                target="_blank"
-                rel="noreferrer"
-              >
-                <FaGithub size={20} />
-              </a>
+              {safeHref(profile.github) && (
+                <a
+                  href={safeHref(profile.github)}
+                  aria-label="GitHub"
+                  data-track="footer: github"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  <FaGithub size={20} />
+                </a>
+              )}
             </div>
           </div>
 
           <div className="footer-bottom">
             <span>© {new Date().getFullYear()} {profile.name}</span>
+            {analyticsOn && <span>Privacy-friendly stats, no cookies</span>}
             <span>Built with React &amp; Google Sheets</span>
           </div>
         </div>

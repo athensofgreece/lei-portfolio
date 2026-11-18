@@ -15,10 +15,13 @@ Your content can live in a Google Sheet, so you update the site by editing rows.
 ## 2. Day to day
 - Add a project: add a row. Remove one: delete the row, or type `no` in its `show` column.
 - Lists in a single cell use a pipe: `Form response | Airtable row | Email alert`
-- Images: put the file in `public/images/` and write `images/name.jpg` in the sheet, or use a full https link.
+- Images: put the file in `public/images/` and write `images/name.jpg` in the sheet (a leading `public/` is also accepted), or use a full https link.
 - Showing your work (Creative Studio, `social_projects` tab):
   - `image` can hold one or several files separated by `|`, e.g. `images/cover.jpg | images/post-1.jpg | videos/reel.mp4`. Pictures and videos (`.mp4` or `.webm`) can be mixed.
     The first file is the tile cover. All of them appear in the panel that opens when a tile is clicked.
+  - Optional `cover` column: add a column named `cover` to `social_projects` to choose the picture shown behind each tile. Leave a cell empty for a plain pink or lilac tile,
+    which suits screenshots and reports that are too busy to sit behind the title. The panel still shows everything listed in `image`. Without a `cover` column, the first `image` is the cover.
+  - A file that cannot be found is skipped quietly (the tile falls back to its plain colour) instead of showing a broken-image icon.
   - `link` adds a "View the work" button, for a TikTok, Facebook, YouTube or Canva link.
   - Keep pictures under about 300 KB (around 1200 px wide) and videos under about 15 MB (15 to 30 seconds, 720p, H.264 MP4).
     For longer videos, upload them to YouTube (unlisted) or Facebook and paste the link in `link`.
@@ -44,3 +47,30 @@ Install Node.js (LTS), then: `npm install` and `npm run dev`
 - Replace the bracketed note in the first social project with real numbers.
 - Keep automation demos labeled as demos until you have client results.
 - Check images for client names or logos.
+
+## Analytics (GoatCounter, optional)
+
+Visitor stats are switched off until you add a site code.
+
+1. Create a free account at https://www.goatcounter.com and choose a site code (for example `lei`). Your dashboard will then be `https://lei.goatcounter.com`.
+2. Open `src/analytics.config.js` and put the code between the quotes: `export const GOATCOUNTER_CODE = 'lei'`.
+3. Commit and push. A small "Privacy-friendly stats, no cookies" note then appears in the footer.
+
+You will see visits, where visitors came from, countries and devices. The site also reports a few named clicks as events: the hero buttons
+("cta: work with me", "cta: see work"), the Studio / Lab switch ("mode: creative studio", "mode: technology lab"), opening a project
+("project: ..."), project, demo and website links, and the email, copy-email and GitHub links.
+No cookies are used. Visitors who send Do Not Track or Global Privacy Control are not counted, and ad blockers hide some visits, so treat the numbers as a minimum.
+To turn it off, empty the code again.
+
+## Security notes
+
+- **Content-security policy.** `index.html` tells browsers which sites this page may load from: itself, Google Sheets (your content), Google Fonts and GoatCounter.
+  If you ever add a new outside service (an embed, another analytics tool, a font host), add its address to that policy or the browser will block it.
+  If something stops loading, open the browser console (F12) and look for a message starting "Refused to ...". If your sheet ever stops updating after a change,
+  the `connect-src` part of that line is the place to check. Removing the whole `Content-Security-Policy` line switches the policy off.
+- **Links from the sheet.** Links typed into the sheet are only used if they are normal web addresses (`https://...` or `http://...`).
+  Anything else, such as `javascript:...`, is ignored, and the matching button or icon is simply not shown.
+- **Updates.** `.github/dependabot.yml` makes GitHub open a pull request each week when a package or workflow action is out of date.
+  Nothing changes on your site until you review and merge one.
+- **Accounts and the sheet.** Turn on two-factor authentication for GitHub and for the Google account that owns the sheet. Share the sheet as
+  "Anyone with the link: Viewer", never Editor, and keep private details out of every tab. Remove location data from photos before adding them to `public/images`.
