@@ -16,7 +16,7 @@ export const social = {
   stats: [
     { n: '22,000+', l: 'views on one video edit' },
     { n: '10+', l: 'travel promo videos edited' },
-    { n: '80+', l: 'followers grown for a community page' },
+    { n: '80+', l: 'followers gained from one reel' },
   ],
   services: [
     { title: 'Short-form video editing', text: 'Reels, TikToks, and Facebook videos cut in CapCut Pro, with hooks, captions, music, and pacing built for the scroll.' },
@@ -40,7 +40,7 @@ export const social = {
       need: 'Reach more young people online and promote weekly events.',
       did: 'Posted consistently and produced video content for weekly events and services.',
       tools: 'CapCut Pro, Canva, Facebook',
-      result: '80+ new followers, and one video edit that reached 22,000+ views.',
+      result: 'One video edit reached 22,000+ views and brought in 80+ new followers.',
       image: '', link: '', placeholder: 'Add a screenshot of the 22,000+ view video here',
     },
     {
