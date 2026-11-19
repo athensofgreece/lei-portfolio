@@ -31,7 +31,7 @@ export const social = {
       need: 'Promote travel packages and support live selling on TikTok and Facebook.',
       did: 'Edited 10+ marketing videos in CapCut Pro, set up TikTok Live, and kept the company website updated after launch.',
       tools: 'CapCut Pro, TikTok Live, Facebook',
-      result: '10+ videos published across two platforms. [Add views or engagement from your analytics.]',
+      result: '10+ videos published across two platforms.',
       image: '', link: '', placeholder: 'Add your best travel reel here (blur any logos or names)',
     },
     {
