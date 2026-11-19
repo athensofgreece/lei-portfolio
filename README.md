@@ -33,7 +33,7 @@ Your content can live in a Google Sheet, so you update the site by editing rows.
 Install Node.js (LTS), then: `npm install` and `npm run dev`
 
 ## 4. Publish on GitHub Pages
-1. Push this folder to the `main` branch of your repo (e.g. `athensofgreece.github.io`).
+1. Push this folder to the `master` branch of your repo (e.g. `athensofgreece.github.io`).
 2. Settings > Pages > Source: **GitHub Actions**. Every push rebuilds the site.
 
 ## Troubleshooting
