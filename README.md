@@ -1,8 +1,32 @@
-# Lei Picones Portfolio (React + Vite + Google Sheets)
+# Lei Picones | Portfolio
 
-Light mode = social media management. Dark mode = automation and web development.
-Your content can live in a Google Sheet, so you update the site by editing rows.
+**Live site: [athensofgreece.github.io/lei-portfolio](https://athensofgreece.github.io/lei-portfolio/)**
 
+A personal portfolio with two modes: light mode for social media and creative work, dark mode for web development and automation. All the content lives in a Google Sheet, so I can add or edit a project by changing a row, with no code change or redeploy.
+
+## Highlights
+
+- **Google Sheet as a CMS.** The site fetches the sheet as CSV when it loads. If the sheet can't be reached, it falls back to the content in `src/data.js`, so the page never shows up empty.
+- **Automatic deployment.** Every push to `master` triggers a GitHub Actions workflow that builds the site and publishes it to GitHub Pages.
+- **Two-mode design.** One codebase serves two audiences, with a light and a dark theme.
+- **Safe to edit.** A missing section or a renamed column in the sheet keeps its default content instead of breaking the page.
+
+## Tech stack
+
+React 19 · Vite · JavaScript · Google Sheets (CSV) · GitHub Actions · GitHub Pages
+
+## Run it locally
+
+```bash
+npm install
+npm run dev
+```
+
+Requires Node.js 20 or newer.
+
+---
+
+# Setup guide
 ## 1. Set up the Google Sheet (about 5 minutes)
 1. Go to sheets.google.com, then File > Import > Upload, and choose `portfolio-content-sheet.xlsx`.
    Pick "Create new spreadsheet". Keep every tab name exactly as it is.
