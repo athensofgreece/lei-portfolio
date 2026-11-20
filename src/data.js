@@ -16,7 +16,7 @@ export const social = {
   stats: [
     { n: '22,000+', l: 'views on one video edit' },
     { n: '10+', l: 'travel promo videos edited' },
-    { n: '80+', l: 'followers grown for a community page' },
+    { n: '80+', l: 'followers gained from one reel' },
   ],
   services: [
     { title: 'Short-form video editing', text: 'Reels, TikToks, and Facebook videos cut in CapCut Pro, with hooks, captions, music, and pacing built for the scroll.' },
@@ -31,7 +31,7 @@ export const social = {
       need: 'Promote travel packages and support live selling on TikTok and Facebook.',
       did: 'Edited 10+ marketing videos in CapCut Pro, set up TikTok Live, and kept the company website updated after launch.',
       tools: 'CapCut Pro, TikTok Live, Facebook',
-      result: '10+ videos published across two platforms. [Add views or engagement from your analytics.]',
+      result: '10+ videos published across two platforms.',
       image: '', link: '', placeholder: 'Add your best travel reel here (blur any logos or names)',
     },
     {
@@ -40,7 +40,7 @@ export const social = {
       need: 'Reach more young people online and promote weekly events.',
       did: 'Posted consistently and produced video content for weekly events and services.',
       tools: 'CapCut Pro, Canva, Facebook',
-      result: '80+ new followers, and one video edit that reached 22,000+ views.',
+      result: 'One video edit reached 22,000+ views and brought in 80+ new followers.',
       image: '', link: '', placeholder: 'Add a screenshot of the 22,000+ view video here',
     },
     {
