@@ -598,7 +598,9 @@ function Portfolio({ content }) {
               <div className="cards">
                 {auto.webProjects.map((p) => (
                   <div className="card" key={p.title}>
-                    <span className="chip ok">{p.status}</span>
+                    {mediaItems(p.image)[0] && (
+                      <img className="card-shot" src={mediaItems(p.image)[0].src} alt={`Screenshot of ${p.title}`} loading="lazy" />
+                    )}
                     <h3>{p.title}</h3>
                     <p>{p.text}</p>
                     <p className="stack">{p.stack}</p>

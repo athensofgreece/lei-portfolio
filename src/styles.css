@@ -355,7 +355,6 @@ nav ul a:hover { color: var(--text); background-size: 100% 1.5px; }
    ========================================================================= */
 
 .hero { padding: clamp(2.5rem, 6vw, 5rem) 0 2rem; }
-.hero .wrap { max-width: 1160px; }
 
 .hero-grid {
   display: grid;
@@ -1833,4 +1832,14 @@ footer {
   .tile:hover { 
     transform: none !important; 
   } 
+}
+
+.card-shot { 
+  width: 100%; 
+  aspect-ratio: 16 / 10; 
+  object-fit: cover; 
+  object-position: top; 
+  border-radius: .75rem; 
+  margin-bottom: .75rem; 
+  border: 1px solid rgba(128, 128, 128, .25); 
 }
