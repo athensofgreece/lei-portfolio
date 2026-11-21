@@ -474,7 +474,6 @@ function Portfolio({ content }) {
           </div>
 
           <ul className={menuOpen ? 'mobile-menu open' : 'mobile-menu'}>
-            <li><a href="#work" onClick={() => setMenuOpen(false)}>Work</a></li>
             <li><a href="#experience" onClick={() => setMenuOpen(false)}>Experience</a></li>
             <li><a href="#leadership" onClick={() => setMenuOpen(false)}>Events</a></li>
             <li>
@@ -650,41 +649,78 @@ function Portfolio({ content }) {
         </div>
       </section>
 
-      <section id="experience" className="story-section">
+      <section id="experience">
     <div className="wrap">
       <div className="sec-head"><p className="eyebrow">Experience</p><h2>Where I've put my skills to work</h2></div>
-      <div className="story-grid">
-        <article className="story-card"><span className="story-date">Sep 2025 — Jan 2026</span><h3>Fraud Specialist / Customer Service</h3><p className="story-org">Foundever · Capital One</p><p>Handled customer concerns and fraud-related cases with care, accuracy, and clear communication.</p></article>
-        <article className="story-card"><span className="story-date">Jul — Aug 2025</span><h3>Junior Front-End Developer Intern</h3><p className="story-org">New Horizon Finance</p><p>Worked on a company website, contributing UI/UX and front-end development through feedback and iteration.</p></article>
-        <article className="story-card"><span className="story-date">Apr — May 2026</span><h3>Marketing & Sales Intern</h3><p className="story-org">Sole Explorer Travel & Tours</p><p>Created promotional content, supported social channels and live selling, and helped keep the website updated.</p></article>
+      <div className="cards">
+        <article className="card"><p className="chip">Sep 2025 — Jan 2026</p><h3>Fraud Specialist / Customer Service</h3><p><strong>Foundever · Capital One</strong></p><p>Handled customer concerns and fraud-related cases with care, accuracy, and clear communication.</p></article>
+        <article className="card"><p className="chip">Jul — Aug 2025</p><h3>Junior Front-End Developer Intern</h3><p><strong>New Horizon Finance</strong></p><p>Contributed UI/UX and front-end development through feedback, iteration, and practical delivery.</p></article>
+        <article className="card"><p className="chip">Apr — May 2026</p><h3>Marketing & Sales Intern</h3><p><strong>Sole Explorer Travel & Tours</strong></p><p>Created promotional content, supported social channels and live selling, and helped keep the website updated.</p></article>
       </div>
     </div>
   </section>
-  <section id="leadership" className="story-section">
+  <section id="leadership">
     <div className="wrap">
       <div className="sec-head"><p className="eyebrow">Leadership & Events</p><h2>Making things happen behind the scenes</h2><p className="sec-intro">Coordination, logistics, teamwork, and the details that keep an event moving.</p></div>
-      <div className="story-grid story-grid-events">
-        <article className="story-card story-card-feature"><span className="story-date">2025 · AWS Student Community</span><h3>Student Community Day — Mega Manila</h3><p className="story-org">Event logistics · Team of 8</p><p>Helped coordinate a large-scale community event for 500+ attendees, working with a team to keep operations organized.</p></article>
-        <article className="story-card"><span className="story-date">2024 · AWS Community</span><h3>VIP & speaker support</h3><p>Supported event guests and speakers, helping with on-site coordination and hospitality.</p></article>
-        <article className="story-card"><span className="story-date">Campus events</span><h3>Hackathon & ICT Week</h3><p>Contributed to event activities for the Solar Power Hackathon and DBM ICT Week.</p></article>
+      <div className="cards">
+        <article className="card"><p className="chip">2025 · AWS Student Community</p><h3>Student Community Day — Mega Manila</h3><p><strong>Event logistics · Team of 8</strong></p><p>Helped coordinate a large-scale community event for 500+ attendees, working with a team to keep operations organized.</p></article>
+        <article className="card"><p className="chip">2024 · AWS Community</p><h3>VIP & speaker support</h3><p>Supported event guests and speakers with on-site coordination and hospitality.</p></article>
+        <article className="card"><p className="chip">Campus events</p><h3>Hackathon & ICT Week</h3><p>Contributed to event activities for the Solar Power Hackathon and DBM ICT Week.</p></article>
       </div>
     </div>
   </section>
-  <section id="tools" className="toolkit-section">
-    <div className="wrap">
-      <div className="sec-head">
-        <p className="eyebrow">{isSocial ? 'Toolkit' : 'Technology'}</p>
-        <h2>{isSocial ? 'Tools I use' : 'Tools & technologies'}</h2>
-      </div>
-      <ul className="tool-chip-list">
-        {(isSocial ? social.tools : auto.roadmap.map((t) => t.tool)).map((t) => (
-          <li key={t}>{t}</li>
-        ))}
-      </ul>
-    </div>
-  </section>
+  <section id="tools">
+        <div className="wrap">
+          <div className="sec-head">
+            <p className="eyebrow">{isSocial ? 'Tools' : 'Skills'}</p>
+            <h2>{isSocial ? 'Tools I use' : 'My skills roadmap'}</h2>
+          </div>
+          {isSocial ? (
+            <ul className="tool-grid">
+              {social.tools.map((t) => {
+                const Icon = getToolIcon(t)
+                return (
+                  <li className="tool-tile" key={t}>
+                    <span className="tool-badge" aria-hidden="true">
+                      {Icon ? <Icon /> : t.charAt(0)}
+                    </span>
+                    <span className="tool-name">{t}</span>
+                  </li>
+                )
+              })}
+            </ul>
+          ) : (
+            <div className="road">
+              {groupRoadmap(auto.roadmap).map((g, i) => (
+                <div className={`road-col${g.key.toLowerCase() === 'using' ? '' : ' is-next'}`} key={g.key || 'skills'}>
+                  <div className="road-head">
+                    <span className="road-step">{String(i + 1).padStart(2, '0')}</span>
+                    <h3>{ROAD_LABEL[g.key.toLowerCase()] || g.key || 'Skills'}</h3>
+                    <span className="road-count" aria-label={`${g.items.length} skills`}>
+                      {g.items.length}
+                    </span>
+                  </div>
+                  <ul className="road-list">
+                    {g.items.map((t) => {
+                      const Icon = getToolIcon(t.tool)
+                      return (
+                        <li className="road-item" key={t.tool}>
+                          <span className="road-icon" aria-hidden="true">
+                            {Icon ? <Icon /> : t.tool.charAt(0)}
+                          </span>
+                          <span>{t.tool}</span>
+                        </li>
+                      )
+                    })}
+                  </ul>
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+      </section>
 
-  <section id="about">
+      <section id="about">
         <div className="wrap">
           <div className="about-grid">
             <figure className="about-figure">
@@ -725,10 +761,10 @@ function Portfolio({ content }) {
               </div>
             </div>
             <h2>
-              Have something in mind? <span className="accent-word">Let's make it happen.</span>
+              Let's work <span className="accent-word">together</span>
             </h2>
             <p className="muted">
-              Open to opportunities, collaborations, and interesting projects. If you think we could work well together, let's start a conversation.
+              Tell me about your brand and what you need. I'll reply with how I can help.
             </p>
             <ul className="contact-list">
               <li>
@@ -756,6 +792,56 @@ function Portfolio({ content }) {
 
       <footer>
         <div className="wrap footer-content">
+          <div className="footer-social-card">
+            <h3>Let's Connect</h3>
+            <p>Have a project in mind? Let's create something useful together!</p>
+            <div className="footer-social-links">
+              {safeMailto(profile.email) && (
+                <a href={safeMailto(profile.email)} aria-label="Email" data-track="footer: email">
+                  <FaEnvelope size={20} />
+                </a>
+              )}
+              <a
+                href="https://www.facebook.com/atheeeens"
+                aria-label="Facebook"
+                data-track="footer: facebook"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                <FaFacebookF size={20} />
+              </a>
+              <a
+                href="https://www.instagram.com/athenelytical/"
+                aria-label="Instagram"
+                data-track="footer: instagram"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                <FaInstagram size={20} />
+              </a>
+              <a
+                href="https://www.linkedin.com/in/athena-picones-7554aa286/"
+                aria-label="LinkedIn"
+                data-track="footer: linkedin"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                <FaLinkedinIn size={20} />
+              </a>
+              {safeHref(profile.github) && (
+                <a
+                  href={safeHref(profile.github)}
+                  aria-label="GitHub"
+                  data-track="footer: github"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  <FaGithub size={20} />
+                </a>
+              )}
+            </div>
+          </div>
+
           <div className="footer-bottom">
             <span>© {new Date().getFullYear()} {profile.name}</span>
             {analyticsOn && <span>Privacy-friendly stats, no cookies</span>}
