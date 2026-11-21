@@ -2,7 +2,7 @@ import { useState, useLayoutEffect, useEffect, useCallback, useRef } from 'react
 import { safeHref, safeMailto } from './safe.js'
 import { analyticsOn } from './stats.js'
 import { flushSync } from 'react-dom'
-import { profile as pf, social as sc, auto as au } from './data.js'
+import { profile as pf, social as sc, auto as au, experience as ex, leadershipEvents as le } from './data.js'
 import { SHEET_ID } from './sheet.config.js'
 import { loadSheetContent, cachedContent } from './sheet.js'
 import { Timeline, Flow } from './components/Visuals.jsx'
@@ -653,9 +653,15 @@ function Portfolio({ content }) {
     <div className="wrap">
       <div className="sec-head"><p className="eyebrow">Experience</p><h2>Where I've put my skills to work</h2></div>
       <div className="cards">
-        <article className="card"><p className="chip">Sep 2025 — Jan 2026</p><h3>Fraud Specialist / Customer Service</h3><p><strong>Foundever · Capital One</strong></p><p>Handled customer concerns and fraud-related cases with care, accuracy, and clear communication.</p></article>
-        <article className="card"><p className="chip">Jul — Aug 2025</p><h3>Junior Front-End Developer Intern</h3><p><strong>New Horizon Finance</strong></p><p>Contributed UI/UX and front-end development through feedback, iteration, and practical delivery.</p></article>
-        <article className="card"><p className="chip">Apr — May 2026</p><h3>Marketing & Sales Intern</h3><p><strong>Sole Explorer Travel & Tours</strong></p><p>Created promotional content, supported social channels and live selling, and helped keep the website updated.</p></article>
+        {content.experience.filter((item) => !['no','false','0','hide'].includes(String(item.show || '').toLowerCase())).map((item, i) => (
+          <article className="card" key={item.title + i}>
+            {item.date && <p className="chip">{item.date}</p>}
+            <h3>{item.title}</h3>
+            {item.company && <p><strong>{item.company}</strong></p>}
+            {item.description && <p>{item.description}</p>}
+            {item.highlight && <p className="stack">{item.highlight}</p>}
+          </article>
+        ))}
       </div>
     </div>
   </section>
@@ -663,9 +669,15 @@ function Portfolio({ content }) {
     <div className="wrap">
       <div className="sec-head"><p className="eyebrow">Leadership & Events</p><h2>Making things happen behind the scenes</h2><p className="sec-intro">Coordination, logistics, teamwork, and the details that keep an event moving.</p></div>
       <div className="cards">
-        <article className="card"><p className="chip">2025 · AWS Student Community</p><h3>Student Community Day — Mega Manila</h3><p><strong>Event logistics · Team of 8</strong></p><p>Helped coordinate a large-scale community event for 500+ attendees, working with a team to keep operations organized.</p></article>
-        <article className="card"><p className="chip">2024 · AWS Community</p><h3>VIP & speaker support</h3><p>Supported event guests and speakers with on-site coordination and hospitality.</p></article>
-        <article className="card"><p className="chip">Campus events</p><h3>Hackathon & ICT Week</h3><p>Contributed to event activities for the Solar Power Hackathon and DBM ICT Week.</p></article>
+        {content.leadershipEvents.filter((item) => !['no','false','0','hide'].includes(String(item.show || '').toLowerCase())).map((item, i) => (
+          <article className="card" key={item.title + i}>
+            {item.date && <p className="chip">{item.date}</p>}
+            <h3>{item.title}</h3>
+            {item.company && <p><strong>{item.company}</strong></p>}
+            {item.description && <p>{item.description}</p>}
+            {item.highlight && <p className="stack">{item.highlight}</p>}
+          </article>
+        ))}
       </div>
     </div>
   </section>
@@ -853,7 +865,7 @@ function Portfolio({ content }) {
   )
 }
 
-const DEFAULTS = { profile: pf, social: sc, auto: au }
+const DEFAULTS = { profile: pf, social: sc, auto: au, experience: ex, leadershipEvents: le }
 
 export default function App() {
   const [content, setContent] = useState(() => (SHEET_ID && cachedContent()) || DEFAULTS)
