@@ -1860,25 +1860,3 @@ footer {
 @media (prefers-reduced-motion: reduce) {
   .card-shot, .tile-media, .syncing .stats-strip .stats > *, .syncing .cards .card, .syncing .tiles > *, .syncing .road-item { animation: none; }
 }
-/* Portfolio flow refresh: clearer story sections, calmer spacing, and a single closing CTA */
-.story-section { padding: clamp(3.8rem, 8vw, 6.5rem) 0; }
-.story-grid { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:1rem; }
-.story-card { display:flex; flex-direction:column; gap:.6rem; padding:clamp(1.2rem,2.5vw,1.8rem); border:1px solid var(--line); border-radius:1.25rem; background:var(--panel); min-height:220px; }
-.story-card h3 { margin:.15rem 0; font-size:clamp(1.15rem,2vw,1.45rem); line-height:1.2; letter-spacing:-.025em; }
-.story-card p { margin:0; color:var(--muted); line-height:1.65; }
-.story-date { font:500 .75rem var(--mono); color:var(--accent-text); letter-spacing:.04em; text-transform:uppercase; }
-.story-org { font-weight:700; color:var(--text) !important; }
-.story-card-feature { grid-column:span 2; }
-#experience, #leadership { scroll-margin-top:100px; }
-#experience .sec-head, #leadership .sec-head { max-width:760px; }
-#contact .contact-card { padding:clamp(1.4rem,4vw,3rem); }
-#contact .contact-card h2 { font-size:clamp(2rem,5vw,4rem); line-height:1.05; max-width:12ch; }
-#contact .contact-card .muted { max-width:48ch; font-size:1.05rem; line-height:1.7; }
-footer { padding-top:1.25rem; }
-.footer-content { gap:1rem; }
-@media(max-width:850px) { .story-grid { grid-template-columns:1fr; } .story-card-feature { grid-column:auto; } }
-
-/* Compact tool chips for the refreshed portfolio flow */
-.tool-chip-list { display:flex; flex-wrap:wrap; gap:.65rem; margin:0; padding:0; list-style:none; }
-.tool-chip-list li { padding:.6rem .9rem; border:1px solid var(--line); border-radius:999px; background:var(--panel); color:var(--text); font-size:.9rem; }
-.toolkit-section { padding:clamp(2.5rem,5vw,4rem) 0; }
