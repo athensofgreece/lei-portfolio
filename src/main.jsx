@@ -1,6 +1,6 @@
 import { createRoot } from 'react-dom/client'
 import App from './App.jsx'
-import { initAnalytics } from './analytics.js'
+import { initAnalytics } from './stats.js'
 import './styles.css'
 
 initAnalytics()

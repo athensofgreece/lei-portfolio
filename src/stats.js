@@ -1,4 +1,4 @@
-import { GOATCOUNTER_CODE } from './analytics.config.js'
+import { GOATCOUNTER_CODE } from './stats.config.js'
 
 const code = String(GOATCOUNTER_CODE || '').trim()
 export const analyticsOn = /^[a-z0-9-]{2,}$/i.test(code)

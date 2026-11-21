@@ -1,6 +1,6 @@
 import { useState, useLayoutEffect, useEffect, useCallback, useRef } from 'react'
 import { safeHref, safeMailto } from './safe.js'
-import { analyticsOn } from './analytics.js'
+import { analyticsOn } from './stats.js'
 import { flushSync } from 'react-dom'
 import { profile as pf, social as sc, auto as au } from './data.js'
 import { SHEET_ID } from './sheet.config.js'
