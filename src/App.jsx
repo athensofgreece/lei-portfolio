@@ -18,7 +18,10 @@ import {
   Workflow,
   Database,
   FileSpreadsheet,
-  ChartNoAxesCombined
+  ChartNoAxesCombined,
+  Users,
+  MapPin,
+  ArrowUpRight
 } from 'lucide-react'
 import {
   SiFigma,
@@ -368,6 +371,13 @@ function Portfolio({ content }) {
   const [mode, setMode] = useState(initialMode)
   const [menuOpen, setMenuOpen] = useState(false)
   const [openCase, setOpenCase] = useState(null)
+  const [activeExperience, setActiveExperience] = useState(0)
+  const [activeEvent, setActiveEvent] = useState(0)
+
+  const experienceItems = (Array.isArray(content.experience) ? content.experience : []).filter((item) => !['no','false','0','hide'].includes(String(item.show || '').toLowerCase()))
+  const eventItems = (Array.isArray(content.leadershipEvents) ? content.leadershipEvents : []).filter((item) => !['no','false','0','hide'].includes(String(item.show || '').toLowerCase()))
+  const currentExperience = experienceItems[activeExperience] || experienceItems[0]
+  const currentEvent = eventItems[activeEvent] || eventItems[0]
 
   const isSocial = mode === 'light'
   const d = isSocial ? social : auto
@@ -649,36 +659,93 @@ function Portfolio({ content }) {
         </div>
       </section>
 
-      <section id="experience">
+      <section id="experience" className="journey-section">
     <div className="wrap">
-      <div className="sec-head"><p className="eyebrow">Experience</p><h2>Where I've put my skills to work</h2></div>
-      <div className="cards">
-        {content.experience.filter((item) => !['no','false','0','hide'].includes(String(item.show || '').toLowerCase())).map((item, i) => (
-          <article className="card" key={item.title + i}>
-            {item.date && <p className="chip">{item.date}</p>}
-            <h3>{item.title}</h3>
-            {item.company && <p><strong>{item.company}</strong></p>}
-            {item.description && <p>{item.description}</p>}
-            {item.highlight && <p className="stack">{item.highlight}</p>}
-          </article>
-        ))}
+      <div className="sec-head journey-head">
+        <p className="eyebrow">Experience · {experienceItems.length} chapters</p>
+        <h2>My professional journey</h2>
+        <p className="sec-intro">Select a milestone to explore what I worked on and learned along the way.</p>
       </div>
+      {experienceItems.length > 0 && (
+        <div className="journey-shell">
+          <div className="journey-track" role="tablist" aria-label="Professional experience timeline">
+            {experienceItems.map((item, i) => (
+              <button type="button" className={i === activeExperience ? 'journey-point is-active' : 'journey-point'} role="tab" aria-selected={i === activeExperience} aria-controls="journey-details" key={item.title + i} onClick={() => setActiveExperience(i)}>
+                <span className="journey-date">{item.date || `Chapter ${String(i + 1).padStart(2, '0')}`}</span>
+                <span className="journey-dot" aria-hidden="true"><BriefcaseBusiness size={16}/></span>
+                <span className="journey-point-title">{item.title}</span>
+              </button>
+            ))}
+          </div>
+          {currentExperience && (
+            <article className="journey-detail" id="journey-details" role="tabpanel">
+              <div className="journey-detail-top">
+                <span className="journey-index">EXPERIENCE / {String(activeExperience + 1).padStart(2, '0')}</span>
+                <span className="journey-date-pill">{currentExperience.date}</span>
+              </div>
+              <div className="journey-detail-grid">
+                <div>
+                  <h3>{currentExperience.title}</h3>
+                  {currentExperience.company && <p className="journey-company"><MapPin size={15}/> {currentExperience.company}</p>}
+                </div>
+                <div className="journey-copy">
+                  {currentExperience.description && <p>{currentExperience.description}</p>}
+                  {currentExperience.highlight && <p className="journey-highlight">{currentExperience.highlight}</p>}
+                </div>
+              </div>
+              <div className="journey-controls">
+                <span>{String(activeExperience + 1).padStart(2, '0')} <span className="journey-muted">/ {String(experienceItems.length).padStart(2, '0')}</span></span>
+                <div className="journey-arrows">
+                  <button type="button" aria-label="Previous experience" disabled={activeExperience === 0} onClick={() => setActiveExperience((i) => Math.max(0, i - 1))}>←</button>
+                  <button type="button" aria-label="Next experience" disabled={activeExperience >= experienceItems.length - 1} onClick={() => setActiveExperience((i) => Math.min(experienceItems.length - 1, i + 1))}>→</button>
+                </div>
+              </div>
+            </article>
+          )}
+        </div>
+      )}
     </div>
   </section>
-  <section id="leadership">
+  <section id="leadership" className="event-explorer">
     <div className="wrap">
-      <div className="sec-head"><p className="eyebrow">Leadership & Events</p><h2>Making things happen behind the scenes</h2><p className="sec-intro">Coordination, logistics, teamwork, and the details that keep an event moving.</p></div>
-      <div className="cards">
-        {content.leadershipEvents.filter((item) => !['no','false','0','hide'].includes(String(item.show || '').toLowerCase())).map((item, i) => (
-          <article className="card" key={item.title + i}>
-            {item.date && <p className="chip">{item.date}</p>}
-            <h3>{item.title}</h3>
-            {item.company && <p><strong>{item.company}</strong></p>}
-            {item.description && <p>{item.description}</p>}
-            {item.highlight && <p className="stack">{item.highlight}</p>}
-          </article>
-        ))}
+      <div className="sec-head event-head">
+        <p className="eyebrow">Leadership & Events · {eventItems.length} highlights</p>
+        <h2>Behind the scenes, making it happen</h2>
+        <p className="sec-intro">Explore the events, communities, and teams I've helped bring together.</p>
       </div>
+      {eventItems.length > 0 && currentEvent && (
+        <div className="event-stage">
+          <div className="event-index-rail" role="tablist" aria-label="Leadership and event highlights">
+            {eventItems.map((item, i) => (
+              <button type="button" className={i === activeEvent ? 'event-rail-item is-active' : 'event-rail-item'} role="tab" aria-selected={i === activeEvent} aria-controls="event-details" key={item.title + i} onClick={() => setActiveEvent(i)}>
+                <span className="event-rail-num">{String(i + 1).padStart(2, '0')}</span>
+                <span className="event-rail-title">{item.title}</span>
+                <ArrowUpRight size={16} className="event-rail-arrow"/>
+              </button>
+            ))}
+          </div>
+          <article className="event-feature" id="event-details" role="tabpanel">
+            <div className="event-feature-orb" aria-hidden="true"/>
+            <div className="event-feature-top">
+              <span className="event-kicker"><CalendarDays size={15}/> {currentEvent.date || 'Event highlight'}</span>
+              <span className="event-count">{String(activeEvent + 1).padStart(2, '0')} / {String(eventItems.length).padStart(2, '0')}</span>
+            </div>
+            <div className="event-feature-content">
+              <h3>{currentEvent.title}</h3>
+              {currentEvent.company && <p className="event-organization"><Users size={15}/> {currentEvent.company}</p>}
+              {currentEvent.description && <p className="event-description">{currentEvent.description}</p>}
+              {currentEvent.highlight && <div className="event-impact"><span>MY CONTRIBUTION</span><p>{currentEvent.highlight}</p></div>}
+            </div>
+            <div className="event-feature-bottom">
+              <span>LEADERSHIP · COLLABORATION · EXECUTION</span>
+              <div className="event-feature-nav">
+                <button type="button" aria-label="Previous event" disabled={activeEvent === 0} onClick={() => setActiveEvent((i) => Math.max(0, i - 1))}>←</button>
+                <button type="button" aria-label="Next event" disabled={activeEvent >= eventItems.length - 1} onClick={() => setActiveEvent((i) => Math.min(eventItems.length - 1, i + 1))}>→</button>
+              </div>
+            </div>
+          </article>
+        </div>
+      )}
     </div>
   </section>
   <section id="tools">
