@@ -1843,3 +1843,20 @@ footer {
   margin-bottom: .75rem; 
   border: 1px solid rgba(128, 128, 128, .25); 
 }
+
+/* Loading skeletons: shimmer while the sheet loads for first-time visitors, and behind images until they paint */
+@keyframes shimmer { to { background-position: -200% 0; } }
+.card-shot, .tile-media,
+.syncing .stats-strip .stats > *, .syncing .cards .card, .syncing .tiles > *, .syncing .road-item {
+  background: linear-gradient(90deg, rgba(128,128,128,.12) 25%, rgba(128,128,128,.24) 50%, rgba(128,128,128,.12) 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.4s linear infinite;
+}
+.syncing .stats-strip .stats > *, .syncing .cards .card, .syncing .tiles > *, .syncing .road-item {
+  color: transparent !important; border-radius: 1rem; pointer-events: none;
+}
+.syncing .stats-strip .stats > * *, .syncing .cards .card *, .syncing .tiles > * *, .syncing .road-item * { visibility: hidden; }
+.syncing .cards .card::before, .syncing .cards .card::after { visibility: hidden; }
+@media (prefers-reduced-motion: reduce) {
+  .card-shot, .tile-media, .syncing .stats-strip .stats > *, .syncing .cards .card, .syncing .tiles > *, .syncing .road-item { animation: none; }
+}
