@@ -474,26 +474,16 @@ function Portfolio({ content }) {
           </div>
 
           <ul className={menuOpen ? 'mobile-menu open' : 'mobile-menu'}>
-            <li>
-              <a href="#services" onClick={() => setMenuOpen(false)}>
-                Services
-              </a>
-            </li>
+            <li><a href="#work" onClick={() => setMenuOpen(false)}>Work</a></li>
+            <li><a href="#experience" onClick={() => setMenuOpen(false)}>Experience</a></li>
+            <li><a href="#leadership" onClick={() => setMenuOpen(false)}>Events</a></li>
             <li>
               <a href="#work" onClick={() => setMenuOpen(false)}>
                 {isSocial ? 'Work' : 'Projects'}
               </a>
             </li>
-            <li>
-              <a href="#about" onClick={() => setMenuOpen(false)}>
-                About
-              </a>
-            </li>
-            <li>
-              <a href="#contact" onClick={() => setMenuOpen(false)}>
-                Contact
-              </a>
-            </li>
+            <li><a href="#about" onClick={() => setMenuOpen(false)}>About</a></li>
+            <li><a href="#contact" onClick={() => setMenuOpen(false)}>Connect</a></li>
           </ul>
         </div>
       </nav>
@@ -528,51 +518,6 @@ function Portfolio({ content }) {
           </div>
         </div>
       </header>
-
-      <div className="stats-strip">
-        <div className="wrap">
-          <div className="stats">
-            {d.stats.map((s) => (
-              <div key={s.l}>
-                <b>{s.n}</b>
-                <span>{s.l}</span>
-              </div>
-            ))}
-          </div>
-        </div>
-      </div>
-
-      <section id="services">
-        <div className="wrap">
-          <div className="sec-head">
-            <p className="eyebrow">Services</p>
-            <h2>{isSocial ? 'What I do for you' : 'What I can build for you'}</h2>
-            <p className="sec-intro">{d.lede}</p>
-          </div>
-          <div className="cards">
-            {d.services.map((s) => {
-              const Icon = SERVICE_ICONS[s.title.trim().toLowerCase()] || Workflow
-
-              return (
-                <div className="card service-card" key={s.title}>
-                  <div className="service-icon">
-                    <Icon className="service-icon-svg" size={24} strokeWidth={1.8} />
-                  </div>
-
-                  <h3>{s.title}</h3>
-                  <p>{s.text}</p>
-
-                  {s.status && (
-                    <span className={`chip ${s.status === 'Available' ? 'ok' : ''}`}>
-                      {s.status}
-                    </span>
-                  )}
-                </div>
-              )
-            })}
-          </div>
-        </div>
-      </section>
 
       <section id="work">
         <div className="wrap">
@@ -705,7 +650,27 @@ function Portfolio({ content }) {
         </div>
       </section>
 
-      <section id="tools">
+      <section id="experience" className="story-section">
+    <div className="wrap">
+      <div className="sec-head"><p className="eyebrow">Experience</p><h2>Where I've put my skills to work</h2></div>
+      <div className="story-grid">
+        <article className="story-card"><span className="story-date">Sep 2025 — Jan 2026</span><h3>Fraud Specialist / Customer Service</h3><p className="story-org">Foundever · Capital One</p><p>Handled customer concerns and fraud-related cases with care, accuracy, and clear communication.</p></article>
+        <article className="story-card"><span className="story-date">Jul — Aug 2025</span><h3>Junior Front-End Developer Intern</h3><p className="story-org">New Horizon Finance</p><p>Worked on a company website, contributing UI/UX and front-end development through feedback and iteration.</p></article>
+        <article className="story-card"><span className="story-date">Apr — May 2026</span><h3>Marketing & Sales Intern</h3><p className="story-org">Sole Explorer Travel & Tours</p><p>Created promotional content, supported social channels and live selling, and helped keep the website updated.</p></article>
+      </div>
+    </div>
+  </section>
+  <section id="leadership" className="story-section">
+    <div className="wrap">
+      <div className="sec-head"><p className="eyebrow">Leadership & Events</p><h2>Making things happen behind the scenes</h2><p className="sec-intro">Coordination, logistics, teamwork, and the details that keep an event moving.</p></div>
+      <div className="story-grid story-grid-events">
+        <article className="story-card story-card-feature"><span className="story-date">2025 · AWS Student Community</span><h3>Student Community Day — Mega Manila</h3><p className="story-org">Event logistics · Team of 8</p><p>Helped coordinate a large-scale community event for 500+ attendees, working with a team to keep operations organized.</p></article>
+        <article className="story-card"><span className="story-date">2024 · AWS Community</span><h3>VIP & speaker support</h3><p>Supported event guests and speakers, helping with on-site coordination and hospitality.</p></article>
+        <article className="story-card"><span className="story-date">Campus events</span><h3>Hackathon & ICT Week</h3><p>Contributed to event activities for the Solar Power Hackathon and DBM ICT Week.</p></article>
+      </div>
+    </div>
+  </section>
+  <section id="tools">
         <div className="wrap">
           <div className="sec-head">
             <p className="eyebrow">{isSocial ? 'Tools' : 'Skills'}</p>
@@ -828,56 +793,6 @@ function Portfolio({ content }) {
 
       <footer>
         <div className="wrap footer-content">
-          <div className="footer-social-card">
-            <h3>Let's Connect</h3>
-            <p>Have a project in mind? Let's create something useful together!</p>
-            <div className="footer-social-links">
-              {safeMailto(profile.email) && (
-                <a href={safeMailto(profile.email)} aria-label="Email" data-track="footer: email">
-                  <FaEnvelope size={20} />
-                </a>
-              )}
-              <a
-                href="https://www.facebook.com/atheeeens"
-                aria-label="Facebook"
-                data-track="footer: facebook"
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                <FaFacebookF size={20} />
-              </a>
-              <a
-                href="https://www.instagram.com/athenelytical/"
-                aria-label="Instagram"
-                data-track="footer: instagram"
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                <FaInstagram size={20} />
-              </a>
-              <a
-                href="https://www.linkedin.com/in/athena-picones-7554aa286/"
-                aria-label="LinkedIn"
-                data-track="footer: linkedin"
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                <FaLinkedinIn size={20} />
-              </a>
-              {safeHref(profile.github) && (
-                <a
-                  href={safeHref(profile.github)}
-                  aria-label="GitHub"
-                  data-track="footer: github"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
-                  <FaGithub size={20} />
-                </a>
-              )}
-            </div>
-          </div>
-
           <div className="footer-bottom">
             <span>© {new Date().getFullYear()} {profile.name}</span>
             {analyticsOn && <span>Privacy-friendly stats, no cookies</span>}
