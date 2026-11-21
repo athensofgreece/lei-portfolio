@@ -867,8 +867,24 @@ function Portfolio({ content }) {
 
 const DEFAULTS = { profile: pf, social: sc, auto: au, experience: ex, leadershipEvents: le }
 
+// Older browser caches may predate the Experience and Leadership & Events sections.
+// Merge cached content with defaults so new arrays always exist on the first render.
+function mergeCachedContent(cached) {
+  if (!cached || typeof cached !== 'object') return DEFAULTS
+  return {
+    ...DEFAULTS,
+    ...cached,
+    profile: { ...DEFAULTS.profile, ...cached.profile },
+    social: { ...DEFAULTS.social, ...cached.social },
+    auto: { ...DEFAULTS.auto, ...cached.auto },
+    experience: Array.isArray(cached.experience) ? cached.experience : DEFAULTS.experience,
+    leadershipEvents: Array.isArray(cached.leadershipEvents) ? cached.leadershipEvents : DEFAULTS.leadershipEvents,
+  }
+}
+
+
 export default function App() {
-  const [content, setContent] = useState(() => (SHEET_ID && cachedContent()) || DEFAULTS)
+  const [content, setContent] = useState(() => mergeCachedContent(SHEET_ID && cachedContent()))
   // First-time visitors have no cached content yet, so show skeletons until the sheet answers (or 3 s pass).
   const [syncing, setSyncing] = useState(() => Boolean(SHEET_ID && !cachedContent()))
 
