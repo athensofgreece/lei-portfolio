@@ -670,58 +670,21 @@ function Portfolio({ content }) {
       </div>
     </div>
   </section>
-  <section id="tools">
-        <div className="wrap">
-          <div className="sec-head">
-            <p className="eyebrow">{isSocial ? 'Tools' : 'Skills'}</p>
-            <h2>{isSocial ? 'Tools I use' : 'My skills roadmap'}</h2>
-          </div>
-          {isSocial ? (
-            <ul className="tool-grid">
-              {social.tools.map((t) => {
-                const Icon = getToolIcon(t)
-                return (
-                  <li className="tool-tile" key={t}>
-                    <span className="tool-badge" aria-hidden="true">
-                      {Icon ? <Icon /> : t.charAt(0)}
-                    </span>
-                    <span className="tool-name">{t}</span>
-                  </li>
-                )
-              })}
-            </ul>
-          ) : (
-            <div className="road">
-              {groupRoadmap(auto.roadmap).map((g, i) => (
-                <div className={`road-col${g.key.toLowerCase() === 'using' ? '' : ' is-next'}`} key={g.key || 'skills'}>
-                  <div className="road-head">
-                    <span className="road-step">{String(i + 1).padStart(2, '0')}</span>
-                    <h3>{ROAD_LABEL[g.key.toLowerCase()] || g.key || 'Skills'}</h3>
-                    <span className="road-count" aria-label={`${g.items.length} skills`}>
-                      {g.items.length}
-                    </span>
-                  </div>
-                  <ul className="road-list">
-                    {g.items.map((t) => {
-                      const Icon = getToolIcon(t.tool)
-                      return (
-                        <li className="road-item" key={t.tool}>
-                          <span className="road-icon" aria-hidden="true">
-                            {Icon ? <Icon /> : t.tool.charAt(0)}
-                          </span>
-                          <span>{t.tool}</span>
-                        </li>
-                      )
-                    })}
-                  </ul>
-                </div>
-              ))}
-            </div>
-          )}
-        </div>
-      </section>
+  <section id="tools" className="toolkit-section">
+    <div className="wrap">
+      <div className="sec-head">
+        <p className="eyebrow">{isSocial ? 'Toolkit' : 'Technology'}</p>
+        <h2>{isSocial ? 'Tools I use' : 'Tools & technologies'}</h2>
+      </div>
+      <ul className="tool-chip-list">
+        {(isSocial ? social.tools : auto.roadmap.map((t) => t.tool)).map((t) => (
+          <li key={t}>{t}</li>
+        ))}
+      </ul>
+    </div>
+  </section>
 
-      <section id="about">
+  <section id="about">
         <div className="wrap">
           <div className="about-grid">
             <figure className="about-figure">
@@ -762,10 +725,10 @@ function Portfolio({ content }) {
               </div>
             </div>
             <h2>
-              Let's work <span className="accent-word">together</span>
+              Have something in mind? <span className="accent-word">Let's make it happen.</span>
             </h2>
             <p className="muted">
-              Tell me about your brand and what you need. I'll reply with how I can help.
+              Open to opportunities, collaborations, and interesting projects. If you think we could work well together, let's start a conversation.
             </p>
             <ul className="contact-list">
               <li>
