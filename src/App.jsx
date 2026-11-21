@@ -474,26 +474,15 @@ function Portfolio({ content }) {
           </div>
 
           <ul className={menuOpen ? 'mobile-menu open' : 'mobile-menu'}>
-            <li>
-              <a href="#services" onClick={() => setMenuOpen(false)}>
-                Services
-              </a>
-            </li>
+            <li><a href="#experience" onClick={() => setMenuOpen(false)}>Experience</a></li>
+            <li><a href="#leadership" onClick={() => setMenuOpen(false)}>Events</a></li>
             <li>
               <a href="#work" onClick={() => setMenuOpen(false)}>
                 {isSocial ? 'Work' : 'Projects'}
               </a>
             </li>
-            <li>
-              <a href="#about" onClick={() => setMenuOpen(false)}>
-                About
-              </a>
-            </li>
-            <li>
-              <a href="#contact" onClick={() => setMenuOpen(false)}>
-                Contact
-              </a>
-            </li>
+            <li><a href="#about" onClick={() => setMenuOpen(false)}>About</a></li>
+            <li><a href="#contact" onClick={() => setMenuOpen(false)}>Connect</a></li>
           </ul>
         </div>
       </nav>
@@ -528,51 +517,6 @@ function Portfolio({ content }) {
           </div>
         </div>
       </header>
-
-      <div className="stats-strip">
-        <div className="wrap">
-          <div className="stats">
-            {d.stats.map((s) => (
-              <div key={s.l}>
-                <b>{s.n}</b>
-                <span>{s.l}</span>
-              </div>
-            ))}
-          </div>
-        </div>
-      </div>
-
-      <section id="services">
-        <div className="wrap">
-          <div className="sec-head">
-            <p className="eyebrow">Services</p>
-            <h2>{isSocial ? 'What I do for you' : 'What I can build for you'}</h2>
-            <p className="sec-intro">{d.lede}</p>
-          </div>
-          <div className="cards">
-            {d.services.map((s) => {
-              const Icon = SERVICE_ICONS[s.title.trim().toLowerCase()] || Workflow
-
-              return (
-                <div className="card service-card" key={s.title}>
-                  <div className="service-icon">
-                    <Icon className="service-icon-svg" size={24} strokeWidth={1.8} />
-                  </div>
-
-                  <h3>{s.title}</h3>
-                  <p>{s.text}</p>
-
-                  {s.status && (
-                    <span className={`chip ${s.status === 'Available' ? 'ok' : ''}`}>
-                      {s.status}
-                    </span>
-                  )}
-                </div>
-              )
-            })}
-          </div>
-        </div>
-      </section>
 
       <section id="work">
         <div className="wrap">
@@ -705,7 +649,27 @@ function Portfolio({ content }) {
         </div>
       </section>
 
-      <section id="tools">
+      <section id="experience">
+    <div className="wrap">
+      <div className="sec-head"><p className="eyebrow">Experience</p><h2>Where I've put my skills to work</h2></div>
+      <div className="cards">
+        <article className="card"><p className="chip">Sep 2025 — Jan 2026</p><h3>Fraud Specialist / Customer Service</h3><p><strong>Foundever · Capital One</strong></p><p>Handled customer concerns and fraud-related cases with care, accuracy, and clear communication.</p></article>
+        <article className="card"><p className="chip">Jul — Aug 2025</p><h3>Junior Front-End Developer Intern</h3><p><strong>New Horizon Finance</strong></p><p>Contributed UI/UX and front-end development through feedback, iteration, and practical delivery.</p></article>
+        <article className="card"><p className="chip">Apr — May 2026</p><h3>Marketing & Sales Intern</h3><p><strong>Sole Explorer Travel & Tours</strong></p><p>Created promotional content, supported social channels and live selling, and helped keep the website updated.</p></article>
+      </div>
+    </div>
+  </section>
+  <section id="leadership">
+    <div className="wrap">
+      <div className="sec-head"><p className="eyebrow">Leadership & Events</p><h2>Making things happen behind the scenes</h2><p className="sec-intro">Coordination, logistics, teamwork, and the details that keep an event moving.</p></div>
+      <div className="cards">
+        <article className="card"><p className="chip">2025 · AWS Student Community</p><h3>Student Community Day — Mega Manila</h3><p><strong>Event logistics · Team of 8</strong></p><p>Helped coordinate a large-scale community event for 500+ attendees, working with a team to keep operations organized.</p></article>
+        <article className="card"><p className="chip">2024 · AWS Community</p><h3>VIP & speaker support</h3><p>Supported event guests and speakers with on-site coordination and hospitality.</p></article>
+        <article className="card"><p className="chip">Campus events</p><h3>Hackathon & ICT Week</h3><p>Contributed to event activities for the Solar Power Hackathon and DBM ICT Week.</p></article>
+      </div>
+    </div>
+  </section>
+  <section id="tools">
         <div className="wrap">
           <div className="sec-head">
             <p className="eyebrow">{isSocial ? 'Tools' : 'Skills'}</p>
