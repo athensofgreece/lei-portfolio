@@ -2,7 +2,7 @@ import { useState, useLayoutEffect, useEffect, useCallback, useRef } from 'react
 import { safeHref, safeMailto } from './safe.js'
 import { analyticsOn } from './stats.js'
 import { flushSync } from 'react-dom'
-import { profile as pf, social as sc, auto as au } from './data.js'
+import { profile as pf, social as sc, auto as au, experience as ex, leadershipEvents as le } from './data.js'
 import { SHEET_ID } from './sheet.config.js'
 import { loadSheetContent, cachedContent } from './sheet.js'
 import { Timeline, Flow } from './components/Visuals.jsx'
@@ -474,26 +474,15 @@ function Portfolio({ content }) {
           </div>
 
           <ul className={menuOpen ? 'mobile-menu open' : 'mobile-menu'}>
-            <li>
-              <a href="#services" onClick={() => setMenuOpen(false)}>
-                Services
-              </a>
-            </li>
+            <li><a href="#experience" onClick={() => setMenuOpen(false)}>Experience</a></li>
+            <li><a href="#leadership" onClick={() => setMenuOpen(false)}>Events</a></li>
             <li>
               <a href="#work" onClick={() => setMenuOpen(false)}>
                 {isSocial ? 'Work' : 'Projects'}
               </a>
             </li>
-            <li>
-              <a href="#about" onClick={() => setMenuOpen(false)}>
-                About
-              </a>
-            </li>
-            <li>
-              <a href="#contact" onClick={() => setMenuOpen(false)}>
-                Contact
-              </a>
-            </li>
+            <li><a href="#about" onClick={() => setMenuOpen(false)}>About</a></li>
+            <li><a href="#contact" onClick={() => setMenuOpen(false)}>Connect</a></li>
           </ul>
         </div>
       </nav>
@@ -528,51 +517,6 @@ function Portfolio({ content }) {
           </div>
         </div>
       </header>
-
-      <div className="stats-strip">
-        <div className="wrap">
-          <div className="stats">
-            {d.stats.map((s) => (
-              <div key={s.l}>
-                <b>{s.n}</b>
-                <span>{s.l}</span>
-              </div>
-            ))}
-          </div>
-        </div>
-      </div>
-
-      <section id="services">
-        <div className="wrap">
-          <div className="sec-head">
-            <p className="eyebrow">Services</p>
-            <h2>{isSocial ? 'What I do for you' : 'What I can build for you'}</h2>
-            <p className="sec-intro">{d.lede}</p>
-          </div>
-          <div className="cards">
-            {d.services.map((s) => {
-              const Icon = SERVICE_ICONS[s.title.trim().toLowerCase()] || Workflow
-
-              return (
-                <div className="card service-card" key={s.title}>
-                  <div className="service-icon">
-                    <Icon className="service-icon-svg" size={24} strokeWidth={1.8} />
-                  </div>
-
-                  <h3>{s.title}</h3>
-                  <p>{s.text}</p>
-
-                  {s.status && (
-                    <span className={`chip ${s.status === 'Available' ? 'ok' : ''}`}>
-                      {s.status}
-                    </span>
-                  )}
-                </div>
-              )
-            })}
-          </div>
-        </div>
-      </section>
 
       <section id="work">
         <div className="wrap">
@@ -705,7 +649,39 @@ function Portfolio({ content }) {
         </div>
       </section>
 
-      <section id="tools">
+      <section id="experience">
+    <div className="wrap">
+      <div className="sec-head"><p className="eyebrow">Experience</p><h2>Where I've put my skills to work</h2></div>
+      <div className="cards">
+        {content.experience.filter((item) => !['no','false','0','hide'].includes(String(item.show || '').toLowerCase())).map((item, i) => (
+          <article className="card" key={item.title + i}>
+            {item.date && <p className="chip">{item.date}</p>}
+            <h3>{item.title}</h3>
+            {item.company && <p><strong>{item.company}</strong></p>}
+            {item.description && <p>{item.description}</p>}
+            {item.highlight && <p className="stack">{item.highlight}</p>}
+          </article>
+        ))}
+      </div>
+    </div>
+  </section>
+  <section id="leadership">
+    <div className="wrap">
+      <div className="sec-head"><p className="eyebrow">Leadership & Events</p><h2>Making things happen behind the scenes</h2><p className="sec-intro">Coordination, logistics, teamwork, and the details that keep an event moving.</p></div>
+      <div className="cards">
+        {content.leadershipEvents.filter((item) => !['no','false','0','hide'].includes(String(item.show || '').toLowerCase())).map((item, i) => (
+          <article className="card" key={item.title + i}>
+            {item.date && <p className="chip">{item.date}</p>}
+            <h3>{item.title}</h3>
+            {item.company && <p><strong>{item.company}</strong></p>}
+            {item.description && <p>{item.description}</p>}
+            {item.highlight && <p className="stack">{item.highlight}</p>}
+          </article>
+        ))}
+      </div>
+    </div>
+  </section>
+  <section id="tools">
         <div className="wrap">
           <div className="sec-head">
             <p className="eyebrow">{isSocial ? 'Tools' : 'Skills'}</p>
@@ -889,7 +865,7 @@ function Portfolio({ content }) {
   )
 }
 
-const DEFAULTS = { profile: pf, social: sc, auto: au }
+const DEFAULTS = { profile: pf, social: sc, auto: au, experience: ex, leadershipEvents: le }
 
 export default function App() {
   const [content, setContent] = useState(() => (SHEET_ID && cachedContent()) || DEFAULTS)

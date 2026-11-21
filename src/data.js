@@ -114,3 +114,17 @@ export const auto = {
     "Automation is the next step. I'm building real demo workflows now, and I'll add client results here as soon as I have them.",
   ],
 }
+
+// Experience cards are editable through the "experience" Google Sheets tab.
+export const experience = [
+  { title: 'Fraud Specialist / Customer Service', company: 'Foundever · Capital One', date: 'Sep 2025 — Jan 2026', description: 'Handled customer concerns and fraud-related cases with care, accuracy, and clear communication.', highlight: '' },
+  { title: 'Junior Front-End Developer Intern', company: 'New Horizon Finance', date: 'Jul — Aug 2025', description: 'Contributed UI/UX and front-end development through feedback, iteration, and practical delivery.', highlight: '' },
+  { title: 'Marketing & Sales Intern', company: 'Sole Explorer Travel & Tours', date: 'Apr — May 2026', description: 'Created promotional content, supported social channels and live selling, and helped keep the website updated.', highlight: '' },
+]
+
+// Leadership, volunteering, and event cards are editable through "leadership_events".
+export const leadershipEvents = [
+  { title: 'Student Community Day — Mega Manila', company: 'AWS Student Community', date: '2025', description: 'Helped coordinate a large-scale community event, working with a team to keep operations organized.', highlight: 'Event logistics · Team of 8 · 500+ attendees' },
+  { title: 'VIP & speaker support', company: 'AWS Community', date: '2024', description: 'Supported event guests and speakers with on-site coordination and hospitality.', highlight: '' },
+  { title: 'Hackathon & ICT Week', company: 'Campus events', date: '', description: 'Contributed to event activities for the Solar Power Hackathon and DBM ICT Week.', highlight: '' },
+]
