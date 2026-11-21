@@ -71,7 +71,7 @@ export const social = {
 
 // DARK MODE: automation and web development (skills in progress, shown honestly)
 export const auto = {
-  badge: 'Currently building my automation skills',
+  badge: 'Open to junior web developer roles',
   headline: 'Websites that work. Workflows that run themselves.',
   lede: "I build and maintain websites today, and I'm training in Zapier, Make, Airtable, Notion, and Google Sheets automation. I'm upfront about where I am, and serious about getting there.",
   stats: [
@@ -86,10 +86,11 @@ export const auto = {
     { title: 'Sheets and Apps Script', status: 'Demo in Progress', text: 'Spreadsheet automations and small scripts that clean, sort, and move data for you.' },
   ],
   webProjects: [
+    { title: 'Event photobooth', status: 'On GitHub', stack: 'Node.js, Express, Nodemailer', text: 'A kiosk photobooth for live events. Guests take a photo strip and it is emailed to them, even when the venue Wi-Fi drops.', link: 'https://github.com/athensofgreece/event-photobooth', image: 'images/photobooth-screenshot.png' },
     { title: 'NHFC company website', status: 'Live', stack: 'Figma, React', text: 'Led UI/UX design and front-end development from wireframes to deployment, presenting to IT, HR, and Sales stakeholders for feedback.', link: '' },
     { title: 'AWS Student Community Day page', status: 'Live', stack: 'HTML, CSS, JavaScript', text: 'Responsive event site highlighting keynotes, technical sessions, and panels.', link: 'https://athensofgreece.github.io/awsscd-webpage/' },
     { title: 'Bible Verse Generator for ADHD', status: 'Live', stack: 'HTML, CSS, JavaScript', text: 'An ADHD-friendly web app that serves verses for focus, peace, strength, and purpose with a New Verse button.', link: 'https://athensofgreece.github.io/verses_generator/' },
-    { title: "Mother's Day website", status: 'Live', stack: 'HTML, CSS, JavaScript', text: 'A personal site with a structured photo gallery and heartfelt messages.', link: 'https://athensofgreece.github.io/mothers-day/' },
+    { title: 'Pomodoro Timer', status: 'Live', stack: 'HTML, CSS, JavaScript', text: 'A dark, neon focus timer with a task list, a 4-session cycle, ambient sounds, and a daily goal and streak.', link: 'https://athensofgreece.github.io/pomodoro-timer/', image: 'images/timer-screenshot.png' },
   ],
   // These are DEMO builds I'm working on. They are not client work.
   demos: [

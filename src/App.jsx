@@ -893,9 +893,14 @@ const DEFAULTS = { profile: pf, social: sc, auto: au }
 
 export default function App() {
   const [content, setContent] = useState(() => (SHEET_ID && cachedContent()) || DEFAULTS)
+  // First-time visitors have no cached content yet, so show skeletons until the sheet answers (or 3 s pass).
+  const [syncing, setSyncing] = useState(() => Boolean(SHEET_ID && !cachedContent()))
+
+  useEffect(() => { document.documentElement.classList.toggle('syncing', syncing) }, [syncing])
 
   useEffect(() => {
     let active = true
+    const stopSyncing = setTimeout(() => setSyncing(false), 3000)
 
     const refreshContent = async () => {
       try {
@@ -905,6 +910,8 @@ export default function App() {
         }
       } catch (error) {
         console.error('Failed to refresh portfolio content:', error)
+      } finally {
+        if (active) setSyncing(false)
       }
     }
 
@@ -913,6 +920,7 @@ export default function App() {
 
     return () => {
       active = false
+      clearTimeout(stopSyncing)
       clearInterval(interval)
     }
   }, [])
