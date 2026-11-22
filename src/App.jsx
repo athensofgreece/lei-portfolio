@@ -484,13 +484,14 @@ function Portfolio({ content }) {
           </div>
 
           <ul className={menuOpen ? 'mobile-menu open' : 'mobile-menu'}>
-            <li><a href="#experience" onClick={() => setMenuOpen(false)}>Experience</a></li>
-            <li><a href="#leadership" onClick={() => setMenuOpen(false)}>Events</a></li>
             <li>
               <a href="#work" onClick={() => setMenuOpen(false)}>
                 {isSocial ? 'Work' : 'Projects'}
               </a>
             </li>
+            <li><a href="#experience" onClick={() => setMenuOpen(false)}>Experience</a></li>
+            <li><a href="#leadership" onClick={() => setMenuOpen(false)}>Events</a></li>
+            <li><a href="#tools" onClick={() => setMenuOpen(false)}>{isSocial ? 'Tools' : 'Skills'}</a></li>
             <li><a href="#about" onClick={() => setMenuOpen(false)}>About</a></li>
             <li><a href="#contact" onClick={() => setMenuOpen(false)}>Connect</a></li>
           </ul>
