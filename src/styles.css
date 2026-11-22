@@ -1378,104 +1378,99 @@ nav ul a:hover { color: var(--text); background-size: 100% 1.5px; }
 .about-link:hover span { transform: translateX(4px); }
 
 /* Contact */
-.contact-card {
+.contact-editorial {
   position: relative;
-  isolation: isolate;
-  overflow: hidden;
-  padding: clamp(2rem, 6vw, 4.5rem);
-  border: 1px solid var(--line);
-  border-radius: 32px;
-  background: linear-gradient(150deg, color-mix(in srgb, var(--accent) 10%, var(--panel)), var(--panel) 65%);
+  padding: clamp(2rem, 5vw, 4rem) 0 clamp(3rem, 7vw, 5.5rem);
+  border-top: 1px solid var(--line);
+  border-bottom: 1px solid var(--line);
 }
 
-.contact-card::after {
-  content: "";
-  position: absolute;
-  z-index: -1;
-  inset: 0;
-  background: radial-gradient(ellipse at 100% 0%, color-mix(in srgb, var(--accent) 16%, transparent), transparent 55%);
-  pointer-events: none;
+.contact-meta {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: clamp(2rem, 4vw, 3rem);
 }
 
-:root[data-theme='dark'] .contact-card { border-radius: 20px; }
+.contact-meta .eyebrow { margin: 0; }
+.contact-index { color: var(--muted); font-family: var(--mono); font-size: .76rem; letter-spacing: .06em; }
 
-:root[data-theme='dark'] .contact-card::after {
-  inset: 0 0 0 auto;
-  width: 60%;
-  background:
-    linear-gradient(var(--line) 1px, transparent 1px) 0 0 / 34px 34px,
-    linear-gradient(90deg, var(--line) 1px, transparent 1px) 0 0 / 34px 34px;
-  opacity: .45;
-  -webkit-mask-image: radial-gradient(ellipse at 85% 15%, #000 5%, transparent 70%);
-  mask-image: radial-gradient(ellipse at 85% 15%, #000 5%, transparent 70%);
+#contact .contact-editorial h2 {
+  margin: 0;
+  max-width: 100%;
+  font-size: clamp(3rem, 9vw, 8rem);
+  line-height: .94;
+  letter-spacing: -.055em;
+  font-weight: 800;
 }
 
-#contact .contact-card h2 {
-  max-width: 14ch;
-  margin: 0 0 1.1rem;
-  font-size: clamp(2.6rem, 7vw, 5.8rem);
-  line-height: .98;
-  letter-spacing: -.03em;
+#contact .contact-editorial h2 span {
+  display: block;
+  color: var(--accent-text);
+  font-family: var(--serif);
+  font-style: italic;
+  font-weight: 400;
+  letter-spacing: -.035em;
 }
 
-:root[data-theme='dark'] #contact .contact-card h2 { letter-spacing: -.04em; }
-
-.accent-word { font-family: var(--serif); font-style: italic; font-weight: 400; font-size: 1.07em; color: var(--accent-text); }
-
-:root[data-theme='dark'] .accent-word {
+:root[data-theme='dark'] #contact .contact-editorial h2 span {
   font-family: var(--head);
   font-style: normal;
   font-weight: 700;
-  font-size: 1em;
+  letter-spacing: -.055em;
   background: linear-gradient(95deg, var(--accent), var(--accent-2));
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent;
 }
 
-.contact-card .muted { max-width: 48ch; margin: 0; font-size: 1.08rem; }
-
-.contact-actions {
+.contact-bottom {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) auto;
-  align-items: center;
-  gap: 1.25rem;
-  margin-top: clamp(2rem, 4vw, 3rem);
-  max-width: 820px;
+  grid-template-columns: minmax(180px, .7fr) minmax(0, 1.3fr);
+  align-items: end;
+  gap: 2.5rem;
+  margin-top: clamp(2.5rem, 6vw, 4.5rem);
 }
 
-.contact-email-cta {
-  display: flex;
+.contact-bottom .muted { margin: 0; max-width: 34ch; }
+
+.contact-links { display: flex; flex-direction: column; align-items: flex-start; gap: 1.2rem; }
+
+.contact-email-link {
+  display: inline-grid;
+  grid-template-columns: auto minmax(0, 1fr) 22px;
   align-items: center;
-  justify-content: space-between;
-  gap: 1.25rem;
-  min-width: 0;
-  padding: 1.25rem 1.5rem;
-  border: 1px solid color-mix(in srgb, var(--accent) 42%, var(--line));
-  border-radius: 16px;
-  background: var(--panel);
+  gap: .65rem 1rem;
+  padding: 0 0 .9rem;
+  border-bottom: 1px solid color-mix(in srgb, var(--accent) 55%, var(--line));
   color: var(--text);
   text-decoration: none;
-  transition: transform .25s ease, border-color .25s ease, box-shadow .25s ease;
+  width: min(100%, 680px);
+  transition: color .2s ease, border-color .2s ease;
 }
 
-.contact-email-cta:hover,
-.contact-email-cta:focus-visible {
-  transform: translateY(-3px);
-  border-color: var(--accent);
-  box-shadow: 0 12px 28px color-mix(in srgb, var(--accent) 15%, transparent);
+.contact-email-link span {
+  color: var(--accent-text);
+  font-size: .72rem;
+  font-weight: 700;
+  letter-spacing: .1em;
+  text-transform: uppercase;
 }
 
-.contact-email-copy { display: grid; gap: .35rem; min-width: 0; }
-.contact-email-label { color: var(--accent-text); font-size: .72rem; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; }
-:root[data-theme='dark'] .contact-email-label { font-family: var(--mono); font-weight: 500; text-transform: lowercase; }
-.contact-email-address { font-family: var(--display); font-size: clamp(1.05rem, 2.4vw, 1.65rem); overflow-wrap: anywhere; }
-:root[data-theme='dark'] .contact-email-address { font-weight: 700; letter-spacing: -.025em; }
-.contact-email-cta > svg { flex: none; color: var(--accent-text); transition: transform .2s ease; }
-.contact-email-cta:hover > svg { transform: translateX(4px); }
+.contact-email-link strong {
+  font-family: var(--display);
+  font-size: clamp(1rem, 2vw, 1.4rem);
+  font-weight: 600;
+  overflow-wrap: anywhere;
+}
 
-.contact-social-links { display: flex; flex-wrap: wrap; gap: .8rem; }
-.contact-social-links a { color: var(--text); text-decoration: none; font-size: .92rem; font-weight: 700; white-space: nowrap; }
+.contact-email-link svg { color: var(--accent-text); transition: transform .2s ease; }
+.contact-email-link:hover, .contact-email-link:focus-visible { border-color: var(--accent); color: var(--accent-text); }
+.contact-email-link:hover svg { transform: translateX(4px); }
+
+.contact-social-links { display: flex; flex-wrap: wrap; gap: 1.4rem; }
+.contact-social-links a { color: var(--text); text-decoration: none; font-size: .9rem; font-weight: 700; white-space: nowrap; }
 .contact-social-links a span { color: var(--accent-text); margin-left: .2rem; }
 .contact-social-links a:hover { color: var(--accent-text); }
 
