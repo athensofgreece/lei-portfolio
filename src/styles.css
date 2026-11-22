@@ -1501,6 +1501,9 @@ footer {
   gap: 1rem;
 }
 
+.footer-bottom { order: 1; }
+.footer-social-links { order: 2; }
+
 .footer-social-links {
   display: flex;
   align-items: center;
