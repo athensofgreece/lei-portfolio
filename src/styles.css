@@ -1834,3 +1834,23 @@ footer {
 }
 @media (prefers-reduced-motion: reduce) { .journey-detail { animation: none; } .journey-dot, .event-rail-item { transition: none; }
 }
+
+
+/* Contact link layout correction */
+.contact-bottom { grid-template-columns: minmax(0, .7fr) minmax(0, 1.3fr); }
+.contact-links { width: 100%; min-width: 0; }
+.contact-email-link {
+  box-sizing: border-box;
+  grid-template-columns: minmax(0, 1fr) 22px;
+  width: 100%;
+  min-width: 0;
+}
+.contact-email-link span { grid-column: 1 / -1; }
+.contact-email-link strong { grid-column: 1; min-width: 0; white-space: normal; overflow-wrap: anywhere; }
+.contact-email-link svg { grid-column: 2; grid-row: 2; }
+@media (max-width: 600px) {
+  .contact-bottom { grid-template-columns: minmax(0, 1fr); gap: 1.5rem; }
+  .contact-links { width: 100%; }
+  .contact-email-link strong { font-size: clamp(.95rem, 4.5vw, 1.15rem); }
+  .contact-social-links { gap: 1.3rem; }
+}
