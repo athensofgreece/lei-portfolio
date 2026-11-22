@@ -830,98 +830,40 @@ function Portfolio({ content }) {
       <section id="contact">
         <div className="wrap">
           <div className="contact-card">
-            <div className="contact-top">
-              <p className="eyebrow">Contact</p>
-              <div className="contact-who">
-                <Portrait mode={mode} name={profile.name} initials={initials} small />
-                <div className="contact-id">
-                  <b>{profile.name}</b>
-                  <span>{d.badge}</span>
-                </div>
-              </div>
-            </div>
+            <p className="eyebrow">A new connection</p>
             <h2>
-              Let's work <span className="accent-word">together</span>
+              Let's make <span className="accent-word">something meaningful.</span>
             </h2>
             <p className="muted">
-              Tell me about your brand and what you need. I'll reply with how I can help.
+              Open to opportunities, collaborations, and interesting problems worth solving.
             </p>
-            <ul className="contact-list">
-              <li>
-                <span className="cl-label">Email</span>
-                <a className="mail" href={safeMailto(profile.email)} data-track="contact: email">
-                  {profile.email}
-                </a>
-                <CopyButton text={profile.email} track="contact: copy email" />
-              </li>
-              {safeHref(profile.github) && (
-                <li>
-                  <span className="cl-label">GitHub</span>
-                  <a className="cl-link" data-track="contact: github" href={safeHref(profile.github)} target="_blank" rel="noopener noreferrer">
-                    {safeHref(profile.github).replace(/^https?:\/\//, '')}
-                  </a>
-                  <span className="cl-go" aria-hidden="true">
-                    ↗
+            <div className="contact-actions">
+              {safeMailto(profile.email) && (
+                <a className="contact-email-cta" href={safeMailto(profile.email)} data-track="contact: email">
+                  <span className="contact-email-copy">
+                    <span className="contact-email-label">Start a conversation</span>
+                    <span className="contact-email-address">{profile.email}</span>
                   </span>
-                </li>
+                  <ArrowRight size={22} aria-hidden="true" />
+                </a>
               )}
-            </ul>
+              <div className="contact-social-links">
+                <a href="https://www.linkedin.com/in/athena-picones-7554aa286/" data-track="contact: linkedin" target="_blank" rel="noopener noreferrer">
+                  LinkedIn <span aria-hidden="true">↗</span>
+                </a>
+                {safeHref(profile.github) && (
+                  <a href={safeHref(profile.github)} data-track="contact: github" target="_blank" rel="noopener noreferrer">
+                    GitHub <span aria-hidden="true">↗</span>
+                  </a>
+                )}
+              </div>
+            </div>
           </div>
         </div>
       </section>
 
       <footer>
         <div className="wrap footer-content">
-          <div className="footer-social-card">
-            <h3>Let's Connect</h3>
-            <p>Have a project in mind? Let's create something useful together!</p>
-            <div className="footer-social-links">
-              {safeMailto(profile.email) && (
-                <a href={safeMailto(profile.email)} aria-label="Email" data-track="footer: email">
-                  <FaEnvelope size={20} />
-                </a>
-              )}
-              <a
-                href="https://www.facebook.com/atheeeens"
-                aria-label="Facebook"
-                data-track="footer: facebook"
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                <FaFacebookF size={20} />
-              </a>
-              <a
-                href="https://www.instagram.com/athenelytical/"
-                aria-label="Instagram"
-                data-track="footer: instagram"
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                <FaInstagram size={20} />
-              </a>
-              <a
-                href="https://www.linkedin.com/in/athena-picones-7554aa286/"
-                aria-label="LinkedIn"
-                data-track="footer: linkedin"
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                <FaLinkedinIn size={20} />
-              </a>
-              {safeHref(profile.github) && (
-                <a
-                  href={safeHref(profile.github)}
-                  aria-label="GitHub"
-                  data-track="footer: github"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
-                  <FaGithub size={20} />
-                </a>
-              )}
-            </div>
-          </div>
-
           <div className="footer-bottom">
             <span>© {new Date().getFullYear()} {profile.name}</span>
             {analyticsOn && <span>Privacy-friendly stats, no cookies</span>}
