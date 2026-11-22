@@ -829,33 +829,35 @@ function Portfolio({ content }) {
 
       <section id="contact">
         <div className="wrap">
-          <div className="contact-card">
-            <p className="eyebrow">A new connection</p>
+          <div className="contact-editorial">
+            <div className="contact-meta">
+              <p className="eyebrow">Let's connect</p>
+              <span className="contact-index">01 / CONTACT</span>
+            </div>
             <h2>
-              Let's make <span className="accent-word">something meaningful.</span>
+              Have a good idea?
+              <span>Let's make it happen.</span>
             </h2>
-            <p className="muted">
-              Open to opportunities, collaborations, and interesting problems worth solving.
-            </p>
-            <div className="contact-actions">
-              {safeMailto(profile.email) && (
-                <a className="contact-email-cta" href={safeMailto(profile.email)} data-track="contact: email">
-                  <span className="contact-email-copy">
-                    <span className="contact-email-label">Start a conversation</span>
-                    <span className="contact-email-address">{profile.email}</span>
-                  </span>
-                  <ArrowRight size={22} aria-hidden="true" />
-                </a>
-              )}
-              <div className="contact-social-links">
-                <a href="https://www.linkedin.com/in/athena-picones-7554aa286/" data-track="contact: linkedin" target="_blank" rel="noopener noreferrer">
-                  LinkedIn <span aria-hidden="true">↗</span>
-                </a>
-                {safeHref(profile.github) && (
-                  <a href={safeHref(profile.github)} data-track="contact: github" target="_blank" rel="noopener noreferrer">
-                    GitHub <span aria-hidden="true">↗</span>
+            <div className="contact-bottom">
+              <p className="muted">Open to opportunities, collaborations, and interesting problems worth solving.</p>
+              <div className="contact-links">
+                {safeMailto(profile.email) && (
+                  <a className="contact-email-link" href={safeMailto(profile.email)} data-track="contact: email">
+                    <span>Drop me a line</span>
+                    <strong>{profile.email}</strong>
+                    <ArrowRight size={22} aria-hidden="true" />
                   </a>
                 )}
+                <div className="contact-social-links">
+                  <a href="https://www.linkedin.com/in/athena-picones-7554aa286/" data-track="contact: linkedin" target="_blank" rel="noopener noreferrer">
+                    LinkedIn <span aria-hidden="true">↗</span>
+                  </a>
+                  {safeHref(profile.github) && (
+                    <a href={safeHref(profile.github)} data-track="contact: github" target="_blank" rel="noopener noreferrer">
+                      GitHub <span aria-hidden="true">↗</span>
+                    </a>
+                  )}
+                </div>
               </div>
             </div>
           </div>
