@@ -866,6 +866,51 @@ function Portfolio({ content }) {
 
       <footer>
         <div className="wrap footer-content">
+          <div className="footer-social-links" aria-label="Social links">
+            {safeMailto(profile.email) && (
+              <a href={safeMailto(profile.email)} aria-label="Email" data-track="footer: email">
+                <FaEnvelope size={20} />
+              </a>
+            )}
+            <a
+              href="https://www.facebook.com/atheeeens"
+              aria-label="Facebook"
+              data-track="footer: facebook"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              <FaFacebookF size={20} />
+            </a>
+            <a
+              href="https://www.instagram.com/athenelytical/"
+              aria-label="Instagram"
+              data-track="footer: instagram"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              <FaInstagram size={20} />
+            </a>
+            <a
+              href="https://www.linkedin.com/in/athena-picones-7554aa286/"
+              aria-label="LinkedIn"
+              data-track="footer: linkedin"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              <FaLinkedinIn size={20} />
+            </a>
+            {safeHref(profile.github) && (
+              <a
+                href={safeHref(profile.github)}
+                aria-label="GitHub"
+                data-track="footer: github"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                <FaGithub size={20} />
+              </a>
+            )}
+          </div>
           <div className="footer-bottom">
             <span>© {new Date().getFullYear()} {profile.name}</span>
             {analyticsOn && <span>Privacy-friendly stats, no cookies</span>}
