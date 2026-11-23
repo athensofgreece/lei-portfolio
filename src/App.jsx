@@ -579,11 +579,11 @@ function Portfolio({ content }) {
                 <h2>Websites I've built</h2>
               </div>
               <div className="cards">
-                {auto.webProjects.map((p) => (
-                  <div className="card" key={p.title}>
-                    {(() => {
-                      const shot = mediaItems(p.image)[0]
-                      return shot ? (
+                {auto.webProjects.map((p) => {
+                  const shot = mediaItems(p.image)[0]
+                  return (
+                    <div className="card" key={p.title}>
+                      {shot && (
                         <img
                           className="card-shot"
                           src={shot.webpSrc || shot.src}
@@ -594,23 +594,23 @@ function Portfolio({ content }) {
                             else e.currentTarget.style.display = 'none'
                           }}
                         />
-                      ) : null
-                    })()}
-                    <h3>{p.title}</h3>
-                    <p>{p.text}</p>
-                    <p className="stack">{p.stack}</p>
-                    {safeHref(p.link) && (
-                      <a data-track={`site: ${p.title}`}
-                        className="btn"
-                        href={safeHref(p.link)}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                      >
-                        Visit site
-                      </a>
-                    )}
-                  </div>
-                ))}
+                      )}
+                      <h3>{p.title}</h3>
+                      <p>{p.text}</p>
+                      <p className="stack">{p.stack}</p>
+                      {safeHref(p.link) && (
+                        <a data-track={`site: ${p.title}`}
+                          className="btn"
+                          href={safeHref(p.link)}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                        >
+                          Visit site
+                        </a>
+                      )}
+                    </div>
+                  )
+                })}
               </div>
               <div className="sec-head sub-head">
                 <p className="eyebrow">Automation</p>
