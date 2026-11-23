@@ -114,3 +114,19 @@ export const auto = {
     "Automation is the next step. I'm building real demo workflows now, and I'll add client results here as soon as I have them.",
   ],
 }
+
+// Experience cards are editable through the "experience" Google Sheets tab.
+export const experience = [
+  { title: 'Marketing and Sales Intern', company: 'Sole Explorer Travel and Tours', date: 'Apr — May 2026', description: 'Maintained the post-launch company website, resolved admin-side bugs, configured TikTok Live, hosted twice-weekly live selling sessions, and produced promotional videos for TikTok and Facebook.', highlight: 'Approximately 40K interactions in a single live selling session · 10+ marketing videos' },
+  { title: 'Fraud Specialist Customer Service Representative', company: 'Foundever — Capital One', date: 'Sep 2025 — Jan 2026', description: 'Handled fraud-related customer concerns through account review, identity verification, account authentication, and cross-team coordination to help protect customers from unauthorized access and transactions.', highlight: '40–60 calls per day, depending on call duration and queue volume' },
+  { title: 'Junior Front-End Developer Intern', company: 'New Horizon Finance Corporation', date: 'Jul — Aug 2025', description: 'Designed and developed a seven-page company website, including a loan calculator and pensioner information form, from Figma wireframes through deployment. Presented iterations and incorporated feedback from IT, HR, and Sales.', highlight: '7-page website · Wireframes to deployment' },
+]
+
+// Leadership, volunteering, and event cards are editable through "leadership_events".
+export const leadershipEvents = [
+  { title: 'AWS Student Community Day Mega Manila 2025', company: 'AWS Student Builders Group PUP · Lead Logistics', date: 'Sep 17, 2025', description: 'Directed event logistics for a flagship tech conference, managing venue setup, registration support, materials distribution, and on-site coordination. Supervised a logistics team of 8, coordinated vendors and venue staff, handled contingencies, and managed attendee materials.', highlight: '500+ attendees · 6+ speakers · Led logistics team of 8' },
+  { title: 'Solar Power Hackathon', company: 'Lead Usher · Arthaland Tower, BGC, Taguig', date: 'Aug 18, 2025', description: 'Led a team of 7 ushers, overseeing team deployment, shift assignments, and on-site guest flow throughout the hackathon.', highlight: 'Team leadership · Usher deployment · Guest flow' },
+  { title: 'AWS Community Day Philippines 2024', company: 'Usher · Arthaland Tower, BGC, Taguig', date: 'Sep 21–22, 2024', description: 'Managed attendee flow, crowd control, and guest inquiries throughout the two-day conference with 6+ speakers.', highlight: 'Two-day conference · Guest and attendee support' },
+  { title: 'AWS Student Community Day 2024', company: 'AWS Student Builders Group PUP · Lead Usher', date: 'Apr 17, 2024', description: 'Spearheaded usher operations for a one-day flagship conference with 800+ attendees. Coordinated volunteer schedules, briefings, on-the-day reassignment, and VIP speaker movement between sessions, panels, and networking areas.', highlight: '800+ attendees · 6+ speakers · VIP speaker handling' },
+  { title: 'DBM ICT Week 2024 — Full Throttle: Digital Transformation', company: 'Usher & Club Representative · AWS Cloud Club PUP Manila', date: 'Feb 21, 2024', description: 'Represented the club, engaged with sponsors, booths, public figures, and attendees, and liaised with event organizers on booth logistics and delegate schedules.', highlight: 'Engaged with 15+ sponsors and booths' },
+]

@@ -18,6 +18,8 @@ const COLLECTIONS = {
   auto_demos: ['auto', 'demos', 'title'],
   auto_roadmap: ['auto', 'roadmap', 'tool'],
   auto_stats: ['auto', 'stats', 'l'],
+  experience: ['root', 'experience', 'title'],
+  leadership_events: ['root', 'leadershipEvents', 'title'],
 }
 // settings tab: key -> [section, field, isList]
 const SETTINGS = {
@@ -62,7 +64,7 @@ export async function loadSheetContent(base) {
       try {
         const rows = (await fetchTab(tab, key)).filter((r) => r[key] && !hidden(r.show))
           .map((r) => Object.fromEntries(Object.entries(r).filter(([k]) => k !== 'show').map(([k, v]) => [k, LISTS.has(k) ? split(v) : v])))
-        if (rows.length) { out[a][b] = rows; changed = true }
+        if (rows.length) { if (a === 'root') out[b] = rows; else out[a][b] = rows; changed = true }
       } catch (e) { console.warn('[sheet]', tab, e.message) }
     }),
     (async () => {
