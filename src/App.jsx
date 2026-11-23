@@ -112,6 +112,17 @@ function initialMode() {
 }
 
 // "image" cells may hold several files separated by |, each a picture or a video (.mp4 / .webm)
+const OPTIMIZED_IMAGE_NAMES = new Set([
+  'nhfc-screenshot',
+  'verses-screenshot',
+  'social-media-intelligence',
+  'about-studio',
+  'photobooth-screenshot',
+  'timer-screenshot',
+  'about-lab',
+  'awsscd-screenshot',
+])
+
 const mediaItems = (value) =>
   String(value || '')
     .split('|')
@@ -120,10 +131,13 @@ const mediaItems = (value) =>
     .map((raw) => {
       // the site serves the public/ folder from its root, so a leading "public/" is dropped
       const src = /^https?:/.test(raw) ? raw : raw.replace(/^\.?\/?public\//i, '')
-      return {
-        src: /^https?:/.test(src) ? src : BASE + src,
-        video: /\.(mp4|webm|mov)(\?.*)?$/i.test(src),
-      }
+      const video = /\.(mp4|webm|mov)(\?.*)?$/i.test(src)
+      const originalSrc = /^https?:/.test(src) ? src : BASE + src
+      const match = !video && !/^https?:/.test(src) && src.match(/(?:^|\/)images\/([^/]+)\.(jpg|jpeg|png)(\?.*)?$/i)
+      const webpSrc = match && OPTIMIZED_IMAGE_NAMES.has(match[1].toLowerCase())
+        ? BASE + src.replace(/\.(jpg|jpeg|png)(\?.*)?$/i, '.webp')
+        : null
+      return { src: originalSrc, webpSrc, video }
     })
 
 const splitList = (value) =>
@@ -165,7 +179,16 @@ function CaseTile({ p, onOpen }) {
             onError={() => setBadSrc(cover.src)}
           />
         ) : (
-          <img className="tile-media" src={cover.src} alt="" loading="lazy" onError={() => setBadSrc(cover.src)} />
+          <img
+            className="tile-media"
+            src={cover.webpSrc || cover.src}
+            alt=""
+            loading="lazy"
+            onError={(e) => {
+              if (cover.webpSrc && e.currentTarget.src.endsWith('.webp')) e.currentTarget.src = cover.src
+              else setBadSrc(cover.src)
+            }}
+          />
         ))}
       <span className="tile-go" aria-hidden="true">
         →
@@ -238,10 +261,13 @@ function CaseDialog({ p, onClose }) {
               ) : (
                 <img
                   key={m.src}
-                  src={m.src}
+                  src={m.webpSrc || m.src}
                   alt={`${p.title} (${i + 1} of ${items.length})`}
                   loading="lazy"
-                  onError={() => markBad(m.src)}
+                  onError={(e) => {
+                    if (m.webpSrc && e.currentTarget.src.endsWith('.webp')) e.currentTarget.src = m.src
+                    else markBad(m.src)
+                  }}
                 />
               ),
             )}
@@ -284,7 +310,7 @@ const probePortrait = (mode) => {
   if (!portraitProbe[mode]) {
     const base = `${BASE}images/about-${mode === 'light' ? 'studio' : 'lab'}`
     portraitProbe[mode] = (async () => {
-      for (const ext of ['jpg', 'png', 'webp']) {
+      for (const ext of ['webp', 'jpg', 'png']) {
         const src = `${base}.${ext}`
         const ok = await new Promise((resolve) => {
           const im = new Image()
@@ -556,7 +582,21 @@ function Portfolio({ content }) {
                 {auto.webProjects.map((p) => (
                   <div className="card" key={p.title}>
                     {mediaItems(p.image)[0] && (
-                      <img className="card-shot" src={mediaItems(p.image)[0].src} alt={`Screenshot of ${p.title}`} loading="lazy" />
+                      {(() => {
+                      const shot = mediaItems(p.image)[0]
+                      return shot && (
+                        <img
+                          className="card-shot"
+                          src={shot.webpSrc || shot.src}
+                          alt={`Screenshot of ${p.title}`}
+                          loading="lazy"
+                          onError={(e) => {
+                            if (shot.webpSrc && e.currentTarget.src.endsWith('.webp')) e.currentTarget.src = shot.src
+                            else e.currentTarget.style.display = 'none'
+                          }}
+                        />
+                      )
+                    })()}
                     )}
                     <h3>{p.title}</h3>
                     <p>{p.text}</p>
