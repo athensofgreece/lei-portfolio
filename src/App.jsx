@@ -428,6 +428,7 @@ function Portfolio({ content }) {
 
   return (
     <>
+      <a className="skip-link" href="#main-content">Skip to main content</a>
       {isSocial && <div className="nuda-gradient-aurora" aria-hidden="true" />}
 
       <nav aria-label="Primary">
@@ -498,6 +499,7 @@ function Portfolio({ content }) {
         </div>
       </nav>
 
+      <main id="main-content">
       <header className="hero">
         <div className="wrap">
           <div className="hero-grid">
@@ -863,6 +865,8 @@ function Portfolio({ content }) {
           </div>
         </div>
       </section>
+      </main>
+
 
       <footer>
         <div className="wrap footer-content">
