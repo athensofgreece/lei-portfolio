@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://athensofgreece.github.io/lei-portfolio/sitemap.xml
