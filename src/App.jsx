@@ -2,7 +2,7 @@ import { useState, useLayoutEffect, useEffect, useCallback, useRef } from 'react
 import { safeHref, safeMailto } from './safe.js'
 import { analyticsOn } from './stats.js'
 import { flushSync } from 'react-dom'
-import { profile as pf, social as sc, auto as au } from './data.js'
+import { profile as pf, social as sc, auto as au, experience as ex, leadershipEvents as le } from './data.js'
 import { SHEET_ID } from './sheet.config.js'
 import { loadSheetContent, cachedContent } from './sheet.js'
 import { Timeline, Flow } from './components/Visuals.jsx'
@@ -18,7 +18,10 @@ import {
   Workflow,
   Database,
   FileSpreadsheet,
-  ChartNoAxesCombined
+  ChartNoAxesCombined,
+  Users,
+  MapPin,
+  ArrowUpRight
 } from 'lucide-react'
 import {
   SiFigma,
@@ -368,6 +371,13 @@ function Portfolio({ content }) {
   const [mode, setMode] = useState(initialMode)
   const [menuOpen, setMenuOpen] = useState(false)
   const [openCase, setOpenCase] = useState(null)
+  const [activeExperience, setActiveExperience] = useState(0)
+  const [activeEvent, setActiveEvent] = useState(0)
+
+  const experienceItems = (Array.isArray(content.experience) ? content.experience : []).filter((item) => !['no','false','0','hide'].includes(String(item.show || '').toLowerCase()))
+  const eventItems = (Array.isArray(content.leadershipEvents) ? content.leadershipEvents : []).filter((item) => !['no','false','0','hide'].includes(String(item.show || '').toLowerCase()))
+  const currentExperience = experienceItems[activeExperience] || experienceItems[0]
+  const currentEvent = eventItems[activeEvent] || eventItems[0]
 
   const isSocial = mode === 'light'
   const d = isSocial ? social : auto
@@ -418,6 +428,7 @@ function Portfolio({ content }) {
 
   return (
     <>
+      <a className="skip-link" href="#main-content">Skip to main content</a>
       {isSocial && <div className="nuda-gradient-aurora" aria-hidden="true" />}
 
       <nav aria-label="Primary">
@@ -475,29 +486,20 @@ function Portfolio({ content }) {
 
           <ul className={menuOpen ? 'mobile-menu open' : 'mobile-menu'}>
             <li>
-              <a href="#services" onClick={() => setMenuOpen(false)}>
-                Services
-              </a>
-            </li>
-            <li>
               <a href="#work" onClick={() => setMenuOpen(false)}>
                 {isSocial ? 'Work' : 'Projects'}
               </a>
             </li>
-            <li>
-              <a href="#about" onClick={() => setMenuOpen(false)}>
-                About
-              </a>
-            </li>
-            <li>
-              <a href="#contact" onClick={() => setMenuOpen(false)}>
-                Contact
-              </a>
-            </li>
+            <li><a href="#experience" onClick={() => setMenuOpen(false)}>Experience</a></li>
+            <li><a href="#leadership" onClick={() => setMenuOpen(false)}>Events</a></li>
+            <li><a href="#tools" onClick={() => setMenuOpen(false)}>{isSocial ? 'Tools' : 'Skills'}</a></li>
+            <li><a href="#about" onClick={() => setMenuOpen(false)}>About</a></li>
+            <li><a href="#contact" onClick={() => setMenuOpen(false)}>Connect</a></li>
           </ul>
         </div>
       </nav>
 
+      <main id="main-content">
       <header className="hero">
         <div className="wrap">
           <div className="hero-grid">
@@ -528,51 +530,6 @@ function Portfolio({ content }) {
           </div>
         </div>
       </header>
-
-      <div className="stats-strip">
-        <div className="wrap">
-          <div className="stats">
-            {d.stats.map((s) => (
-              <div key={s.l}>
-                <b>{s.n}</b>
-                <span>{s.l}</span>
-              </div>
-            ))}
-          </div>
-        </div>
-      </div>
-
-      <section id="services">
-        <div className="wrap">
-          <div className="sec-head">
-            <p className="eyebrow">Services</p>
-            <h2>{isSocial ? 'What I do for you' : 'What I can build for you'}</h2>
-            <p className="sec-intro">{d.lede}</p>
-          </div>
-          <div className="cards">
-            {d.services.map((s) => {
-              const Icon = SERVICE_ICONS[s.title.trim().toLowerCase()] || Workflow
-
-              return (
-                <div className="card service-card" key={s.title}>
-                  <div className="service-icon">
-                    <Icon className="service-icon-svg" size={24} strokeWidth={1.8} />
-                  </div>
-
-                  <h3>{s.title}</h3>
-                  <p>{s.text}</p>
-
-                  {s.status && (
-                    <span className={`chip ${s.status === 'Available' ? 'ok' : ''}`}>
-                      {s.status}
-                    </span>
-                  )}
-                </div>
-              )
-            })}
-          </div>
-        </div>
-      </section>
 
       <section id="work">
         <div className="wrap">
@@ -705,7 +662,96 @@ function Portfolio({ content }) {
         </div>
       </section>
 
-      <section id="tools">
+      <section id="experience" className="journey-section">
+    <div className="wrap">
+      <div className="sec-head journey-head">
+        <p className="eyebrow">Experience · {experienceItems.length} chapters</p>
+        <h2>My professional journey</h2>
+        <p className="sec-intro">Select a milestone to explore what I worked on and learned along the way.</p>
+      </div>
+      {experienceItems.length > 0 && (
+        <div className="journey-shell">
+          <div className="journey-track" role="tablist" aria-label="Professional experience timeline">
+            {experienceItems.map((item, i) => (
+              <button type="button" className={i === activeExperience ? 'journey-point is-active' : 'journey-point'} role="tab" aria-selected={i === activeExperience} aria-controls="journey-details" key={item.title + i} onClick={() => setActiveExperience(i)}>
+                <span className="journey-date">{item.date || `Chapter ${String(i + 1).padStart(2, '0')}`}</span>
+                <span className="journey-dot" aria-hidden="true"><BriefcaseBusiness size={16}/></span>
+                <span className="journey-point-title">{item.title}</span>
+              </button>
+            ))}
+          </div>
+          {currentExperience && (
+            <article className="journey-detail" id="journey-details" role="tabpanel">
+              <div className="journey-detail-top">
+                <span className="journey-index">EXPERIENCE / {String(activeExperience + 1).padStart(2, '0')}</span>
+                <span className="journey-date-pill">{currentExperience.date}</span>
+              </div>
+              <div className="journey-detail-grid">
+                <div>
+                  <h3>{currentExperience.title}</h3>
+                  {currentExperience.company && <p className="journey-company"><MapPin size={15}/> {currentExperience.company}</p>}
+                </div>
+                <div className="journey-copy">
+                  {currentExperience.description && <p>{currentExperience.description}</p>}
+                  {currentExperience.highlight && <p className="journey-highlight">{currentExperience.highlight}</p>}
+                </div>
+              </div>
+              <div className="journey-controls">
+                <span>{String(activeExperience + 1).padStart(2, '0')} <span className="journey-muted">/ {String(experienceItems.length).padStart(2, '0')}</span></span>
+                <div className="journey-arrows">
+                  <button type="button" aria-label="Previous experience" disabled={activeExperience === 0} onClick={() => setActiveExperience((i) => Math.max(0, i - 1))}>←</button>
+                  <button type="button" aria-label="Next experience" disabled={activeExperience >= experienceItems.length - 1} onClick={() => setActiveExperience((i) => Math.min(experienceItems.length - 1, i + 1))}>→</button>
+                </div>
+              </div>
+            </article>
+          )}
+        </div>
+      )}
+    </div>
+  </section>
+  <section id="leadership" className="event-explorer">
+    <div className="wrap">
+      <div className="sec-head event-head">
+        <p className="eyebrow">Leadership & Events · {eventItems.length} highlights</p>
+        <h2>Behind the scenes, making it happen</h2>
+        <p className="sec-intro">Explore the events, communities, and teams I've helped bring together.</p>
+      </div>
+      {eventItems.length > 0 && currentEvent && (
+        <div className="event-stage">
+          <div className="event-index-rail" role="tablist" aria-label="Leadership and event highlights">
+            {eventItems.map((item, i) => (
+              <button type="button" className={i === activeEvent ? 'event-rail-item is-active' : 'event-rail-item'} role="tab" aria-selected={i === activeEvent} aria-controls="event-details" key={item.title + i} onClick={() => setActiveEvent(i)}>
+                <span className="event-rail-num">{String(i + 1).padStart(2, '0')}</span>
+                <span className="event-rail-title">{item.title}</span>
+                <ArrowUpRight size={16} className="event-rail-arrow"/>
+              </button>
+            ))}
+          </div>
+          <article className="event-feature" id="event-details" role="tabpanel">
+            <div className="event-feature-orb" aria-hidden="true"/>
+            <div className="event-feature-top">
+              <span className="event-kicker"><CalendarDays size={15}/> {currentEvent.date || 'Event highlight'}</span>
+              <span className="event-count">{String(activeEvent + 1).padStart(2, '0')} / {String(eventItems.length).padStart(2, '0')}</span>
+            </div>
+            <div className="event-feature-content">
+              <h3>{currentEvent.title}</h3>
+              {currentEvent.company && <p className="event-organization"><Users size={15}/> {currentEvent.company}</p>}
+              {currentEvent.description && <p className="event-description">{currentEvent.description}</p>}
+              {currentEvent.highlight && <div className="event-impact"><span>MY CONTRIBUTION</span><p>{currentEvent.highlight}</p></div>}
+            </div>
+            <div className="event-feature-bottom">
+              <span>LEADERSHIP · COLLABORATION · EXECUTION</span>
+              <div className="event-feature-nav">
+                <button type="button" aria-label="Previous event" disabled={activeEvent === 0} onClick={() => setActiveEvent((i) => Math.max(0, i - 1))}>←</button>
+                <button type="button" aria-label="Next event" disabled={activeEvent >= eventItems.length - 1} onClick={() => setActiveEvent((i) => Math.min(eventItems.length - 1, i + 1))}>→</button>
+              </div>
+            </div>
+          </article>
+        </div>
+      )}
+    </div>
+  </section>
+  <section id="tools">
         <div className="wrap">
           <div className="sec-head">
             <p className="eyebrow">{isSocial ? 'Tools' : 'Skills'}</p>
@@ -785,99 +831,90 @@ function Portfolio({ content }) {
 
       <section id="contact">
         <div className="wrap">
-          <div className="contact-card">
-            <div className="contact-top">
-              <p className="eyebrow">Contact</p>
-              <div className="contact-who">
-                <Portrait mode={mode} name={profile.name} initials={initials} small />
-                <div className="contact-id">
-                  <b>{profile.name}</b>
-                  <span>{d.badge}</span>
+          <div className="contact-editorial">
+            <div className="contact-meta">
+              <p className="eyebrow">Let's connect</p>
+              <span className="contact-index">01 / CONTACT</span>
+            </div>
+            <h2>
+              Have a good idea?
+              <span>Let's make it happen.</span>
+            </h2>
+            <div className="contact-bottom">
+              <p className="muted">Open to opportunities, collaborations, and interesting problems worth solving.</p>
+              <div className="contact-links">
+                {safeMailto(profile.email) && (
+                  <a className="contact-email-link" href={safeMailto(profile.email)} data-track="contact: email">
+                    <span>Drop me a line</span>
+                    <strong>{profile.email}</strong>
+                    <ArrowRight size={22} aria-hidden="true" />
+                  </a>
+                )}
+                <div className="contact-social-links">
+                  <a href="https://www.linkedin.com/in/athena-picones-7554aa286/" data-track="contact: linkedin" target="_blank" rel="noopener noreferrer">
+                    LinkedIn <span aria-hidden="true">↗</span>
+                  </a>
+                  {safeHref(profile.github) && (
+                    <a href={safeHref(profile.github)} data-track="contact: github" target="_blank" rel="noopener noreferrer">
+                      GitHub <span aria-hidden="true">↗</span>
+                    </a>
+                  )}
                 </div>
               </div>
             </div>
-            <h2>
-              Let's work <span className="accent-word">together</span>
-            </h2>
-            <p className="muted">
-              Tell me about your brand and what you need. I'll reply with how I can help.
-            </p>
-            <ul className="contact-list">
-              <li>
-                <span className="cl-label">Email</span>
-                <a className="mail" href={safeMailto(profile.email)} data-track="contact: email">
-                  {profile.email}
-                </a>
-                <CopyButton text={profile.email} track="contact: copy email" />
-              </li>
-              {safeHref(profile.github) && (
-                <li>
-                  <span className="cl-label">GitHub</span>
-                  <a className="cl-link" data-track="contact: github" href={safeHref(profile.github)} target="_blank" rel="noopener noreferrer">
-                    {safeHref(profile.github).replace(/^https?:\/\//, '')}
-                  </a>
-                  <span className="cl-go" aria-hidden="true">
-                    ↗
-                  </span>
-                </li>
-              )}
-            </ul>
           </div>
         </div>
       </section>
+      </main>
+
 
       <footer>
         <div className="wrap footer-content">
-          <div className="footer-social-card">
-            <h3>Let's Connect</h3>
-            <p>Have a project in mind? Let's create something useful together!</p>
-            <div className="footer-social-links">
-              {safeMailto(profile.email) && (
-                <a href={safeMailto(profile.email)} aria-label="Email" data-track="footer: email">
-                  <FaEnvelope size={20} />
-                </a>
-              )}
+          <div className="footer-social-links" aria-label="Social links">
+            {safeMailto(profile.email) && (
+              <a href={safeMailto(profile.email)} aria-label="Email" data-track="footer: email">
+                <FaEnvelope size={20} />
+              </a>
+            )}
+            <a
+              href="https://www.facebook.com/atheeeens"
+              aria-label="Facebook"
+              data-track="footer: facebook"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              <FaFacebookF size={20} />
+            </a>
+            <a
+              href="https://www.instagram.com/athenelytical/"
+              aria-label="Instagram"
+              data-track="footer: instagram"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              <FaInstagram size={20} />
+            </a>
+            <a
+              href="https://www.linkedin.com/in/athena-picones-7554aa286/"
+              aria-label="LinkedIn"
+              data-track="footer: linkedin"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              <FaLinkedinIn size={20} />
+            </a>
+            {safeHref(profile.github) && (
               <a
-                href="https://www.facebook.com/atheeeens"
-                aria-label="Facebook"
-                data-track="footer: facebook"
+                href={safeHref(profile.github)}
+                aria-label="GitHub"
+                data-track="footer: github"
                 target="_blank"
                 rel="noopener noreferrer"
               >
-                <FaFacebookF size={20} />
+                <FaGithub size={20} />
               </a>
-              <a
-                href="https://www.instagram.com/athenelytical/"
-                aria-label="Instagram"
-                data-track="footer: instagram"
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                <FaInstagram size={20} />
-              </a>
-              <a
-                href="https://www.linkedin.com/in/athena-picones-7554aa286/"
-                aria-label="LinkedIn"
-                data-track="footer: linkedin"
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                <FaLinkedinIn size={20} />
-              </a>
-              {safeHref(profile.github) && (
-                <a
-                  href={safeHref(profile.github)}
-                  aria-label="GitHub"
-                  data-track="footer: github"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
-                  <FaGithub size={20} />
-                </a>
-              )}
-            </div>
+            )}
           </div>
-
           <div className="footer-bottom">
             <span>© {new Date().getFullYear()} {profile.name}</span>
             {analyticsOn && <span>Privacy-friendly stats, no cookies</span>}
@@ -889,10 +926,26 @@ function Portfolio({ content }) {
   )
 }
 
-const DEFAULTS = { profile: pf, social: sc, auto: au }
+const DEFAULTS = { profile: pf, social: sc, auto: au, experience: ex, leadershipEvents: le }
+
+// Older browser caches may predate the Experience and Leadership & Events sections.
+// Merge cached content with defaults so new arrays always exist on the first render.
+function mergeCachedContent(cached) {
+  if (!cached || typeof cached !== 'object') return DEFAULTS
+  return {
+    ...DEFAULTS,
+    ...cached,
+    profile: { ...DEFAULTS.profile, ...cached.profile },
+    social: { ...DEFAULTS.social, ...cached.social },
+    auto: { ...DEFAULTS.auto, ...cached.auto },
+    experience: Array.isArray(cached.experience) ? cached.experience : DEFAULTS.experience,
+    leadershipEvents: Array.isArray(cached.leadershipEvents) ? cached.leadershipEvents : DEFAULTS.leadershipEvents,
+  }
+}
+
 
 export default function App() {
-  const [content, setContent] = useState(() => (SHEET_ID && cachedContent()) || DEFAULTS)
+  const [content, setContent] = useState(() => mergeCachedContent(SHEET_ID && cachedContent()))
   // First-time visitors have no cached content yet, so show skeletons until the sheet answers (or 3 s pass).
   const [syncing, setSyncing] = useState(() => Boolean(SHEET_ID && !cachedContent()))
 
