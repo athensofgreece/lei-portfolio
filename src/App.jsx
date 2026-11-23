@@ -581,10 +581,9 @@ function Portfolio({ content }) {
               <div className="cards">
                 {auto.webProjects.map((p) => (
                   <div className="card" key={p.title}>
-                    {mediaItems(p.image)[0] && (
-                      {(() => {
+                    {(() => {
                       const shot = mediaItems(p.image)[0]
-                      return shot && (
+                      return shot ? (
                         <img
                           className="card-shot"
                           src={shot.webpSrc || shot.src}
@@ -595,9 +594,8 @@ function Portfolio({ content }) {
                             else e.currentTarget.style.display = 'none'
                           }}
                         />
-                      )
+                      ) : null
                     })()}
-                    )}
                     <h3>{p.title}</h3>
                     <p>{p.text}</p>
                     <p className="stack">{p.stack}</p>
