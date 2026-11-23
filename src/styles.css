@@ -736,9 +736,7 @@ nav ul a:hover { color: var(--text); background-size: 100% 1.5px; }
 .sec-head { margin-bottom: 2.4rem; }
 
 .eyebrow {
-  display: flex;
-  align-items: center;
-  gap: .7rem;
+  display: block;
   margin: 0 0 .9rem;
   font-size: .76rem;
   font-weight: 700;
@@ -747,10 +745,8 @@ nav ul a:hover { color: var(--text); background-size: 100% 1.5px; }
   color: var(--accent-text);
 }
 
-.eyebrow::before { content: ""; width: 28px; height: 1px; background: currentColor; }
 
 :root[data-theme='dark'] .eyebrow { font-family: var(--mono); font-weight: 500; letter-spacing: .1em; }
-:root[data-theme='dark'] .eyebrow::before { content: "//"; width: auto; height: auto; background: none; opacity: .6; }
 
 #services h2,
 #work h2,
