@@ -537,7 +537,7 @@ function Portfolio({ content }) {
             <>
               <div className="sec-head">
                 <p className="eyebrow">Projects</p>
-                <h2>Websites I've built</h2>
+                <h2>Web & software projects</h2>
               </div>
               <div className="cards">
                 {auto.webProjects.map((p) => (
@@ -565,9 +565,7 @@ function Portfolio({ content }) {
                 <p className="eyebrow">Automation</p>
                 <h2>Automation projects</h2>
                 <p className="sec-intro">
-                  These proof-of-concept workflows demonstrate how I approach automation, streamline
-                repetitive tasks, and connect everyday tools. Created as portfolio projects,
-                they showcase my workflow design and problem-solving skills.
+                  Practical workflows that connect everyday tools, reduce repetitive work, and make information easier to manage. Each project demonstrates my approach to process design, implementation, and problem-solving.
                 </p>
               </div>
               {auto.demos.slice(0, 1).map((p) => (
