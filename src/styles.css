@@ -2068,6 +2068,10 @@ main > section + section:not(#contact)::before {
     box-shadow .3s var(--motion-smooth);
 }
 
+/* A project with no cover art keeps its own card height instead of being
+   stretched to match a taller neighbour that carries a screenshot. */
+.tiles > .tile:not(.has-media) { align-self: start; }
+
 .shot[data-reveal] {
   transition:
     opacity .75s var(--motion-smooth) var(--d, 0ms),
