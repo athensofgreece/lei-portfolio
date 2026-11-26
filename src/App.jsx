@@ -207,7 +207,7 @@ function CaseDialog({ p, onClose }) {
   // Close the dialog and tell the page right away (the native "close" event only covers Esc)
   const requestClose = () => {
     if (ref.current?.open) ref.current.close()
-    onClose()
+    else onClose()
   }
   const items = mediaItems(p.image).filter((m) => !badSrcs.includes(m.src))
   const tools = splitList(p.tools || p.stack)
