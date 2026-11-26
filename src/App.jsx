@@ -567,7 +567,6 @@ function Portfolio({ content }) {
                   </div>
                 ))}
               </div>
-              <CaseDialog p={openCase} onClose={() => setOpenCase(null)} />
               <div className="sec-head sub-head">
                 <p className="eyebrow">Automation</p>
                 <h2>Automation projects</h2>
@@ -651,6 +650,7 @@ function Portfolio({ content }) {
               )}
             </>
           )}
+          <CaseDialog p={openCase} onClose={() => setOpenCase(null)} />
         </div>
       </section>
 
