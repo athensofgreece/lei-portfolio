@@ -70,7 +70,7 @@ export async function loadSheetContent(base) {
             // Preserve detailed fallback case-study fields when the CMS sheet only has card content.
             out.auto.webProjects = rows.map((r) => ({
               ...(base.auto.webProjects.find((p) => p.title === r.title) || {}),
-              ...r,
+              ...Object.fromEntries(Object.entries(r).filter(([, v]) => v !== '' && v != null)),
             }))
           } else out[a][b] = rows
           changed = true
