@@ -545,6 +545,10 @@ function Portfolio({ content }) {
                     {mediaItems(p.image)[0] && (
                       <img className="card-shot" src={mediaItems(p.image)[0].src} alt={`Screenshot of ${p.title}`} loading="lazy" />
                     )}
+                    <div className="project-card-meta">
+                      <span className="project-card-label">PROJECT</span>
+                      {p.status && <span className="project-card-status">{p.status}</span>}
+                    </div>
                     <h3>{p.title}</h3>
                     <p>{p.text}</p>
                     <p className="stack">{p.stack}</p>
