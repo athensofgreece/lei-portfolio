@@ -86,6 +86,8 @@ export const auto = {
     { title: 'Sheets and Apps Script', status: 'Demo in Progress', text: 'Spreadsheet automations and small scripts that clean, sort, and move data for you.' },
   ],
   webProjects: [
+    { title: 'Job Hunt HQ', status: 'Working automation', stack: 'Google Sheets, Make.com, Jooble', text: 'A job-search tracker paired with a Make.com workflow that retrieves Jooble listings, checks job links for duplicates, and adds new listings to an organized Google Sheets database.', link: '' },
+    { title: 'Social Media Page Intelligence', status: 'Data analysis project', stack: 'Google Sheets, Facebook Page export', text: 'Analyzed 74 Facebook posts, organized content themes, reviewed posting patterns and engagement, and built a dashboard and report structure to support data-informed content recommendations.', link: '' },
     { title: 'Event photobooth', status: 'On GitHub', stack: 'Node.js, Express, Nodemailer', text: 'A kiosk photobooth for live events. Guests take a photo strip and it is emailed to them, even when the venue Wi-Fi drops.', link: 'https://github.com/athensofgreece/event-photobooth', image: 'images/photobooth-screenshot.png' },
     { title: 'NHFC company website', status: 'Live', stack: 'Figma, React', text: 'Led UI/UX design and front-end development from wireframes to deployment, presenting to IT, HR, and Sales stakeholders for feedback.', link: '' },
     { title: 'AWS Student Community Day page', status: 'Live', stack: 'HTML, CSS, JavaScript', text: 'Responsive event site highlighting keynotes, technical sessions, and panels.', link: 'https://athensofgreece.github.io/awsscd-webpage/' },
