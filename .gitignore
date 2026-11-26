@@ -1,5 +1,17 @@
 node_modules/
 dist/
+
+# Environment files and local credentials
 .env
 .env.*
 !.env.example
+.npmrc
+!.npmrc.example
+
+# Private keys and credential exports
+*.pem
+*.key
+*.p12
+*.pfx
+*.credentials
+credentials.json
