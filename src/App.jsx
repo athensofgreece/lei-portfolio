@@ -254,7 +254,7 @@ function CaseDialog({ p, onClose }) {
             <p>{p.did || p.text}</p>
           </div>
         </div>
-        <p className="dlg-result">{p.result}</p>
+        {p.result && <p className="dlg-result">{p.result}</p>}
         <div className="dlg-foot">
           {tools.length > 0 && (
             <ul className="dlg-tools">
