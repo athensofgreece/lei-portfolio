@@ -1860,3 +1860,23 @@ footer {
 @media (prefers-reduced-motion: reduce) {
   .card-shot, .tile-media, .syncing .stats-strip .stats > *, .syncing .cards .card, .syncing .tiles > *, .syncing .road-item { animation: none; }
 }
+
+
+/* ==========================================================================
+   MOTION POLISH — consistent easing, tactile interactions, safe performance
+   ========================================================================== */
+:root { --motion-smooth: cubic-bezier(.22, .68, .24, 1); --motion-quick: cubic-bezier(.2, .8, .2, 1); }
+body { transition: color .24s var(--motion-smooth), background-color .24s var(--motion-smooth); }
+.btn, button, .mode-btn, .mode-thumb, .brand-mark, nav ul a, .card, .tile, .lab-card, .road-item, .tool-tile, .tool-badge, .journey-dot, .event-rail-item, .journey-arrows button, .event-feature-nav button, .contact-email-link, .footer-social-links a { transition-timing-function: var(--motion-smooth); }
+.btn, button:not(.tile-open), .journey-arrows button, .event-feature-nav button { -webkit-tap-highlight-color: transparent; }
+.btn:active, button:not(.tile-open):active { transform: translateY(1px) scale(.985); }
+.btn.primary, .btn:not(.primary), .contact-email-link, .journey-arrows button, .event-feature-nav button { transition: color .2s var(--motion-smooth), background-color .2s var(--motion-smooth), border-color .2s var(--motion-smooth), box-shadow .2s var(--motion-smooth), transform .2s var(--motion-smooth); }
+.card, .lab-card, .road-item, .tool-tile, .tool-badge { transition: border-color .24s var(--motion-smooth), transform .24s var(--motion-smooth), box-shadow .24s var(--motion-smooth), background-color .24s var(--motion-smooth); }
+.tile { transition: transform .34s var(--motion-smooth), box-shadow .34s var(--motion-smooth), border-color .34s var(--motion-smooth); }
+.tile-media { transition: transform .72s var(--motion-smooth); }
+.tile-go { transition: transform .28s var(--motion-smooth), opacity .28s var(--motion-smooth); }
+.brand-mark { transition: border-color .24s var(--motion-smooth), transform .24s var(--motion-smooth); }
+.mode-thumb { transition: transform .42s var(--motion-smooth), background .24s var(--motion-smooth); }
+nav ul a { transition: color .22s var(--motion-smooth), background-size .3s var(--motion-smooth); }
+@media (hover: hover) and (pointer: fine) { .card:hover, .lab-card:hover, .road-item:hover { transform: translateY(-3px); } .btn:hover { transform: translateY(-1px); } .tile:hover { transform: translateY(-5px); } }
+@media (prefers-reduced-motion: reduce) { body, .btn, button, .mode-thumb, .brand-mark, nav ul a, .card, .tile, .tile-media, .tile-go, .lab-card, .road-item, .tool-tile, .tool-badge, .journey-dot, .event-rail-item, .journey-arrows button, .event-feature-nav button, .contact-email-link, .footer-social-links a { transition: none !important; } .btn:active, button:active { transform: none !important; } }
