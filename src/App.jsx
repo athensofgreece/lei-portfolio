@@ -369,6 +369,15 @@ function Portfolio({ content }) {
   const [menuOpen, setMenuOpen] = useState(false)
   const [openCase, setOpenCase] = useState(null)
 
+  useEffect(() => {
+    if (!menuOpen) return
+    const handleEscape = (event) => {
+      if (event.key === 'Escape') setMenuOpen(false)
+    }
+    document.addEventListener('keydown', handleEscape)
+    return () => document.removeEventListener('keydown', handleEscape)
+  }, [menuOpen])
+
   const isSocial = mode === 'light'
   const d = isSocial ? social : auto
   const initials = profile.name
