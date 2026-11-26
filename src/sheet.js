@@ -64,7 +64,17 @@ export async function loadSheetContent(base) {
       try {
         const rows = (await fetchTab(tab, key)).filter((r) => r[key] && !hidden(r.show))
           .map((r) => Object.fromEntries(Object.entries(r).filter(([k]) => k !== 'show').map(([k, v]) => [k, LISTS.has(k) ? split(v) : v])))
-        if (rows.length) { if (a === 'root') out[b] = rows; else out[a][b] = rows; changed = true }
+        if (rows.length) {
+          if (a === 'root') out[b] = rows
+          else if (a === 'auto' && b === 'webProjects') {
+            // Preserve detailed fallback case-study fields when the CMS sheet only has card content.
+            out.auto.webProjects = rows.map((r) => ({
+              ...(base.auto.webProjects.find((p) => p.title === r.title) || {}),
+              ...r,
+            }))
+          } else out[a][b] = rows
+          changed = true
+        }
       } catch (e) { console.warn('[sheet]', tab, e.message) }
     }),
     (async () => {
