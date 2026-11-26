@@ -881,23 +881,25 @@ export default function App() {
 
   useEffect(() => {
     let active = true
+    let refreshing = false
     const stopSyncing = setTimeout(() => setSyncing(false), 3000)
 
     const refreshContent = async () => {
+      if (refreshing) return
+      refreshing = true
       try {
         const updatedContent = await loadSheetContent(DEFAULTS)
-        if (active && updatedContent) {
-          setContent(updatedContent)
-        }
+        if (active && updatedContent) setContent(updatedContent)
       } catch (error) {
         console.error('Failed to refresh portfolio content:', error)
       } finally {
+        refreshing = false
         if (active) setSyncing(false)
       }
     }
 
     refreshContent()
-    const interval = setInterval(refreshContent, 15000)
+    const interval = setInterval(refreshContent, 60000)
 
     return () => {
       active = false
