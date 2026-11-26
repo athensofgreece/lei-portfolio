@@ -326,9 +326,12 @@ function Portrait({ mode, name, initials, small }) {
 
 function CopyButton({ text, track }) {
   const [state, setState] = useState('idle') // idle | done | failed
+  const timeoutRef = useRef(null)
+  useEffect(() => () => clearTimeout(timeoutRef.current), [])
   const flash = (next) => {
+    clearTimeout(timeoutRef.current)
     setState(next)
-    setTimeout(() => setState('idle'), 1800)
+    timeoutRef.current = setTimeout(() => setState('idle'), 1800)
   }
   // Modern clipboard API first; an old-style fallback if the browser blocks it
   const legacyCopy = () => {
