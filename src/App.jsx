@@ -210,7 +210,7 @@ function CaseDialog({ p, onClose }) {
     onClose()
   }
   const items = mediaItems(p.image).filter((m) => !badSrcs.includes(m.src))
-  const tools = splitList(p.tools)
+  const tools = splitList(p.tools || p.stack)
   return (
     <dialog
       ref={ref}
@@ -225,7 +225,7 @@ function CaseDialog({ p, onClose }) {
         <button type="button" className="dlg-close" aria-label="Close" onClick={requestClose}>
           ✕
         </button>
-        <p className="case-client">{p.client}</p>
+        {p.client && <p className="case-client">{p.client}</p>}
         <h3 id="case-dialog-title">{p.title}</h3>
         {items.length > 0 && (
           <div className={`dlg-media${items.length > 1 ? ' multi' : ''}`}>
@@ -246,12 +246,12 @@ function CaseDialog({ p, onClose }) {
         )}
         <div className="dlg-cols">
           <div>
-            <h4>The need</h4>
-            <p>{p.need}</p>
+            <h4>Context</h4>
+            <p>{p.need || p.text}</p>
           </div>
           <div>
-            <h4>What I did</h4>
-            <p>{p.did}</p>
+            <h4>Approach</h4>
+            <p>{p.did || p.text}</p>
           </div>
         </div>
         <p className="dlg-result">{p.result}</p>
@@ -531,7 +531,6 @@ function Portfolio({ content }) {
                   <CaseTile key={p.title} p={p} onOpen={setOpenCase} />
                 ))}
               </div>
-              <CaseDialog p={openCase} onClose={() => setOpenCase(null)} />
             </>
           ) : (
             <>
@@ -552,6 +551,9 @@ function Portfolio({ content }) {
                     <h3>{p.title}</h3>
                     <p>{p.text}</p>
                     <p className="stack">{p.stack}</p>
+                    <button type="button" className="btn case-open" aria-haspopup="dialog" data-track={`case study: ${p.title}`} onClick={() => setOpenCase(p)}>
+                      Explore case study <ArrowRight size={15} aria-hidden="true" />
+                    </button>
                     {safeHref(p.link) && (
                       <a data-track={`site: ${p.title}`}
                         className="btn"
@@ -565,6 +567,7 @@ function Portfolio({ content }) {
                   </div>
                 ))}
               </div>
+              <CaseDialog p={openCase} onClose={() => setOpenCase(null)} />
               <div className="sec-head sub-head">
                 <p className="eyebrow">Automation</p>
                 <h2>Automation projects</h2>
