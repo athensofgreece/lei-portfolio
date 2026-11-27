@@ -2435,3 +2435,27 @@ body::after { animation-duration: 38s; animation-direction: alternate-reverse; }
   .case-dialog::backdrop { backdrop-filter: none; -webkit-backdrop-filter: none; }
   body::before, body::after { filter: blur(48px); opacity: .16; }
 }
+
+/* Mobile case studies behave like a focused full-screen sheet. */
+@media (max-width: 600px) {
+  .case-dialog {
+    width: 100%;
+    max-width: none;
+    max-height: 100dvh;
+    height: 100dvh;
+    margin: 0;
+    border-radius: 0;
+    border-left: 0;
+    border-right: 0;
+  }
+  .dlg-inner { padding: 1.1rem 1rem 2rem; }
+  .dlg-close {
+    width: 44px;
+    height: 44px;
+    margin: 0 0 1rem auto;
+    top: 0;
+  }
+  .dlg-media img, .dlg-media video { max-height: 48dvh; }
+  .dlg-foot { align-items: stretch; }
+  .dlg-foot .btn { min-height: 44px; display: inline-flex; align-items: center; justify-content: center; }
+}
