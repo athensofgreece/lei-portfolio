@@ -2522,31 +2522,57 @@ body::after { animation-duration: 38s; animation-direction: alternate-reverse; }
 }
 
 
-/* CV-backed proof points under the hero stats */
-.hero-proof {
+/* Per-mode highlights sit within the hero stage and animate on focus change. */
+.hero-highlights {
+  position: relative;
+  z-index: 1;
+  margin-top: 1.15rem;
+  padding-top: .9rem;
+  border-top: 1px solid var(--line);
+}
+.hero-highlights-label {
+  margin: 0 0 .7rem;
+  color: var(--accent-text);
+  font: 600 .7rem var(--mono);
+  letter-spacing: .1em;
+  text-transform: uppercase;
+}
+.hero-highlights-grid {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: .8rem;
-  margin: .5rem 0 1.6rem;
+  gap: .65rem;
 }
-.hero-proof > div {
+.hero-highlight {
+  min-width: 0;
   display: flex;
   flex-direction: column;
   gap: .25rem;
-  min-width: 0;
-  padding: .8rem 1rem;
-  border-left: 2px solid var(--accent);
-  background: color-mix(in srgb, var(--accent) 5%, var(--panel));
-  border-radius: 0 10px 10px 0;
+  padding: .7rem .75rem;
+  border-radius: 10px;
+  border: 1px solid var(--line);
+  background: color-mix(in srgb, var(--panel) 88%, var(--accent) 12%);
+  opacity: 0;
+  transform: translateY(9px);
+  animation: highlightEnter .55s var(--motion-smooth, ease) var(--highlight-delay, 0ms) forwards;
 }
-.hero-proof strong {
-  font-family: var(--display);
-  font-size: 1.08rem;
-  line-height: 1.2;
+.hero-highlight strong {
   color: var(--text);
+  font: 700 clamp(1rem, 1.8vw, 1.35rem)/1.1 var(--display);
+  letter-spacing: -.025em;
 }
-.hero-proof span { color: var(--muted); font-size: .82rem; line-height: 1.4; }
+.hero-highlight span {
+  color: var(--muted);
+  font-size: .72rem;
+  line-height: 1.35;
+}
+@keyframes highlightEnter {
+  to { opacity: 1; transform: translateY(0); }
+}
 @media (max-width: 600px) {
-  .hero-proof { grid-template-columns: 1fr; gap: .5rem; }
-  .hero-proof > div { padding: .7rem .9rem; }
+  .hero-highlights-grid { gap: .4rem; }
+  .hero-highlight { padding: .6rem .5rem; border-radius: 8px; }
+  .hero-highlight span { font-size: .68rem; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .hero-highlight { opacity: 1; transform: none; animation: none; }
 }
