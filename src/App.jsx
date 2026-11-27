@@ -591,24 +591,29 @@ function Portfolio({ content }) {
               <div className="stage-frame" aria-hidden="true" />
               <div className="stage-visual">{isSocial ? <Timeline /> : <Flow />}</div>
               <p className="stage-caption">{d.headline}</p>
-            </div>
-          </div>
-          {Array.isArray(d.stats) && d.stats.length > 0 && (
-            <div className="stats-strip" data-reveal>
-              <div className="stats">
-                {d.stats.map((s, i) => (
-                  <div key={s.l || i}>
-                    <b>{s.n}</b>
-                    <span>{s.l}</span>
-                  </div>
-                ))}
+              <div className="hero-highlights" key={mode} aria-label={isSocial ? 'Creative Studio highlights' : 'Technology Lab highlights'}>
+                <p className="hero-highlights-label">{isSocial ? 'Creative impact' : 'Technical proof'}</p>
+                <div className="hero-highlights-grid">
+                  {(isSocial
+                    ? [
+                        { value: '40K', label: 'TikTok Live interactions' },
+                        { value: '10+', label: 'Marketing videos edited' },
+                        { value: '500+', label: 'Event attendees supported' },
+                      ]
+                    : [
+                        { value: '7 pages', label: 'Corporate website built' },
+                        { value: '1 workflow', label: 'Job-search automation' },
+                        { value: '74 posts', label: 'Social content analyzed' },
+                      ]
+                  ).map((item, i) => (
+                    <div className="hero-highlight" key={item.value} style={{ '--highlight-delay': `${i * 90}ms` }}>
+                      <strong>{item.value}</strong>
+                      <span>{item.label}</span>
+                    </div>
+                  ))}
+                </div>
               </div>
             </div>
-          )}
-          <div className="hero-proof" data-reveal aria-label="Selected experience highlights">
-            <div><strong>7 pages</strong><span>Company website built</span></div>
-            <div><strong>500+ attendees</strong><span>Conference logistics led</span></div>
-            <div><strong>40K interactions</strong><span>One TikTok Live session</span></div>
           </div>
         </div>
       </header>
