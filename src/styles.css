@@ -2483,3 +2483,8 @@ body::after { animation-duration: 38s; animation-direction: alternate-reverse; }
 /* Project card arrow is a real, keyboard-accessible action. */
 .tile-go { border: 0; cursor: pointer; font: inherit; }
 .tile.has-media .tile-go { font-size: 1.1rem; }
+
+/* Timeline milestone labels: remove cramped month/year date column in both themes. */
+.journey-point .journey-date { display: none; }
+.journey-point { gap: .45rem; }
+.journey-point-title { max-width: 16ch; font-size: .84rem; }
