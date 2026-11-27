@@ -590,9 +590,27 @@ function Portfolio({ content }) {
             <div className="hero-stage" data-reveal>
               <div className="stage-frame" aria-hidden="true" />
               <div className="stage-visual">{isSocial ? <Timeline /> : <Flow />}</div>
-              <p className="stage-caption">{d.headline}</p>              </div>
+              <p className="stage-caption">{d.headline}</p>
             </div>
           </div>
+          {Array.isArray(d.stats) && d.stats.length > 0 && (
+            <div className="stats-strip" data-reveal>
+              <div className="stats">
+                {d.stats.map((s, i) => (
+                  <div key={s.l || i}>
+                    <b>{s.n}</b>
+                    <span>{s.l}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+          <div className="hero-proof" data-reveal aria-label="Selected experience highlights">
+            <div><strong>7 pages</strong><span>Company website built</span></div>
+            <div><strong>500+ attendees</strong><span>Conference logistics led</span></div>
+            <div><strong>40K interactions</strong><span>One TikTok Live session</span></div>
+          </div>
+        </div>
       </header>
 
       <section id="work">
