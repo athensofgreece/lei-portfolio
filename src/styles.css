@@ -2514,3 +2514,9 @@ body::after { animation-duration: 38s; animation-direction: alternate-reverse; }
   .journey-point .journey-point-title { display: none; }
   .journey-dot { width: 2.75rem; height: 2.75rem; }
 }
+
+/* Desktop timeline connector aligns through icon centers. */
+@media (min-width: 761px) {
+  .journey-track { align-items: start; }
+  .journey-track::before { top: 1.5rem; }
+}
