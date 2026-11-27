@@ -825,9 +825,7 @@ function Portfolio({ content }) {
         <div className="event-stage" data-reveal>
           <div className="event-index-rail" role="tablist" aria-label="Leadership and event highlights">
             {eventItems.map((item, i) => (
-              <button type="button" className={i === activeEvent ? 'event-rail-item is-active' : 'event-rail-item'} role="tab" aria-selected={i === activeEvent} aria-controls="event-details" key={item.title + i} onClick={() => setActiveEvent(i)}>
-                <span className="event-rail-num">{String(i + 1).padStart(2, '0')}</span>
-                <span className="event-rail-title">{item.title}</span>
+              <button type="button" className={i === activeEvent ? 'event-rail-item is-active' : 'event-rail-item'} role="tab" aria-selected={i === activeEvent} aria-controls="event-details" key={item.title + i} onClick={() => setActiveEvent(i)}><span className="event-rail-title">{item.title}</span>
                 <ArrowUpRight size={16} className="event-rail-arrow"/>
               </button>
             ))}
