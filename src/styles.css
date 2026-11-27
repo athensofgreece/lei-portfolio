@@ -2552,3 +2552,24 @@ body::after { animation-duration: 38s; animation-direction: alternate-reverse; }
   .hero-proof { grid-template-columns: 1fr; gap: .5rem; }
   .hero-proof > div { padding: .7rem .9rem; }
 }
+
+/* Hero highlight polish — subtle mode-aware interaction */
+.hero-proof > div {
+  transition: transform .22s ease, border-color .22s ease, background .22s ease, box-shadow .22s ease;
+}
+:root[data-theme='dark'] .hero-proof > div {
+  border: 1px solid var(--line);
+  border-left: 2px solid var(--accent);
+  background: color-mix(in srgb, var(--accent) 6%, var(--panel));
+  border-radius: 8px;
+}
+@media (hover: hover) and (pointer: fine) {
+  .hero-proof > div:hover {
+    transform: translateY(-2px);
+    border-color: color-mix(in srgb, var(--accent) 38%, var(--line));
+    box-shadow: 0 8px 18px color-mix(in srgb, var(--accent) 8%, transparent);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .hero-proof > div { transition: none; }
+}
