@@ -2392,3 +2392,46 @@ body::after { animation-duration: 38s; animation-direction: alternate-reverse; }
   .case-dialog.is-closing { animation: none; }
   .shot::before, .shot-link svg { transition: none; }
 }
+
+
+/* ==========================================================================
+   12. REDESIGN QUALITY PASS — accessibility and small-screen usability
+   ========================================================================== */
+
+/* Keep interactive text readable and keyboard states consistent. */
+:where(a, button, input, select, textarea, [role="button"]):focus-visible {
+  outline: 3px solid var(--accent-text);
+  outline-offset: 3px;
+}
+
+:where(button, .btn, .mode-btn, .menu-toggle, .journey-arrows button, .event-feature-nav button) {
+  -webkit-tap-highlight-color: color-mix(in srgb, var(--accent) 20%, transparent);
+}
+
+/* Avoid tiny metadata and tags becoming difficult to read. */
+:where(.eyebrow, .chip, .t-tools li, .dlg-tools li, .dtools li, .ls-node, .t-cue) {
+  font-size: max(0.75rem, 12px);
+}
+
+/* Touch screens: generous hit areas without changing desktop composition. */
+@media (hover: none) and (pointer: coarse) {
+  nav ul a,
+  .mode-btn,
+  .menu-toggle,
+  .btn,
+  .dlg-close,
+  .journey-arrows button,
+  .event-feature-nav button,
+  .event-rail-item {
+    min-height: 44px;
+  }
+  .mode-btn { padding-inline: .85rem; }
+  .menu-toggle { min-width: 44px; min-height: 44px; }
+}
+
+/* Reduce expensive backdrop effects on small screens while preserving the atmosphere. */
+@media (max-width: 767px) {
+  nav { backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px); }
+  .case-dialog::backdrop { backdrop-filter: none; -webkit-backdrop-filter: none; }
+  body::before, body::after { filter: blur(48px); opacity: .16; }
+}
