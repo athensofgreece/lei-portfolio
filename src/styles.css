@@ -2479,3 +2479,7 @@ body::after { animation-duration: 38s; animation-direction: alternate-reverse; }
   .case-dialog { width: 100%; max-height: 100dvh; }
   .dlg-inner { padding: 1.1rem 1rem 2rem; }
 }
+
+/* Project card arrow is a real, keyboard-accessible action. */
+.tile-go { border: 0; cursor: pointer; font: inherit; }
+.tile.has-media .tile-go { font-size: 1.1rem; }
