@@ -2459,3 +2459,23 @@ body::after { animation-duration: 38s; animation-direction: alternate-reverse; }
   .dlg-foot { align-items: stretch; }
   .dlg-foot .btn { min-height: 44px; display: inline-flex; align-items: center; justify-content: center; }
 }
+
+
+/* ---------- Case studies: wider, content-first presentation ----------
+.case-dialog {
+  width: min(1120px, calc(100% - 2.5rem));
+  max-height: min(92vh, 1000px);
+}
+.dlg-inner { padding: clamp(1.5rem, 4.5vw, 3.2rem); }
+.case-dialog h3 { max-width: 28ch; margin-bottom: clamp(1.2rem, 3vw, 2rem); }
+.dlg-media { margin-bottom: clamp(1.6rem, 4vw, 2.5rem); }
+.dlg-media img, .dlg-media video { max-height: 68vh; border-radius: 18px; }
+.dlg-cols { gap: clamp(1.3rem, 3vw, 2.8rem); }
+.dlg-cols > div { min-width: 0; }
+.dlg-cols p { max-width: 62ch; }
+.dlg-result { margin-top: clamp(1.4rem, 3vw, 2.2rem) !important; padding: 1.15rem 1.35rem; }
+.dlg-foot { margin-top: clamp(1.4rem, 3vw, 2.2rem); }
+@media (max-width: 600px) {
+  .case-dialog { width: 100%; max-height: 100dvh; }
+  .dlg-inner { padding: 1.1rem 1rem 2rem; }
+}
