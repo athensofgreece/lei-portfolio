@@ -2522,3 +2522,33 @@ body::after { animation-duration: 38s; animation-direction: alternate-reverse; }
 }
 
 
+
+
+/* CV-backed proof points under the hero stats */
+.hero-proof {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: .8rem;
+  margin: .5rem 0 1.6rem;
+}
+.hero-proof > div {
+  display: flex;
+  flex-direction: column;
+  gap: .25rem;
+  min-width: 0;
+  padding: .8rem 1rem;
+  border-left: 2px solid var(--accent);
+  background: color-mix(in srgb, var(--accent) 5%, var(--panel));
+  border-radius: 0 10px 10px 0;
+}
+.hero-proof strong {
+  font-family: var(--display);
+  font-size: 1.08rem;
+  line-height: 1.2;
+  color: var(--text);
+}
+.hero-proof span { color: var(--muted); font-size: .82rem; line-height: 1.4; }
+@media (max-width: 600px) {
+  .hero-proof { grid-template-columns: 1fr; gap: .5rem; }
+  .hero-proof > div { padding: .7rem .9rem; }
+}
