@@ -147,52 +147,11 @@ const splitList = (value) =>
     .filter(Boolean)
 
 function CaseTile({ p, onOpen }) {
-  // "cover" is an optional sheet column. If the column exists it alone decides what shows behind the tile
-  // (leave a cell empty for a plain colour tile). Without the column, the first "image" is used.
-  const cover = mediaItems(p.cover !== undefined ? p.cover : p.image)[0]
-  const [badSrc, setBadSrc] = useState(null)
-  const showCover = cover && cover.src !== badSrc
+  // Keep project screenshots inside the case study dialog; cards remain clean and text-first.
   const tools = splitList(p.tools)
-  const play = (e) => {
-    const v = e.currentTarget.querySelector('video')
-    if (v) v.play().catch(() => {})
-  }
-  const stop = (e) => {
-    const v = e.currentTarget.querySelector('video')
-    if (v) {
-      v.pause()
-      v.currentTime = 0
-    }
-  }
   return (
-    <article className={`tile${showCover ? ' has-media' : ''}`} onMouseEnter={play} onMouseLeave={stop} data-reveal>
-      {showCover &&
-        (cover.video ? (
-          <video
-            className="tile-media"
-            src={cover.src}
-            muted
-            loop
-            playsInline
-            preload="metadata"
-            aria-hidden="true"
-            onError={() => setBadSrc(cover.src)}
-          />
-        ) : (
-          <img
-            className="tile-media"
-            src={cover.webpSrc || cover.src}
-            alt=""
-            loading="lazy"
-            onError={(e) => {
-              if (cover.webpSrc && e.currentTarget.src.endsWith('.webp')) e.currentTarget.src = cover.src
-              else setBadSrc(cover.src)
-            }}
-          />
-        ))}
-      <span className="tile-go" aria-hidden="true">
-        →
-      </span>
+    <article className="tile" data-reveal>
+      <span className="tile-go" aria-hidden="true">→</span>
       <div className="t-body">
         <p className="t-client">{p.client}</p>
         <h3>
@@ -207,11 +166,7 @@ function CaseTile({ p, onOpen }) {
           </button>
         </h3>
         <p className="t-result">{p.result}</p>
-        {showCover && (
-          <span className="t-cue" aria-hidden="true">
-            Read the case study <span>↗</span>
-          </span>
-        )}
+        <span className="t-cue" aria-hidden="true">Read the case study <span>↗</span></span>
         {tools.length > 0 && (
           <ul className="t-tools">
             {tools.map((t) => (
