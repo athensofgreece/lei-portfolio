@@ -593,7 +593,6 @@ function Portfolio({ content }) {
               <p className="stage-caption">{d.headline}</p>              </div>
             </div>
           </div>
-        </div>
       </header>
 
       <section id="work">
