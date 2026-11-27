@@ -147,72 +147,33 @@ const splitList = (value) =>
     .filter(Boolean)
 
 function CaseTile({ p, onOpen }) {
-  // "cover" is an optional sheet column. If the column exists it alone decides what shows behind the tile
-  // (leave a cell empty for a plain colour tile). Without the column, the first "image" is used.
-  const cover = mediaItems(p.cover !== undefined ? p.cover : p.image)[0]
-  const [badSrc, setBadSrc] = useState(null)
-  const showCover = cover && cover.src !== badSrc
+  // Keep project screenshots inside the case study dialog; cards remain clean and text-first.
   const tools = splitList(p.tools)
-  const play = (e) => {
-    const v = e.currentTarget.querySelector('video')
-    if (v) v.play().catch(() => {})
-  }
-  const stop = (e) => {
-    const v = e.currentTarget.querySelector('video')
-    if (v) {
-      v.pause()
-      v.currentTime = 0
-    }
-  }
   return (
-    <article className={`tile${showCover ? ' has-media' : ''}`} onMouseEnter={play} onMouseLeave={stop}>
-      {showCover &&
-        (cover.video ? (
-          <video
-            className="tile-media"
-            src={cover.src}
-            muted
-            loop
-            playsInline
-            preload="metadata"
-            aria-hidden="true"
-            onError={() => setBadSrc(cover.src)}
-          />
-        ) : (
-          <img
-            className="tile-media"
-            src={cover.webpSrc || cover.src}
-            alt=""
-            loading="lazy"
-            onError={(e) => {
-              if (cover.webpSrc && e.currentTarget.src.endsWith('.webp')) e.currentTarget.src = cover.src
-              else setBadSrc(cover.src)
-            }}
-          />
-        ))}
-      <span className="tile-go" aria-hidden="true">
-        →
-      </span>
-      <p className="t-client">{p.client}</p>
-      <h3>
-        <button
-          type="button"
-          className="tile-open"
-          aria-haspopup="dialog"
-          data-track={`project: ${p.title}`}
-          onClick={() => onOpen(p)}
-        >
-          {p.title}
-        </button>
-      </h3>
-      <p className="t-result">{p.result}</p>
-      {tools.length > 0 && (
-        <ul className="t-tools">
-          {tools.map((t) => (
-            <li key={t}>{t}</li>
-          ))}
-        </ul>
-      )}
+    <article className="tile" data-reveal>
+      <button className="tile-go" type="button" aria-label={`Open case study: ${p.title}`} onClick={() => onOpen(p)}>↗</button>
+      <div className="t-body">
+        <p className="t-client">{p.client}</p>
+        <h3>
+          <button
+            type="button"
+            className="tile-open"
+            aria-haspopup="dialog"
+            data-track={`project: ${p.title}`}
+            onClick={() => onOpen(p)}
+          >
+            {p.title}
+          </button>
+        </h3>
+        <p className="t-result">{p.result}</p>
+        {tools.length > 0 && (
+          <ul className="t-tools">
+            {tools.map((t) => (
+              <li key={t}>{t}</li>
+            ))}
+          </ul>
+        )}
+      </div>
     </article>
   )
 }
@@ -220,9 +181,18 @@ function CaseTile({ p, onOpen }) {
 function CaseDialog({ p, onClose }) {
   const ref = useRef(null)
   const [badSrcs, setBadSrcs] = useState([])
+  const [closing, setClosing] = useState(false)
+  const closeTimer = useRef(null)
   const markBad = (src) => setBadSrcs((b) => (b.includes(src) ? b : [...b, src]))
+  useEffect(
+    () => () => {
+      if (closeTimer.current) clearTimeout(closeTimer.current)
+    },
+    []
+  )
   useEffect(() => {
     const d = ref.current
+    if (p) setClosing(false)
     if (p && d && !d.open) d.showModal()
     document.body.style.overflow = p ? 'hidden' : ''
     return () => {
@@ -230,19 +200,35 @@ function CaseDialog({ p, onClose }) {
     }
   }, [p])
   if (!p) return null
-  // Close the dialog and tell the page right away (the native "close" event only covers Esc)
+  // Let the panel animate out before the native dialog (and the page state) closes.
+  // With reduced motion the panel closes immediately.
   const requestClose = () => {
-    if (ref.current?.open) ref.current.close()
-    onClose()
+    if (closing) return
+    const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches
+    if (reduced) {
+      if (ref.current?.open) ref.current.close()
+      onClose()
+      return
+    }
+    setClosing(true)
+    closeTimer.current = setTimeout(() => {
+      if (ref.current?.open) ref.current.close()
+      onClose()
+    }, 180)
   }
   const items = mediaItems(p.image).filter((m) => !badSrcs.includes(m.src))
   const tools = splitList(p.tools)
   return (
     <dialog
       ref={ref}
-      className="case-dialog"
+      className={`case-dialog${closing ? ' is-closing' : ''}`}
       aria-labelledby="case-dialog-title"
       onClose={onClose}
+      onCancel={(e) => {
+        // Esc: run the same exit animation instead of the browser's instant close
+        e.preventDefault()
+        requestClose()
+      }}
       onClick={(e) => {
         if (e.target === e.currentTarget) requestClose()
       }}
@@ -397,6 +383,7 @@ function Portfolio({ content }) {
   const [mode, setMode] = useState(initialMode)
   const [menuOpen, setMenuOpen] = useState(false)
   const [openCase, setOpenCase] = useState(null)
+  const [activeSection, setActiveSection] = useState('')
   const [activeExperience, setActiveExperience] = useState(0)
   const [activeEvent, setActiveEvent] = useState(0)
 
@@ -420,6 +407,49 @@ function Portfolio({ content }) {
     try {
       localStorage.setItem(KEY, mode)
     } catch {}
+  }, [mode])
+
+  // Scroll reveal: panels marked data-reveal rise in once, as they enter the viewport.
+  useEffect(() => {
+    const els = Array.from(document.querySelectorAll('[data-reveal]:not(.is-revealed)'))
+    if (!els.length) return
+    const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches
+    if (reduced || !('IntersectionObserver' in window)) {
+      els.forEach((el) => el.classList.add('is-revealed'))
+      return
+    }
+    const io = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add('is-revealed')
+            io.unobserve(entry.target)
+          }
+        })
+      },
+      { rootMargin: '0px 0px -8% 0px', threshold: 0.06 }
+    )
+    els.forEach((el) => io.observe(el))
+    return () => io.disconnect()
+  }, [mode, content])
+
+  // Scroll spy: mark the chapter the reader is currently in.
+  useEffect(() => {
+    const sections = ['work', 'experience', 'leadership', 'tools', 'about', 'contact']
+      .map((id) => document.getElementById(id))
+      .filter(Boolean)
+    if (!sections.length || !('IntersectionObserver' in window)) return
+    const io = new IntersectionObserver(
+      (entries) => {
+        const hit = entries
+          .filter((entry) => entry.isIntersecting)
+          .sort((a, b) => b.intersectionRatio - a.intersectionRatio)[0]
+        if (hit) setActiveSection(hit.target.id)
+      },
+      { rootMargin: '-40% 0px -50% 0px', threshold: [0, 0.2, 0.6] }
+    )
+    sections.forEach((el) => io.observe(el))
+    return () => io.disconnect()
   }, [mode])
 
   // Circular reveal transition
@@ -511,16 +541,25 @@ function Portfolio({ content }) {
           </div>
 
           <ul className={menuOpen ? 'mobile-menu open' : 'mobile-menu'}>
-            <li>
-              <a href="#work" onClick={() => setMenuOpen(false)}>
-                {isSocial ? 'Work' : 'Projects'}
-              </a>
-            </li>
-            <li><a href="#experience" onClick={() => setMenuOpen(false)}>Experience</a></li>
-            <li><a href="#leadership" onClick={() => setMenuOpen(false)}>Events</a></li>
-            <li><a href="#tools" onClick={() => setMenuOpen(false)}>{isSocial ? 'Tools' : 'Skills'}</a></li>
-            <li><a href="#about" onClick={() => setMenuOpen(false)}>About</a></li>
-            <li><a href="#contact" onClick={() => setMenuOpen(false)}>Connect</a></li>
+            {[
+              { id: 'work', label: isSocial ? 'Work' : 'Projects' },
+              { id: 'experience', label: 'Experience' },
+              { id: 'leadership', label: 'Events' },
+              { id: 'tools', label: isSocial ? 'Tools' : 'Skills' },
+              { id: 'about', label: 'About' },
+              { id: 'contact', label: 'Connect' },
+            ].map((link) => (
+              <li key={link.id}>
+                <a
+                  href={`#${link.id}`}
+                  className={activeSection === link.id ? 'is-current' : undefined}
+                  aria-current={activeSection === link.id ? 'location' : undefined}
+                  onClick={() => setMenuOpen(false)}
+                >
+                  {link.label}
+                </a>
+              </li>
+            ))}
           </ul>
         </div>
       </nav>
@@ -548,12 +587,25 @@ function Portfolio({ content }) {
               </div>
             </div>
 
-            <div className="hero-stage">
+            <div className="hero-stage" data-reveal>
               <div className="stage-frame" aria-hidden="true" />
               <div className="stage-visual">{isSocial ? <Timeline /> : <Flow />}</div>
               <p className="stage-caption">{d.headline}</p>
             </div>
           </div>
+          {Array.isArray(d.stats) && d.stats.length > 0 && (
+            <div className="stats-strip" data-reveal>
+              <div className="stats">
+                {d.stats.map((s, i) => (
+                  <div key={s.l || i}>
+                    <b>{s.n}</b>
+                    <span>{s.l}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+
         </div>
       </header>
 
@@ -561,8 +613,7 @@ function Portfolio({ content }) {
         <div className="wrap">
           {isSocial ? (
             <>
-              <div className="sec-head">
-                <p className="eyebrow">Work</p>
+              <div className="sec-head" data-reveal>
                 <h2>Selected work</h2>
               </div>
               <div className="tiles">
@@ -574,47 +625,69 @@ function Portfolio({ content }) {
             </>
           ) : (
             <>
-              <div className="sec-head">
-                <p className="eyebrow">Projects</p>
+              <div className="sec-head" data-reveal>
                 <h2>Websites I've built</h2>
               </div>
-              <div className="cards">
-                {auto.webProjects.map((p) => {
+              <div className="lab-shots">
+                {auto.webProjects.map((p, i) => {
                   const shot = mediaItems(p.image)[0]
+                  const stack = splitList(p.stack)
                   return (
-                    <div className="card" key={p.title}>
-                      {shot && (
-                        <img
-                          className="card-shot"
-                          src={shot.webpSrc || shot.src}
-                          alt={`Screenshot of ${p.title}`}
-                          loading="lazy"
-                          onError={(e) => {
-                            if (shot.webpSrc && e.currentTarget.src.endsWith('.webp')) e.currentTarget.src = shot.src
-                            else e.currentTarget.style.display = 'none'
-                          }}
-                        />
-                      )}
-                      <h3>{p.title}</h3>
-                      <p>{p.text}</p>
-                      <p className="stack">{p.stack}</p>
-                      {safeHref(p.link) && (
-                        <a data-track={`site: ${p.title}`}
-                          className="btn"
-                          href={safeHref(p.link)}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                        >
-                          Visit site
-                        </a>
-                      )}
-                    </div>
+                    <article
+                      className="shot"
+                      key={p.title}
+                      data-reveal
+                      style={{ '--d': `${(i % 2) * 90}ms` }}
+                    >
+                      <div className="shot-media">
+                        <span className="shot-plate" aria-hidden="true">
+                          <span className="shot-plate-name">{p.title}</span>
+                          {stack.length > 0 && <span className="shot-plate-stack">{stack.join(' / ')}</span>}
+                        </span>
+                        {shot && (
+                          <img
+                            className="shot-img"
+                            src={shot.webpSrc || shot.src}
+                            alt={`Screenshot of ${p.title}`}
+                            loading="lazy"
+                            onError={(e) => {
+                              if (shot.webpSrc && e.currentTarget.src.endsWith('.webp')) e.currentTarget.src = shot.src
+                              else e.currentTarget.remove()
+                            }}
+                          />
+                        )}
+                      </div>
+                      <div className="shot-copy">
+                        <div className="shot-meta">
+                          <span className={`chip ${p.status === 'Live' ? 'ok' : ''}`}>{p.status}</span>
+                        </div>
+                        <h3>{p.title}</h3>
+                        <p>{p.text}</p>
+                        {stack.length > 0 && (
+                          <ul className="shot-tools">
+                            {stack.map((t) => (
+                              <li key={t}>{t}</li>
+                            ))}
+                          </ul>
+                        )}
+                        {safeHref(p.link) && (
+                          <a
+                            data-track={`site: ${p.title}`}
+                            className="shot-link"
+                            href={safeHref(p.link)}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                          >
+                            Visit site <ArrowUpRight size={16} aria-hidden="true" />
+                          </a>
+                        )}
+                      </div>
+                    </article>
                   )
                 })}
               </div>
-              <div className="sec-head sub-head">
-                <p className="eyebrow">Automation</p>
-                <h2>Automation projects</h2>
+              <div className="sec-head sub-head" data-reveal>
+                        <h2>Automation projects</h2>
                 <p className="sec-intro">
                   These proof-of-concept workflows demonstrate how I approach automation, streamline
                 repetitive tasks, and connect everyday tools. Created as portfolio projects,
@@ -622,11 +695,10 @@ function Portfolio({ content }) {
                 </p>
               </div>
               {auto.demos.slice(0, 1).map((p) => (
-                <article className="lab-feature" key={p.title}>
+                <article className="lab-feature" key={p.title} data-reveal>
                   <div>
                     <div className="lab-top lab-top-start">
                       <span className={`chip ${p.status === 'Live' ? 'ok' : ''}`}>{p.status}</span>
-                      <span className="lab-idx">01 / featured</span>
                     </div>
                     <h3>{p.title}</h3>
                     <p>{p.text}</p>
@@ -658,12 +730,11 @@ function Portfolio({ content }) {
                 </article>
               ))}
               {auto.demos.length > 1 && (
-                <div className="lab-cards">
+                <div className="lab-cards" data-reveal>
                   {auto.demos.slice(1).map((p, n) => (
                     <article className="lab-card" key={p.title}>
                       <div className="lab-top">
                         <span className={`chip ${p.status === 'Live' ? 'ok' : ''}`}>{p.status}</span>
-                        <span className="lab-idx">{String(n + 2).padStart(2, '0')}</span>
                       </div>
                       <h3>{p.title}</h3>
                       <div className="lab-strip">
@@ -702,13 +773,12 @@ function Portfolio({ content }) {
 
       <section id="experience" className="journey-section">
     <div className="wrap">
-      <div className="sec-head journey-head">
-        <p className="eyebrow">Experience · {experienceItems.length} chapters</p>
+      <div className="sec-head journey-head" data-reveal>
         <h2>My professional journey</h2>
         <p className="sec-intro">Select a milestone to explore what I worked on and learned along the way.</p>
       </div>
       {experienceItems.length > 0 && (
-        <div className="journey-shell">
+        <div className="journey-shell" data-reveal>
           <div className="journey-track" role="tablist" aria-label="Professional experience timeline">
             {experienceItems.map((item, i) => (
               <button type="button" className={i === activeExperience ? 'journey-point is-active' : 'journey-point'} role="tab" aria-selected={i === activeExperience} aria-controls="journey-details" key={item.title + i} onClick={() => setActiveExperience(i)}>
@@ -721,7 +791,6 @@ function Portfolio({ content }) {
           {currentExperience && (
             <article className="journey-detail" id="journey-details" role="tabpanel">
               <div className="journey-detail-top">
-                <span className="journey-index">EXPERIENCE / {String(activeExperience + 1).padStart(2, '0')}</span>
                 <span className="journey-date-pill">{currentExperience.date}</span>
               </div>
               <div className="journey-detail-grid">
@@ -735,8 +804,7 @@ function Portfolio({ content }) {
                 </div>
               </div>
               <div className="journey-controls">
-                <span>{String(activeExperience + 1).padStart(2, '0')} <span className="journey-muted">/ {String(experienceItems.length).padStart(2, '0')}</span></span>
-                <div className="journey-arrows">
+                  <div className="journey-arrows">
                   <button type="button" aria-label="Previous experience" disabled={activeExperience === 0} onClick={() => setActiveExperience((i) => Math.max(0, i - 1))}>←</button>
                   <button type="button" aria-label="Next experience" disabled={activeExperience >= experienceItems.length - 1} onClick={() => setActiveExperience((i) => Math.min(experienceItems.length - 1, i + 1))}>→</button>
                 </div>
@@ -749,18 +817,15 @@ function Portfolio({ content }) {
   </section>
   <section id="leadership" className="event-explorer">
     <div className="wrap">
-      <div className="sec-head event-head">
-        <p className="eyebrow">Leadership & Events · {eventItems.length} highlights</p>
+      <div className="sec-head event-head" data-reveal>
         <h2>Behind the scenes, making it happen</h2>
         <p className="sec-intro">Explore the events, communities, and teams I've helped bring together.</p>
       </div>
       {eventItems.length > 0 && currentEvent && (
-        <div className="event-stage">
+        <div className="event-stage" data-reveal>
           <div className="event-index-rail" role="tablist" aria-label="Leadership and event highlights">
             {eventItems.map((item, i) => (
-              <button type="button" className={i === activeEvent ? 'event-rail-item is-active' : 'event-rail-item'} role="tab" aria-selected={i === activeEvent} aria-controls="event-details" key={item.title + i} onClick={() => setActiveEvent(i)}>
-                <span className="event-rail-num">{String(i + 1).padStart(2, '0')}</span>
-                <span className="event-rail-title">{item.title}</span>
+              <button type="button" className={i === activeEvent ? 'event-rail-item is-active' : 'event-rail-item'} role="tab" aria-selected={i === activeEvent} aria-controls="event-details" key={item.title + i} onClick={() => setActiveEvent(i)}><span className="event-rail-title">{item.title}</span>
                 <ArrowUpRight size={16} className="event-rail-arrow"/>
               </button>
             ))}
@@ -769,7 +834,6 @@ function Portfolio({ content }) {
             <div className="event-feature-orb" aria-hidden="true"/>
             <div className="event-feature-top">
               <span className="event-kicker"><CalendarDays size={15}/> {currentEvent.date || 'Event highlight'}</span>
-              <span className="event-count">{String(activeEvent + 1).padStart(2, '0')} / {String(eventItems.length).padStart(2, '0')}</span>
             </div>
             <div className="event-feature-content">
               <h3>{currentEvent.title}</h3>
@@ -778,7 +842,6 @@ function Portfolio({ content }) {
               {currentEvent.highlight && <div className="event-impact"><span>MY CONTRIBUTION</span><p>{currentEvent.highlight}</p></div>}
             </div>
             <div className="event-feature-bottom">
-              <span>LEADERSHIP · COLLABORATION · EXECUTION</span>
               <div className="event-feature-nav">
                 <button type="button" aria-label="Previous event" disabled={activeEvent === 0} onClick={() => setActiveEvent((i) => Math.max(0, i - 1))}>←</button>
                 <button type="button" aria-label="Next event" disabled={activeEvent >= eventItems.length - 1} onClick={() => setActiveEvent((i) => Math.min(eventItems.length - 1, i + 1))}>→</button>
@@ -791,7 +854,7 @@ function Portfolio({ content }) {
   </section>
   <section id="tools">
         <div className="wrap">
-          <div className="sec-head">
+          <div className="sec-head" data-reveal>
             <p className="eyebrow">{isSocial ? 'Tools' : 'Skills'}</p>
             <h2>{isSocial ? 'Tools I use' : 'My skills roadmap'}</h2>
           </div>
@@ -842,7 +905,7 @@ function Portfolio({ content }) {
 
       <section id="about">
         <div className="wrap">
-          <div className="about-grid">
+          <div className="about-grid" data-reveal>
             <figure className="about-figure">
               <div className="portrait-wrap">
                 <Portrait mode={mode} name={profile.name} initials={initials} />
@@ -851,7 +914,6 @@ function Portfolio({ content }) {
             </figure>
             <div className="about-copy">
               <div className="sec-head">
-                <p className="eyebrow">About</p>
                 <h2>About me</h2>
               </div>
               <div className="about-body">
@@ -869,10 +931,9 @@ function Portfolio({ content }) {
 
       <section id="contact">
         <div className="wrap">
-          <div className="contact-editorial">
+          <div className="contact-editorial" data-reveal>
             <div className="contact-meta">
               <p className="eyebrow">Let's connect</p>
-              <span className="contact-index">01 / CONTACT</span>
             </div>
             <h2>
               Have a good idea?
