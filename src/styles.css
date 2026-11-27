@@ -2524,3 +2524,54 @@ body::after { animation-duration: 38s; animation-direction: alternate-reverse; }
 
 
 
+
+
+/* ---------- Hero highlights: responsive polish only (content stays sheet-driven) ---------- */
+.stats-strip { width: 100%; min-width: 0; }
+.stats-strip .stats {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  align-items: stretch;
+  gap: 0;
+}
+.stats-strip .stats > div {
+  min-width: 0;
+  padding: clamp(.85rem, 2vw, 1.25rem) clamp(.75rem, 2.4vw, 1.6rem);
+  border-left: 1px solid var(--line);
+  overflow-wrap: anywhere;
+}
+.stats-strip .stats > div:first-child { padding-left: 0; border-left: 0; }
+.stats-strip .stats b { max-width: 100%; font-size: clamp(1.5rem, 3.4vw, 2.35rem); }
+.stats-strip .stats span { max-width: 30ch; font-size: clamp(.76rem, 1.15vw, .88rem); }
+:root[data-theme='light'] .stats-strip .stats b {
+  font-family: var(--display);
+  font-weight: 400;
+  letter-spacing: -.035em;
+}
+:root[data-theme='dark'] .stats-strip .stats > div { border-left-color: color-mix(in srgb, var(--accent) 24%, var(--line)); }
+:root[data-theme='dark'] .stats-strip .stats b { font-family: var(--mono); letter-spacing: -.04em; }
+@media (max-width: 760px) {
+  .stats-strip { padding-top: 1.6rem; }
+  .stats-strip .stats { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  .stats-strip .stats > div { padding: .85rem .65rem; }
+  .stats-strip .stats > div:first-child { padding-left: 0; }
+  .stats-strip .stats b { font-size: clamp(1.25rem, 5.8vw, 1.8rem); }
+  .stats-strip .stats span { font-size: .75rem; line-height: 1.35; }
+}
+@media (max-width: 420px) {
+  .stats-strip .stats { grid-template-columns: 1fr; }
+  .stats-strip .stats > div,
+  .stats-strip .stats > div:first-child {
+    flex-direction: row;
+    align-items: baseline;
+    gap: .8rem;
+    padding: .85rem 0;
+    border-left: 0;
+    border-top: 1px solid var(--line);
+  }
+  .stats-strip .stats > div:first-child { border-top: 0; }
+  .stats-strip .stats b { flex: 0 0 auto; font-size: 1.5rem; }
+  .stats-strip .stats span { max-width: none; font-size: .8rem; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .stats-strip .stats > div { transition: none; }
+}
