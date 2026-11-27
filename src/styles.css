@@ -2513,3 +2513,20 @@ body::after { animation-duration: 38s; animation-direction: alternate-reverse; }
 @media (prefers-reduced-motion: reduce) {
   .stats-strip .stats > div { transition: none; }
 }
+
+
+/* Creative Studio: give the hero-highlight numbers more presence. */
+:root[data-theme='light'] .stats-strip .stats b,
+:root:not([data-theme]) .stats-strip .stats b {
+  font-size: clamp(1.85rem, 4vw, 2.75rem);
+  font-weight: 600;
+  letter-spacing: -.045em;
+}
+@media (max-width: 760px) {
+  :root[data-theme='light'] .stats-strip .stats b,
+  :root:not([data-theme]) .stats-strip .stats b { font-size: clamp(1.55rem, 6.2vw, 2rem); }
+}
+@media (max-width: 420px) {
+  :root[data-theme='light'] .stats-strip .stats b,
+  :root:not([data-theme]) .stats-strip .stats b { font-size: 1.75rem; }
+}
