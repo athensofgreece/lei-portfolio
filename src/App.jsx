@@ -605,6 +605,11 @@ function Portfolio({ content }) {
               </div>
             </div>
           )}
+          <div className="hero-proof" data-reveal aria-label="Selected experience highlights">
+            <div><strong>7 pages</strong><span>Company website built</span></div>
+            <div><strong>500+ attendees</strong><span>Conference logistics led</span></div>
+            <div><strong>40K interactions</strong><span>One TikTok Live session</span></div>
+          </div>
         </div>
       </header>
 
