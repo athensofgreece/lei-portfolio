@@ -614,7 +614,6 @@ function Portfolio({ content }) {
           {isSocial ? (
             <>
               <div className="sec-head" data-reveal>
-                <p className="eyebrow">Work</p>
                 <h2>Selected work</h2>
               </div>
               <div className="tiles">
@@ -627,7 +626,6 @@ function Portfolio({ content }) {
           ) : (
             <>
               <div className="sec-head" data-reveal>
-                <p className="eyebrow">Projects</p>
                 <h2>Websites I've built</h2>
               </div>
               <div className="lab-shots">
