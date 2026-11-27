@@ -166,7 +166,6 @@ function CaseTile({ p, onOpen }) {
           </button>
         </h3>
         <p className="t-result">{p.result}</p>
-        <span className="t-cue" aria-hidden="true">Read the case study <span>↗</span></span>
         {tools.length > 0 && (
           <ul className="t-tools">
             {tools.map((t) => (
