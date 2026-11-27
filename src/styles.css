@@ -2461,7 +2461,7 @@ body::after { animation-duration: 38s; animation-direction: alternate-reverse; }
 }
 
 
-/* ---------- Case studies: wider, content-first presentation ----------
+/* ---------- Case studies: wider, content-first presentation ---------- */
 .case-dialog {
   width: min(1120px, calc(100% - 2.5rem));
   max-height: min(92vh, 1000px);
