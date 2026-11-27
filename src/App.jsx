@@ -590,26 +590,7 @@ function Portfolio({ content }) {
             <div className="hero-stage" data-reveal>
               <div className="stage-frame" aria-hidden="true" />
               <div className="stage-visual">{isSocial ? <Timeline /> : <Flow />}</div>
-              <p className="stage-caption">{d.headline}</p>
-              <div className={`hero-highlights ${isSocial ? 'is-studio' : 'is-lab'}`} key={mode} aria-label={isSocial ? 'Creative Studio highlights' : 'Technology Lab highlights'}>
-                {(isSocial
-                  ? [
-                      { value: '40K', label: 'Live interactions' },
-                        { value: '10+', label: 'Videos edited' },
-                        { value: '500+', label: 'Event attendees' },
-                      ]
-                    : [
-                        { value: '07', label: 'Website pages' },
-                        { value: '01', label: 'Automation workflow' },
-                        { value: '74', label: 'Posts analyzed' },
-                      ]
-                ).map((item, i) => (
-                  <div className="hero-highlight" key={item.value} style={{ '--highlight-delay': `${i * 100}ms` }}>
-                    <strong>{item.value}</strong>
-                    <span>{item.label}</span>
-                  </div>
-                ))}
-              </div>
+              <p className="stage-caption">{d.headline}</p>              </div>
             </div>
           </div>
         </div>
