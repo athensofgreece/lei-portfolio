@@ -641,7 +641,6 @@ function Portfolio({ content }) {
                     >
                       <div className="shot-media">
                         <span className="shot-plate" aria-hidden="true">
-                          <span className="shot-plate-index">{String(i + 1).padStart(2, '0')}</span>
                           <span className="shot-plate-name">{p.title}</span>
                           {stack.length > 0 && <span className="shot-plate-stack">{stack.join(' / ')}</span>}
                         </span>
@@ -660,9 +659,6 @@ function Portfolio({ content }) {
                       </div>
                       <div className="shot-copy">
                         <div className="shot-meta">
-                          <span className="shot-index">
-                            {String(i + 1).padStart(2, '0')} / {String(auto.webProjects.length).padStart(2, '0')}
-                          </span>
                           <span className={`chip ${p.status === 'Live' ? 'ok' : ''}`}>{p.status}</span>
                         </div>
                         <h3>{p.title}</h3>
@@ -691,8 +687,7 @@ function Portfolio({ content }) {
                 })}
               </div>
               <div className="sec-head sub-head" data-reveal>
-                <p className="eyebrow">Automation</p>
-                <h2>Automation projects</h2>
+                        <h2>Automation projects</h2>
                 <p className="sec-intro">
                   These proof-of-concept workflows demonstrate how I approach automation, streamline
                 repetitive tasks, and connect everyday tools. Created as portfolio projects,
@@ -704,7 +699,6 @@ function Portfolio({ content }) {
                   <div>
                     <div className="lab-top lab-top-start">
                       <span className={`chip ${p.status === 'Live' ? 'ok' : ''}`}>{p.status}</span>
-                      <span className="lab-idx">01 / featured</span>
                     </div>
                     <h3>{p.title}</h3>
                     <p>{p.text}</p>
@@ -741,7 +735,6 @@ function Portfolio({ content }) {
                     <article className="lab-card" key={p.title}>
                       <div className="lab-top">
                         <span className={`chip ${p.status === 'Live' ? 'ok' : ''}`}>{p.status}</span>
-                        <span className="lab-idx">{String(n + 2).padStart(2, '0')}</span>
                       </div>
                       <h3>{p.title}</h3>
                       <div className="lab-strip">
@@ -781,7 +774,6 @@ function Portfolio({ content }) {
       <section id="experience" className="journey-section">
     <div className="wrap">
       <div className="sec-head journey-head" data-reveal>
-        <p className="eyebrow">Experience · {experienceItems.length} chapters</p>
         <h2>My professional journey</h2>
         <p className="sec-intro">Select a milestone to explore what I worked on and learned along the way.</p>
       </div>
@@ -799,7 +791,6 @@ function Portfolio({ content }) {
           {currentExperience && (
             <article className="journey-detail" id="journey-details" role="tabpanel">
               <div className="journey-detail-top">
-                <span className="journey-index">EXPERIENCE / {String(activeExperience + 1).padStart(2, '0')}</span>
                 <span className="journey-date-pill">{currentExperience.date}</span>
               </div>
               <div className="journey-detail-grid">
@@ -813,8 +804,7 @@ function Portfolio({ content }) {
                 </div>
               </div>
               <div className="journey-controls">
-                <span>{String(activeExperience + 1).padStart(2, '0')} <span className="journey-muted">/ {String(experienceItems.length).padStart(2, '0')}</span></span>
-                <div className="journey-arrows">
+                  <div className="journey-arrows">
                   <button type="button" aria-label="Previous experience" disabled={activeExperience === 0} onClick={() => setActiveExperience((i) => Math.max(0, i - 1))}>←</button>
                   <button type="button" aria-label="Next experience" disabled={activeExperience >= experienceItems.length - 1} onClick={() => setActiveExperience((i) => Math.min(experienceItems.length - 1, i + 1))}>→</button>
                 </div>
@@ -828,7 +818,6 @@ function Portfolio({ content }) {
   <section id="leadership" className="event-explorer">
     <div className="wrap">
       <div className="sec-head event-head" data-reveal>
-        <p className="eyebrow">Leadership & Events · {eventItems.length} highlights</p>
         <h2>Behind the scenes, making it happen</h2>
         <p className="sec-intro">Explore the events, communities, and teams I've helped bring together.</p>
       </div>
@@ -847,7 +836,6 @@ function Portfolio({ content }) {
             <div className="event-feature-orb" aria-hidden="true"/>
             <div className="event-feature-top">
               <span className="event-kicker"><CalendarDays size={15}/> {currentEvent.date || 'Event highlight'}</span>
-              <span className="event-count">{String(activeEvent + 1).padStart(2, '0')} / {String(eventItems.length).padStart(2, '0')}</span>
             </div>
             <div className="event-feature-content">
               <h3>{currentEvent.title}</h3>
@@ -856,7 +844,6 @@ function Portfolio({ content }) {
               {currentEvent.highlight && <div className="event-impact"><span>MY CONTRIBUTION</span><p>{currentEvent.highlight}</p></div>}
             </div>
             <div className="event-feature-bottom">
-              <span>LEADERSHIP · COLLABORATION · EXECUTION</span>
               <div className="event-feature-nav">
                 <button type="button" aria-label="Previous event" disabled={activeEvent === 0} onClick={() => setActiveEvent((i) => Math.max(0, i - 1))}>←</button>
                 <button type="button" aria-label="Next event" disabled={activeEvent >= eventItems.length - 1} onClick={() => setActiveEvent((i) => Math.min(eventItems.length - 1, i + 1))}>→</button>
@@ -929,7 +916,6 @@ function Portfolio({ content }) {
             </figure>
             <div className="about-copy">
               <div className="sec-head">
-                <p className="eyebrow">About</p>
                 <h2>About me</h2>
               </div>
               <div className="about-body">
@@ -950,7 +936,6 @@ function Portfolio({ content }) {
           <div className="contact-editorial" data-reveal>
             <div className="contact-meta">
               <p className="eyebrow">Let's connect</p>
-              <span className="contact-index">06 / CONTACT</span>
             </div>
             <h2>
               Have a good idea?
