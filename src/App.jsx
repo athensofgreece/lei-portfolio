@@ -151,7 +151,7 @@ function CaseTile({ p, onOpen }) {
   const tools = splitList(p.tools)
   return (
     <article className="tile" data-reveal>
-      <span className="tile-go" aria-hidden="true">→</span>
+      <button className="tile-go" type="button" aria-label={`Open case study: ${p.title}`} onClick={() => onOpen(p)}>↗</button>
       <div className="t-body">
         <p className="t-client">{p.client}</p>
         <h3>
