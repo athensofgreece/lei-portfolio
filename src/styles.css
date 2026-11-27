@@ -2522,56 +2522,63 @@ body::after { animation-duration: 38s; animation-direction: alternate-reverse; }
 }
 
 
-/* Per-mode highlights sit within the hero stage and animate on focus change. */
+/* Mode-specific proof points: editorial in Studio, technical in Lab. */
 .hero-highlights {
   position: relative;
   z-index: 1;
-  margin-top: 1.15rem;
-  padding-top: .9rem;
-  border-top: 1px solid var(--line);
-}
-.hero-highlights-label {
-  margin: 0 0 .7rem;
-  color: var(--accent-text);
-  font: 600 .7rem var(--mono);
-  letter-spacing: .1em;
-  text-transform: uppercase;
-}
-.hero-highlights-grid {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: .65rem;
+  gap: clamp(.7rem, 2vw, 1.4rem);
+  margin-top: 1.25rem;
+  padding-top: .8rem;
+  border-top: 1px solid var(--line);
 }
 .hero-highlight {
   min-width: 0;
   display: flex;
   flex-direction: column;
-  gap: .25rem;
-  padding: .7rem .75rem;
-  border-radius: 10px;
-  border: 1px solid var(--line);
-  background: color-mix(in srgb, var(--panel) 88%, var(--accent) 12%);
+  gap: .28rem;
   opacity: 0;
-  transform: translateY(9px);
-  animation: highlightEnter .55s var(--motion-smooth, ease) var(--highlight-delay, 0ms) forwards;
+  transform: translateY(7px);
+  animation: highlightEnter .5s ease var(--highlight-delay, 0ms) forwards;
 }
 .hero-highlight strong {
-  color: var(--text);
-  font: 700 clamp(1rem, 1.8vw, 1.35rem)/1.1 var(--display);
-  letter-spacing: -.025em;
+  color: var(--accent-text);
+  font-family: var(--display);
+  font-size: clamp(1.25rem, 2.4vw, 1.9rem);
+  line-height: 1;
+  font-weight: 500;
+  letter-spacing: -.035em;
 }
 .hero-highlight span {
   color: var(--muted);
   font-size: .72rem;
   line-height: 1.35;
 }
+.hero-highlights.is-studio .hero-highlight strong {
+  font-family: var(--serif);
+  font-style: italic;
+  font-size: clamp(1.5rem, 2.6vw, 2.15rem);
+}
+.hero-highlights.is-lab .hero-highlight strong {
+  font-family: var(--mono);
+  font-size: clamp(1.1rem, 1.9vw, 1.5rem);
+  font-weight: 700;
+  letter-spacing: -.06em;
+}
+.hero-highlights.is-lab .hero-highlight span {
+  font-family: var(--mono);
+  font-size: .66rem;
+}
 @keyframes highlightEnter {
   to { opacity: 1; transform: translateY(0); }
 }
 @media (max-width: 600px) {
-  .hero-highlights-grid { gap: .4rem; }
-  .hero-highlight { padding: .6rem .5rem; border-radius: 8px; }
-  .hero-highlight span { font-size: .68rem; }
+  .hero-highlights { gap: .55rem; margin-top: 1rem; }
+  .hero-highlight strong { font-size: 1.25rem; }
+  .hero-highlight span { font-size: .65rem; }
+  .hero-highlights.is-studio .hero-highlight strong { font-size: 1.45rem; }
+  .hero-highlights.is-lab .hero-highlight strong { font-size: 1.05rem; }
 }
 @media (prefers-reduced-motion: reduce) {
   .hero-highlight { opacity: 1; transform: none; animation: none; }
