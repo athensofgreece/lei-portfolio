@@ -605,10 +605,21 @@ function Portfolio({ content }) {
               </div>
             </div>
           )}
-          <div className="hero-proof" data-reveal aria-label="Selected experience highlights">
-            <div><strong>7 pages</strong><span>Company website built</span></div>
-            <div><strong>500+ attendees</strong><span>Conference logistics led</span></div>
-            <div><strong>40K interactions</strong><span>One TikTok Live session</span></div>
+          <div className={`hero-proof ${isSocial ? 'hero-proof-creative' : 'hero-proof-tech'}`} data-reveal aria-label={isSocial ? 'Creative Studio experience highlights' : 'Technology Lab experience highlights'}>
+            {(isSocial
+              ? [
+                  { value: '40K', label: 'TikTok Live interactions' },
+                  { value: '10+', label: 'Marketing videos edited' },
+                  { value: '500+', label: 'Event attendees supported' },
+                ]
+              : [
+                  { value: '7 pages', label: 'Corporate website built' },
+                  { value: '74 posts', label: 'Social data analyzed' },
+                  { value: 'Workflow', label: 'Job-search automation built' },
+                ]
+            ).map((item) => (
+              <div key={item.value}><strong>{item.value}</strong><span>{item.label}</span></div>
+            ))}
           </div>
         </div>
       </header>
